@@ -1,0 +1,19 @@
+{
+    "server": {
+        "//port": "if using a non-default port, make sure urls.local matches",
+        "port": 443,
+        "key": "cfg/key.pem",
+        "cert": "cfg/cert.pem"
+    },
+    "urls": {
+        "local": "https://localhost",
+        "sso": "https://sso.spearhead.cloud",
+        "cloudapi": "https://eu-ro-1.api.spearhead.cloud"
+    },
+    "key": {
+        "user": "developer_name",
+        "//id": "replace id below with the signature of the path'd key",
+        "id": "0b:bf:00:e7:95:7b:e8:13:54:7f:37:00:04:07:64:04",
+        "path": "/path/to/developer_key"
+    }
+}

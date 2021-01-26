@@ -1,1 +1,3 @@
 node_modules
+cfg/key.pem
+cfg/cert.pem
