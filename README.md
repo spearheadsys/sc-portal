@@ -2,7 +2,7 @@
 
     npm install
 
-# Generate keys
+# Generate server certificates
 
 From within the config/ directory:
 
@@ -13,7 +13,11 @@ From within the config/ directory:
 
 # Configuration
 
-    Ensure the config file in config/ matches your details.
+Ensure the config file in config/ matches your details.
+
+The SSH key used must be the correct format, e.g. generated with:
+
+    ssh-keygen -m PEM -t rsa -C "your@email.address"
 
 # Running the server
 
