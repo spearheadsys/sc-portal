@@ -34,7 +34,7 @@ authentication; all files are public.
 ## GET /login
 
 Call this endpoint to begin the login cycle. It will redirect you to the SSO
-login page.
+login page: an HTTP 302, with a Location header.
 
 ## GET /token
 
@@ -47,3 +47,26 @@ header.
 
 All other calls will be passed through to cloudapi. For these calls to succeed,
 they MUST provide the X-Auth-Token header that the /token endpoint returns.
+
+# Interaction cycle
+
+client --- GET /login --------> this server
+       <-- 302 Location #1 ----
+
+client --- GET <Location #1> --> SSO server
+       <separate SSO cycle>
+       <-- 302 Location #2 ----
+
+client --- GET <Location #2> --> this server
+       <-- 204 X-Auth-Token ----
+
+From now on call this server as if it were a cloudapi server (using [cloudapi
+paths](https://github.com/joyent/sdc-cloudapi/blob/master/docs/index.md#api-introduction)),
+always providing the X-Auth-Token. For example, to retrieve a list of packages:
+
+client --- GET /my/packages --> this server
+       <-- 200 JSON body ------
+
+The most useful cloudapi endpoints to begin with will be ListPackages,
+GetPackage, ListImages, GetImage, ListMachines, GetMachine, CreateMachine and
+DeleteMachine (see cloudapi docs).
