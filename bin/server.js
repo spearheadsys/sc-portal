@@ -12,6 +12,7 @@ const mod_sdcauth = require('smartdc-auth');
 let CONFIG = {};
 let PRIVATE_KEY = '';
 let CLOUDAPI = {};
+let CLOUDAPI_HOST = '';
 let SIGNER = {};
 
 
@@ -22,7 +23,7 @@ let SIGNER = {};
 function proxy(req, res, cb) {
     // return data from cloudapi to the client caller
     function proxyReturn(err, _, res2, data) {
-        if (err && !res2.statusCode) {
+        if (err && !res2) {
             res.send(500);
             return cb();
         }
@@ -53,6 +54,7 @@ function proxy(req, res, cb) {
             return (cb(err));
         }
 
+        headers.host = CLOUDAPI_HOST;
         headers.authorization = authz;
 
         const opts = {
@@ -62,11 +64,11 @@ function proxy(req, res, cb) {
 
         // make the call to cloudapi
         switch (req.method) {
-            case 'GET':  CLOUDAPI.get(opts,  proxyReturn); break;
-            case 'DEL':  CLOUDAPI.del(opts,  proxyReturn); break;
-            case 'HEAD': CLOUDAPI.head(opts, proxyReturn); break;
-            case 'POST': CLOUDAPI.post(opts, req.body, proxyReturn); break;
-            case 'PUT':  CLOUDAPI.del(opts,  req.body, proxyReturn); break;
+            case 'GET':    CLOUDAPI.get(opts,  proxyReturn); break;
+            case 'DELETE': CLOUDAPI.del(opts,  proxyReturn); break;
+            case 'HEAD':   CLOUDAPI.head(opts, proxyReturn); break;
+            case 'POST':   CLOUDAPI.post(opts, req.body, proxyReturn); break;
+            case 'PUT':    CLOUDAPI.put(opts,  req.body, proxyReturn); break;
         }
     });
 }
@@ -134,18 +136,20 @@ function main() {
     CLOUDAPI = mod_restify.createStringClient({
         url: CONFIG.urls.cloudapi,
         agent: new mod_cueball.HttpsAgent({
-            spares: 4,
-            maximum: 10,
+            spares: 0,
+            maximum: 4,
             recovery: {
                 default: {
                     timeout: 2000,
-                    retries: 5,
+                    retries: 2,
                     delay: 250,
                     maxDelay: 1000
                 }
             }
         })
     });
+
+    CLOUDAPI_HOST = CONFIG.urls.cloudapi.split('/')[2];
 
     // prepare HTTP server
     const options = {
@@ -155,7 +159,7 @@ function main() {
 
     const server = mod_restify.createServer(options);
     server.use(mod_restify.authorizationParser());
-    server.use(mod_restify.bodyParser());
+    server.use(mod_restify.bodyReader());
 
     // where to server static content from
     server.get(/^\/static.*/, mod_restify.plugins.serveStatic({
