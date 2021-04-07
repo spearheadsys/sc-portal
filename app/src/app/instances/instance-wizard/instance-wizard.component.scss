@@ -1,0 +1,338 @@
+fieldset
+{
+  height: 80vh;
+}
+
+h5
+{
+  padding-right: 1.5rem;
+}
+
+h5, h6
+{
+  color: #ff9c07;
+}
+
+p
+{
+  color: #3d5e8e;
+}
+
+.steps
+{
+  height: 100%;
+
+  ul
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: #0c1321;
+    color: #00dcff;
+    height: calc(100% - 4px);
+    margin: 2px 0 2px 2px;
+    border-radius: .35rem 0 0 .35rem;
+    counter-reset: step;
+  }
+
+  li
+  {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #3d5e8e;
+    padding-right: .5rem;
+    font-family: "Bebas Neue", sans-serif;
+    position: relative;
+    margin: .5rem 0;
+    padding: 1rem .5rem 1rem 2.5rem;
+
+    &:not(:first-child):not(:last-child)
+    {
+      counter-increment: step;
+
+      &:after
+      {
+        left: .6rem;
+        top: 1.65rem;
+        content: counter(step);
+        height: 1.5rem;
+        width: 1.5rem;
+        position: absolute;
+        pointer-events: none;
+        border-radius: 50%;
+        font-size: 1rem;
+        padding: .2rem .4rem;
+        transform: translateY(-50%);
+        font-weight: bold;
+        border: 2px solid;
+      }
+    }
+
+    &.active
+    {
+      color: #0bb13b;
+
+      .step-description
+      {
+        opacity: .75;
+      }
+    }
+  }
+
+  .step-description
+  {
+    font-size: .9rem;
+    font-family: "Mukta", sans-serif;
+  }
+
+  .step-summary
+  {
+    color: #ff9c07;
+    margin: 0 .5rem 0 0;
+  }
+}
+
+.btn
+{
+  transition: all .3s ease-in-out;
+}
+
+.hidden
+{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.no-overflow
+{
+  overflow: hidden;
+}
+
+.badge.rounded-pill
+{
+  padding: .1em .5em;
+  vertical-align: middle;
+}
+
+.form-check:not(.form-switch)
+{
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0 0 0 2.5rem;
+  cursor: pointer;
+  flex-grow: 1;
+
+  .form-check-input
+  {
+    margin-right: .5rem;
+    float: none;
+    width: 1.4em;
+    max-width: 1rem;
+    margin-bottom: .25rem;
+    cursor: inherit;
+    background-color: #0dc3e9;
+    border-color: #0dc3e9;
+    box-shadow: 0 0 0 1px rgb(12, 19, 33, .5) inset;
+
+    &:checked
+    {
+      background-color: #ff9c07;
+      border-color: #ff9c07;
+
+      &:not(:focus)
+      {
+        box-shadow: none;
+      }
+    }
+
+    &:checked[type=radio]
+    {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%230c1321'/%3e%3c/svg%3e");
+    }
+
+    &:checked[type=checkbox]
+    {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230c1321' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    }
+
+    &:focus
+    {
+      box-shadow: 0 0 0 0.25rem rgba(255, 156, 7, .25);
+    }
+  }
+
+  .h3
+  {
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0;
+    line-height: 1;
+    font-size: 1.5rem;
+    color: #8881ff;
+  }
+
+  .form-check-label
+  {
+    cursor: inherit;
+    width: 100%;
+    padding: .75rem .25rem;
+    color: #5a8cd8;
+    font-family: "Mukta", sans-serif;
+    text-transform: none;
+  }
+}
+
+.form-check-input:checked + .form-check-label,
+.form-check-input:checked + .form-check-label .package-specs,
+.form-check-input:checked + .form-check-label .h3
+{
+  color: #ff9c07;
+}
+
+.content
+{
+  border-radius: 0 .35rem .35rem 0;
+  padding: 1rem 0;
+
+  .list-group:not(.select-list)
+  {
+    overflow: auto;
+    border-radius: 0;
+    border-top: 1px solid rgba(13, 195, 233, .5);
+
+    .list-group-item
+    {
+      border-radius: 0;
+      background: transparent;
+      color: #5a8cd8;
+      border-color: rgba(61, 94, 142, .25);
+
+      a
+      {
+        color: #0dc3e9;
+      }
+    }
+  }
+
+  .btn-group
+  {
+    .btn
+    {
+      background: none;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      border-bottom: 2px solid transparent;
+      transition: none;
+      color: #0dc3e9;
+
+      &.active
+      {
+        border-bottom-color: #0dc3e9;
+        box-shadow: 0 -1rem 1.5rem -1.5rem inset;
+        text-shadow: 0 0 .5rem;
+      }
+
+      &:focus:not(.active)
+      {
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 992px)
+{
+  .content
+  {
+    border-radius: .35rem;
+  }
+}
+
+.select-list
+{
+  .form-check .form-check-label
+  {
+    padding: .5rem .25rem;
+    text-transform: uppercase;
+    font-family: "Bebas Neue", sans-serif;
+
+    small
+    {
+      font-size: .85rem;
+    }
+  }
+
+  .list-group-item
+  {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-radius: 0;
+    background: transparent;
+    color: #8881ff;
+  }
+}
+
+.form-floating > .form-control, .form-floating > .form-select
+{
+  height: calc(3rem + 2px);
+  background: #0f1626;
+  border-color: #00e7ff;
+  border-radius: 3rem;
+}
+
+.form-floating > .form-control
+{
+  color: #ff9c07;
+}
+
+.image-type-selector
+{
+  color: #00e7ff;
+  text-transform: uppercase;
+  background: #0f1626;
+  border-color: #00e7ff;
+  border-radius: 3rem;
+}
+
+.auto-height
+{
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+p.lead b
+{
+  line-height: 1.4;
+}
+
+.tag-value
+{
+  max-width: 340px;
+}
+
+.table
+{
+  color: #5a8cd8;
+
+  td
+  {
+    padding: 0 .125rem .25rem;
+  }
+
+  th
+  {
+    padding: .25rem;
+    vertical-align: middle;
+
+    &:first-child
+    {
+      padding-left: 1rem;
+    }
+  }
+}

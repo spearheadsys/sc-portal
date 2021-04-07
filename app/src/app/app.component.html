@@ -1,0 +1,57 @@
+<main [class.menu-open]="menuVisibility">
+  <div class="module-loading-spinner" *ngIf="showProgress">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="backdrop" *ngIf="menuVisibility" (click)="menuVisibility = false"></div>
+
+  <div class="menu">
+    <app-nav-menu (navigate)="menuVisibility = false"></app-nav-menu>
+  </div>
+
+  <div class="pusher">
+    <div class="content">
+      <div class="content-inner d-flex flex-column h-100">
+        <header class="sticky-top">
+          <nav class="navbar w-100 px-2">
+            <div class="brand d-flex align-items-center w-75">
+              <a href="javascript:void(0)" class="icon" (click)="menuVisibility = !menuVisibility">
+                <fa-icon [fixedWidth]="true" icon="outdent"></fa-icon>
+                {{ title | translate }}
+              </a>
+            </div>
+
+            <div *ngIf="userInfo" class="btn-group" role="group" dropdown placement="bottom right">
+              <button id="accountMenuDropdown" type="button" class="btn btn-link dropdown-toggle" dropdownToggle aria-expanded="false">
+                <fa-icon icon="user" size="sm" class="me-1 align-middle"></fa-icon>
+                <span class="d-none d-sm-inline-block">{{ userInfo.firstName }} {{ userInfo.lastName }}</span>
+              </button>
+              <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="accountMenuDropdown">
+                <li>
+                  <a class="dropdown-item" [routerLink]="['./account']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+                    <fa-icon icon="user-cog"></fa-icon>
+                    Account details
+                  </a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li>
+                  <button class="dropdown-item" (click)="logOff()">
+                    <fa-icon icon="power-off"></fa-icon>
+                    Log off
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+          </nav>
+        </header>
+
+        <div class="no-overflow flex-grow-1">
+          <div class="h-100">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

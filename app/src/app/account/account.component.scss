@@ -1,0 +1,42 @@
+ul, ol
+{
+  background-color: rgba(16, 21, 39, .75);
+  height: 100%;
+}
+
+h4
+{
+  margin-bottom: 0;
+}
+
+.list-group-item
+{
+  background: none;
+  padding: 1rem;
+  border-color: rgb(61, 94, 142, .25);
+  color: #5a8cd8;
+
+  b
+  {
+    color: #ff9c07;
+  }
+}
+
+.card
+{
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: rgba(16, 21, 39, 0.5);
+  box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px #0b284b, 0 0 10px 3px #0e162a;
+  transition: box-shadow 0.15s ease-out;
+  height: 100%;
+
+  &:hover
+  {
+    box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px rgba(18, 203, 240, .4), 0 0 10px 3px #0e162a;
+  }
+
+  .card-body
+  {
+    padding: 0;
+  }
+}

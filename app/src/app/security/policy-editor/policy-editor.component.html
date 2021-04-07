@@ -1,0 +1,56 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4>Policy editor</h4>
+
+      <div class="row g-4">
+        <div class="col-sm-5">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[A-Za-z0-9_-]+$" class="form-control" id="name" formControlName="name" placeholder="Name" [appAutofocus]="true" [appAutofocusDelay]="600">
+            <label for="name">Name</label>
+          </div>
+        </div>
+        <div class="col-sm-7">
+          <div class="form-floating">
+            <input type="text" maxlength="64" class="form-control" id="description" formControlName="description" placeholder="Description">
+            <label for="description">Description</label>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <h5>Rules</h5>
+          <div class="form-row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list" tabindex="1">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('rules')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ control.value.rule }}</span>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeRule(index)"
+                            tooltip="Remove this rule" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-inline-editor buttonTitle="Add rule" [singleLine]="true" [showValue]="false" keyLabel="Rule"
+                                 (saved)="addRule($event)">
+              </app-inline-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

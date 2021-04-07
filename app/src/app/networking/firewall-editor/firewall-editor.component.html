@@ -1,0 +1,109 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4 class="mb-3">Firewall editor</h4>
+
+      <div class="row g-4">
+        <div class="col-sm-4">
+          <h5>Action</h5>
+
+          <select class="form-select" id="action" formControlName="action" placeholder="Action"
+                  [appAutofocus]="true" [appAutofocusDelay]="600">
+            <option value="ALLOW">ALLOW</option>
+            <option value="BLOCK">BLOCK</option>
+          </select>
+        </div>
+
+        <div class="col-sm-4">
+          <h5>Protocol</h5>
+
+          <select class="form-select" id="protocol" formControlName="protocol" placeholder="Protocol"
+                  [appAutofocus]="!editorForm.get('protocol').value && editorForm.get('action').value" [appAutofocusDelay]="250">
+            <option value="tcp">TCP</option>
+            <option value="udp">UDP</option>
+            <option value="icmp">ICMP</option>
+          </select>
+        </div>
+        <div class="col-sm-4">
+          <h5>
+            <span *ngIf="editorForm.get('protocol').value !== 'ICMP'">Port</span>
+            <span *ngIf="editorForm.get('protocol').value === 'ICMP'">Type and code</span>
+          </h5>
+
+          <input type="text" class="form-control" id="protocolConfig" formControlName="protocolConfig"
+                 [appAutofocus]="!editorForm.get('protocolConfig').value && editorForm.get('protocol').value" [appAutofocusDelay]="250"
+                 [placeholder]="editorForm.get('protocol').value === 'icmp' ? 'Type:Code [0:255]' : 'Port [1-9999]'"
+                 [appAlphaOnly]="editorForm.get('protocol').value === 'icmp' ? '^[0-9:]+$' : '^[0-9]+$'">
+        </div>
+
+        <div class="col-sm-6">
+          <h5>From</h5>
+          <div class="row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('from')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="rule">
+                      {{ control.value.type }}
+                      <b *ngIf="control.value.config">{{ instances[control.value.config] || control.value.config }}</b>
+                    </div>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeFromRule(index)"
+                            tooltip="Remove this rule" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-firewall-rule-editor buttonTitle="Add rule" (saved)="addFromRule($event)" [disabled]="!canAddFromRule">
+              </app-firewall-rule-editor>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <h5>To</h5>
+          <div class="row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('to')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="rule">
+                      {{ control.value.type }}
+                      <b *ngIf="control.value.config">{{ instances[control.value.config] || control.value.config }}</b>
+                    </div>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeToRule(index)"
+                            tooltip="Remove this rule" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-firewall-rule-editor buttonTitle="Add rule" (saved)="addToRule($event)" [disabled]="!canAddFromRule">
+              </app-firewall-rule-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-3">
+        <div class="col-sm-12 mt-5">
+          <input type="text" maxlength="64" class="form-control" id="description" formControlName="description" placeholder="Description">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

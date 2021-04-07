@@ -1,0 +1,30 @@
+h4
+{
+  color: #00dcff;
+}
+
+p
+{
+  color: #ff9c07;
+  font-size: 1.15rem;
+}
+
+input, textarea
+{
+  height: auto;
+  padding: .5rem 1rem;
+  border-radius: 3rem;
+}
+
+input, input:focus, input:active,
+textarea, textarea:focus, textarea:active
+{
+  background: transparent;
+  border-color: #00e7ff;
+  color: #ff9c07;
+}
+
+textarea
+{
+  resize: none;
+}

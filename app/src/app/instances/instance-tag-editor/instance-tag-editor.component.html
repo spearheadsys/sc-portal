@@ -1,0 +1,54 @@
+<form novalidate *ngIf="editorForm">
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content d-flex flex-column">
+      <h4>
+        <span *ngIf="showMetadata">Machine metadata</span>
+        <span *ngIf="!showMetadata">Machine tags</span>
+      </h4>
+
+      <div class="flex-grow-1 overflow-v">
+        <p class="lead" *ngIf="showMetadata">Add a new metadata by specifying its key and value</p>
+        <p class="lead" *ngIf="!showMetadata">Add a new tag by specifying its key and value</p>
+
+        <div class="add-tag">
+          <input class="form-control" type="text" placeholder="Key" formControlName="key" appAlphaOnly="^[A-Za-z0-9_-]+$"
+                 [appAutofocus]="focus" [appAutofocusDelay]="focus === 1 ? 600 : 0" />
+          <input *ngIf="!showMetadata" class="form-control" type="text" formControlName="value" placeholder="Value" />
+          <textarea *ngIf="showMetadata" class="form-control" rows="2" formControlName="value" placeholder="Value"></textarea>
+          <button class="btn btn-outline-info" (click)="addTag()" [disabled]="editorForm.invalid">
+            <span *ngIf="showMetadata">Add metadata</span>
+            <span *ngIf="!showMetadata">Add tag</span>
+          </button>
+        </div>
+
+        <ul class="list-group list-group-flush" formArrayName="items">
+          <li class="list-group-item d-flex justify-content-between align-items-center"
+              *ngFor="let item of editorForm.get('items')['controls']; let index = index" [formGroupName]="index">
+            <div class="tag">
+              <input class="form-control" type="text" formControlName="key" />
+              <input *ngIf="!showMetadata" class="form-control" type="text" formControlName="value" />
+              <textarea *ngIf="showMetadata" class="form-control" rows="2" formControlName="value"></textarea>
+            </div>
+
+            <div>
+              <button class="btn btn-link text-danger" (click)="deleteTag(index)"
+                      [tooltip]="showMetadata ? 'Remove this metadata' : 'Remove this tag'" container="body" placement="top" [adaptivePosition]="false">
+                <fa-icon icon="times" [fixedWidth]="true" size="sm"></fa-icon>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+
+        <button class="btn btn-info" (click)="saveChanges()">Save changes</button>
+      </div>
+    </div>
+  </fieldset>
+</form>

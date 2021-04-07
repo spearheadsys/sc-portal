@@ -1,0 +1,85 @@
+<form novalidate *ngIf="editorForm">
+  <fieldset class="editor-form" [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4 class="mb-3">Create volume</h4>
+
+      <div class="row g-4">
+        <div class="col-sm-12">
+          <input type="text" appAlphaOnly="^[A-Za-z0-9_-]+$" class="form-control" id="name" formControlName="name" placeholder="Name" [appAutofocus]="true" [appAutofocusDelay]="600">
+        </div>
+        <div class="col-sm-12">
+          <h5 class="mb-0">Size</h5>
+          <ngx-slider class="mb-3" formControlName="size" [options]="sizeSliderOptions"></ngx-slider>
+        </div>
+        <div class="col-sm-6">
+          <h5>Networks</h5>
+          <div class="row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('networks')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ control.value.name }}</span>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeNetwork(index)"
+                            tooltip="Remove this DNS resolver" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div dropdown placement="bottom left" container="body">
+                <button class="btn btn-link text-info" dropdownToggle [disabled]="!fabricNetworks.length">
+                  Add network
+                </button>
+                <ul *dropdownMenu container="body" class="dropdown-menu" role="menu">
+                  <li role="menuitem" *ngFor="let network of fabricNetworks">
+                    <button class="dropdown-item" (click)="addNetwork(network)">
+                      {{ network.name }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h5>Tags</h5>
+          <div class="row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('tags')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="tag">
+                      {{ control.value.key }}
+                      <b>{{ control.value.value }}</b>
+                    </span>
+
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeTag(index)"
+                            tooltip="Remove this tag" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-inline-editor buttonTitle="Add a tag" [singleLine]="true" (saved)="addTag($event)" keyPattern="^[A-Za-z0-9_-]+$">
+              </app-inline-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

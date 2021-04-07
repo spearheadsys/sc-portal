@@ -1,0 +1,249 @@
+{
+  "dashboard":
+  {
+    "general":
+    {
+      "save": "Save changes",
+      "close": "Close without saving"
+    },
+    "list":
+    {
+      "add": "Create a new machine",
+      "search": "Search...",
+      "searchTooltip": "Search by name, tag, metadata, operating system or brand",
+      "clearSearch": "Clear search",
+      "noResults": "No machine matches your filters",
+      "filters": "Showing {filteredCount} (out of {totalCount}: {totalRunning} running, {totalStopped} stopped)",
+      "filterByState": "Filter by state",
+      "filterByMemory": "Filter by memory",
+      "filterByDisk": "Filter by disk size",
+      "resetFilters": "Reset filters",
+      "showDetails": "Show machine details",
+      "sortBy": "Sort by {}",
+      "sortByName": "Name",
+      "sortByOs": "Operating system",
+      "sortByBrand": "Brand",
+      "sortByImage": "Image",
+      "sortByState": "State",
+      "between": "Between",
+      "and": "and"
+    },
+    "listItem":
+    {
+      "infrastructureContainer": "{type} - insfrastructure container",
+      "virtualMachine": "{type} - virtual machine",
+      "stateRunning": "Running",
+      "stateStopping": "Stopping",
+      "stateProvisioning": "Provisioning",
+      "stateStopped": "Stopped",
+      "stateStarting": "Starting",
+      "restart": "Restart this machine",
+      "moreOptions": "More options",
+      "rename": "Rename this machine",
+      "editTags": "Edit machine tags",
+      "editMetadata": "Edit machine metadata",
+      "clone": "Create a machine with same specs",
+      "createImage": "Create an image from this machine",
+      "stop": "Stop this machine",
+      "delete": "Delete this machine",
+      "history": "Show machine history",
+      "renameTitle": "Rename machine",
+      "renamePrompt": "Type in the new name for your machine",
+      "renamePlaceholder": "New machine name",
+      "renameButtonText": "Change machine name",
+      "messages":
+      {
+        "starting": "Starting machine \"{machineName}\"...",
+        "started": "The machine \"{machineName}\" has been started",
+        "startFailed": "Failed to start the machine \"{machineName}\" {errorDetails}",
+        "restarting": "Restarting machine \"{machineName}\"...",
+        "restarted": "The machine \"{machineName}\" has been restarted",
+        "restartFailed": "Failed to restart the machine \"{machineName}\" {errorDetails}",
+        "stopping": "Stopping machine \"{machineName}\"...",
+        "stopped": "The machine \"{machineName}\" has been stopped",
+        "stopFailed": "Failed to stop the machine \"{machineName}\" {errorDetails}",
+        "upgrading": "Changing machine \"{machineName}\" specifications...",
+        "upgraded": "The machine \"{machineName}\" specifications have been changed",
+        "upgradeFailed": "Failed to change the specifications the machine \"{machineName}\" {errorDetails}",
+        "renameSameName": "You provided the same name for machine \"{machineName}\"",
+        "renamed": "The \"{oldMachineName}\" machine has been renamed to \"{newMachineName}\"",
+        "renamingFailed": "Failed to rename the \"{machineName}\" machine",
+        "creatingImageFromMachine": "Creating a new image based on the \"{machineName}\" machine...",
+        "imageCreated": "A new image \"{imageName}\" based on the \"{machineName}\" machine has been created",
+        "imageCreationFailed": "Failed to create an image based on the \"{machineName}\" machine {errorDetails}",
+        "deleteConfirmation": "Are you sure you wish to permanently delete the \"{machineName}\" machine?",
+        "deleting": "Removing the \"{machineName}\" machine...",
+        "deleted": "The \"{machineName}\" machine has been removed",
+        "deletingFailed": "Failed to delete the \"{machineName}\" machine",
+        "loadingFailed": "Failed to load additional details for the \"{machineName}\" machine"
+      }
+    },
+    "infoTab":
+    {
+      "title": "Info",
+      "machineId": "Machine ID",
+      "clipboard": "Copy link to clipboard",
+      "preventDeletion": "Prevent this machine from being deleted",
+      "messages":
+      {
+        "deletionProtectionToggled": "The deletion protection for machine \"{machineName}\" is now {status}",
+        "deletionProtectionToggleError": "Failed to toggle the deletion protection for machine \"{machineName}\" {errorDetails}",
+        "copied": "The DNS address has been copied to the clipboard",
+        "loadError": "Couldn't load details for machine \"{machineName}\" {errorDetails}"
+      }
+    },
+    "networkTab":
+    {
+      "title": "Network",
+      "connect": "Connect to a network",
+      "publicNetworks": "Public networks",
+      "privateNetworks": "Private networks",
+      "connectTo": "Connect machine to {networkName}",
+      "public": "Public network",
+      "private": "Private network",
+      "primary": "Primary network interface",
+      "ip": "IP address",
+      "gateway": "Gateway",
+      "disconnect": "Disconnect from this network",
+      "toggleCloudFirewall": "Toggle cloud firewall",
+      "confirmationTitle": "Confirm",
+      "messages":
+      {
+        "loadError": "Failed to load the list of available networks for machine \"{machineName}\" {errorDetails}",
+        "disconnectConfirmation": "Disconnecting from the \"{networkName}\" network will reboot this machine. Do you wish to continue?",
+        "disconnectConfirm": "Yes, disconnect from this network",
+        "disconnectDecline": "No, stay connected",
+        "connectConfirmation": "Connecting to a network will cause this machine to reboot. Do you wish to continue?",
+        "connectConfirm": "Yes, connect to this network",
+        "connectDecline": "No, don't connect",
+        "connecting": "Connecting machine \"{machineName}\" to the \"{networkName}\" network...",
+        "connected": "The machine \"{machineName}\" has been connected to the \"{networkName}\" network",
+        "connectError": "Failed to connect machine \"{machineName}\" to the \"{networkName}\" network {errorDetails}",
+        "disconnecting": "Disconnecting machine \"{machineName}\" from the \"{networkName}\" network...",
+        "disconnected": "The network interface has been removed from machine \"{machineName}\"",
+        "disconnectError": "Failed to disconnect machine \"{machineName}\" from the \"{networkName}\" network {errorDetails}",
+        "firewallToggled": "The cloud firewall for machine \"{machineName}\" is now {status}",
+        "firewallToggleError": "Failed to toggle the cloud firewall for machine \"{machineName}\" {errorDetails}"
+      }
+    },
+    "snapshotsTab":
+    {
+      "title": "Snapshots",
+      "search": "Search by name...",
+      "searchTooltip": "Click to search",
+      "add": "Create a new snapshot",
+      "addPlaceholder": "New snapshot name",
+      "start": "Start machine from this snapshot",
+      "delete": "Delete this snapshot",
+      "restoring": "restoring",
+      "created": "created",
+      "queued": "queued",
+      "confirmationTitle": "Confirm",
+      "messages":
+      {
+        "created": "A new snapshot \"{snapshotName}\" has been created for machine \"{machineName}\"",
+        "creationError": "Failed to create snapshot for machine \"{machineName}\" {errorDetails}",
+        "restarting": "Restarting machine \"{machineName}\"",
+        "restartError": "Failed to restore machine \"{machineName}\" to \"{snapshotName}\" snapshot",
+        "confirmationTitle": "Confirmation",
+        "restorePrompt": "Restoring the \"{snapshotName}\" snapshot will reboot the \"{machineName}\" machine. Do you wish to continue?",
+        "restoreConfirm": "Yes, reboot and restore",
+        "restoreDecline": "No, don't restore",
+        "restoring": "Restoring machine \"{machineName}\" from \"{snapshotName}\" snapshot...",
+        "restored": "The machine \"{machineName}\" has been started from the \"{snapshotName}\" snapshot",
+        "deletePrompt": "Are you sure you wish to permanently delete the \"{snapshotName}\" snapshot?",
+        "deleteConfirm": "Yes, delete this snapshot",
+        "deleteDecline": "No, keep it",
+        "deleted": "The \"{snapshotName}\" snapshot has been deleted",
+        "deleteError": "Failed to delete the \"{snapshotName}\" snapshot {errorDetails}"
+      }
+    },
+    "tags":
+    {
+      "title": "Machine tags",
+      "addHeader": "Add a new tag by specifying its key and value",
+      "add": "Add tag",
+      "remove": "Remove this tag",
+      "keyExists": "The key \"{key}\" is already present"
+    },
+    "metadata":
+    {
+      "title": "Machine metadata",
+      "addHeader": "Add a new metadata by specifying its key and value",
+      "add": "Add metadata",
+      "remove": "Remove this metadata",
+      "keyExists": "The key \"{key}\" is already present"
+    },
+    "wizard":
+    {
+      "stepImageTitle": "Image",
+      "stepImageDescription": "The image used to provision this machine",
+      "stepPackageTitle": "Image",
+      "stepPackageDescription": "This machine's technical specifications",
+      "stepSettingsTitle": "Settings",
+      "stepSettingsDescription": "Name your machine, configure networks and setup volumes",
+      "stepCreateTitle": "Create",
+      "stepCreateDescription": "Tag and create your machine",
+      "add": "Create a new machine",
+      "imageTypeHint": "Pick the <b>type</b> of machine you wish to create and the <b>image</b> used to provision it",
+      "container": "Infrastructure container",
+      "vm": "Virtual machine",
+      "docker": "Docker container",
+      "custom": "Custom images",
+      "more": "more",
+      "packageHint": "Choose the <b>package</b> that matches the technical specifications this machine will have",
+      "nameHint": "Give this machine a <b>name</b> for easier lookup",
+      "namePlaceholder": "Name",
+      "networksHint": "Which <b>networks</b> will this machine use?",
+      "noNetworks": "There are no networks configured",
+      "enableFirewall": "Enable the <b>firewall</b> for you machine",
+      "cloudFirewall": "Cloud firewall",
+      "volumesHint": "Choose the <b>volumes</b> you wish to mount",
+      "volumeName": "Volume name",
+      "volumeMountPoint": "Mount point",
+      "volumeMountPointTooltip": "Must begin with a '/' and be at least 2 characters long",
+      "volumeReadOnly": "Read only",
+      "volumesDisabled": "Volumes are disabled for KVM packages",
+      "noVolumes": "You don't have any volumes defined",
+      "tagsHint": "<b>Tags</b> make it easier to lookup an machine",
+      "addTag": "Add a new tag",
+      "removeTag": "Remove this tag",
+      "metadataHint": "<b>Metadata</b> makes it easier to find a machine",
+      "addMetadata": "Add metadata",
+      "removeMetadata": "Remove this metadata",
+      "affinityHint": "Affinity",
+      "affinityTip": "Affinity (aka 'locality') controls whether the machine should be placed close to or away from other machines.",
+      "affinityRequired": "Provision only when the affinity criteria are met",
+      "previousStep": "Previous step",
+      "createButtonText": "Create machine",
+      "ready": "You're about to create {imageType} having {packageDescription}, named <b>{machineName}</b>, based on the <b>{imageDescription}</b>",
+      "readyImageTypeContainer": "an infrastructure container",
+      "readyImageTypeVm": "a virtual machine",
+      "readyPackageDescription": "<b>{cpu}</b> vCPUs, <b>{memory}</b> RAM and <b>{disk}</b> storage",
+      "messages":
+      {
+        "creationFailed": "Failed to create machine {errorDetails}"
+      }
+    },
+    "packageSelector":
+    {
+      "title": "Change machine specifications",
+      "subTitle": "Pick the package that best suits your requirements",
+      "currentPackage": "This machine's current package is",
+      "selectedPackage": "This package you've selected is",
+      "keepCurrent": "Keep current package",
+      "useSelected": "Use selected package"
+    },
+    "history":
+    {
+      "title": "Machine history",
+      "action": "Action",
+      "when": "When",
+      "finished": "Finished",
+      "messages":
+      {
+        "loadFailed": "Failed to retrieve the audit log for \"{machineName}\" machine"
+      }
+    }
+  }
+}

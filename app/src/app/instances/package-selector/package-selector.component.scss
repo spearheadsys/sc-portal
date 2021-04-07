@@ -1,0 +1,33 @@
+fieldset
+{
+  height: 80vh;
+}
+
+.content
+{
+  display: flex;
+  flex-direction: column;
+}
+
+app-packages
+{
+  margin: 0 -1rem;
+}
+
+p
+{
+  color: #ff9c07;
+  font-size: 1.15rem;
+}
+
+.current-package
+{
+  color: #3d5e8e;
+  margin: 1rem 0 0;
+}
+
+.selected-package
+{
+  margin: .5rem 0 0;
+  font-size: 1rem;
+}

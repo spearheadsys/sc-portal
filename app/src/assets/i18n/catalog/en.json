@@ -1,0 +1,15 @@
+{
+  "catalog":
+  {
+    "packages":
+    {
+      "cpu": "CPU",
+      "memory": "Memory",
+      "disk": "Storage"
+    },
+    "custom":
+    {
+
+    }
+  }
+}

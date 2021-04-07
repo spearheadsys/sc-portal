@@ -1,0 +1,91 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4>Update your profile</h4>
+
+      <div class="row g-3 mt-3">
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="First name" [appAutofocus]="true" [appAutofocusDelay]="600">
+            <label for="firstName">First name</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last name">
+            <label for="lastName">Last name</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="companyName" formControlName="companyName" placeholder="Company name">
+            <label for="companyName">Company name</label>
+          </div>
+        </div>
+
+        <div class="col-sm-10">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="address" formControlName="address" placeholder="Address">
+            <label for="address">Address</label>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="postalCode" formControlName="postalCode" placeholder="Postal code">
+            <label for="postalCode">Postal code</label>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="city" formControlName="city" placeholder="City">
+            <label for="city">City</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="state" formControlName="state" placeholder="State">
+            <label for="state">State</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="country" formControlName="country" placeholder="Country">
+            <label for="country">Country</label>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="tel" class="form-control" id="phone" formControlName="phone" placeholder="Phone">
+            <label for="phone">Phone</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
+            <label for="email">Email</label>
+          </div>
+        </div>
+        <div class="col-12 mt-3">
+          <span class="form-check">
+            <input class="form-check-input" type="checkbox" id="cns" formControlName="cns">
+            <label class="form-check-label" for="cns">Use Container Name Service</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-lg btn-info" (click)="saveChanges()">
+          <fa-icon icon="spinner" [pulse]="true" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

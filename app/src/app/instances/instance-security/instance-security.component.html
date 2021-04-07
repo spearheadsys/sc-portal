@@ -1,0 +1,18 @@
+<ul class="list-group list-group-flush">
+  <li *ngIf="loadingRoles" class="text-center">
+    <div class="spinner-border spinner-border-sm text-info text-faded" role="status">
+      <span class="visually-hidden">Loading roles...</span>
+    </div>
+  </li>
+
+  <li class="list-group-item ps-0 pe-0" *ngFor="let role of filteredRoles">
+    <div class="form-check form-switch align-items-center d-flex">
+      <input class="form-check-input pe-4" type="checkbox" id="{{ instance.id }}-role-{{ role.id }}" [(ngModel)]="role.selected"
+             (change)="setInstanceRole($event,  role)">
+      <label class="form-check-label ms-2 text-truncate" for="{{ instance.id }}-role-{{ role.id }}">
+          <b>{{ role.name }}</b>
+          <span class="small ps-1" *ngFor="let policy of role.policies">{{ policy.name }}</span>
+      </label>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,39 @@
+.table-responsive
+{
+  background-color: rgba(16, 21, 39, 0.75);
+  box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px #0b284b, 0 0 10px 3px #0e162a;
+  transition: box-shadow 0.15s ease-out;
+  border-radius: .25rem;
+
+  &:hover
+  {
+    box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px rgb(18 203 240 / 40%), 0 0 10px 3px #0e162a;
+  }
+
+  .highlight
+  {
+    color: #8881ff;
+  }
+
+  b, .strong
+  {
+    color: #ff9c07;
+    font-weight: normal;
+  }
+
+  .text-truncate
+  {
+    max-width: 350px;
+  }
+
+  .inline-list-item + .inline-list-item
+  {
+    padding-left: .25rem;
+
+    &:before
+    {
+      content: attr(text);
+      color: #3d5e8e;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<button class="btn btn-link text-info" (click)="showEditor()" [collapse]="editorVisible" [disabled]="disabled">{{ buttonTitle }}</button>
+
+<div [collapse]="!editorVisible">
+  <div class="row gx-1 my-1 align-items-center" [formGroup]="editorForm">
+    <div class="col align-self-stretch">
+      <input class="form-control h-100" name="key" type="text" [placeholder]="keyLabel" formControlName="key"
+             [appAutofocus]="editorVisible" [appAlphaOnly]="keyAllowedCharacters" />
+    </div>
+    <div class="col-sm-6" *ngIf="showValue">
+      <textarea class="form-control" name="value" formControlName="value" [class.single-line]="singleLine"
+                autosize rows="1" [maxRows]="singleLine ? 1 : 3" [placeholder]="valueLabel" [appAlphaOnly]="valueAllowedCharacters"></textarea>
+    </div>
+    <div class="col-sm-2 d-flex flex-nowrap justify-content-between align-items-start">
+      <button class="btn px-1 text-success" (click)="saveChanges()" [disabled]="editorForm.invalid">
+        <fa-icon [fixedWidth]="true" icon="check"></fa-icon>
+      </button>
+      <button class="btn px-1 text-danger" (click)="cancelChanges()">
+        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

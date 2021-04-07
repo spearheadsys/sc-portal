@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-sm navbar-dark">
+  <ul class="navbar-nav flex-column w-100" *ngIf="isAuthenticated">
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="home"></fa-icon>
+        {{ 'navbar.menu.dashboard' | translate }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./networking/networks']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="network-wired"></fa-icon>
+        {{ 'navbar.menu.networks' | translate }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./networking/firewall-rules']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="fire-alt"></fa-icon>
+        {{ 'navbar.menu.firewallRules' | translate }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./volumes']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="database"></fa-icon>
+        {{ 'navbar.menu.volumes' | translate }}
+      </a>
+    </li>
+    <li class="dropdown-divider"></li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./security']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="shield-alt"></fa-icon>
+        {{ 'navbar.menu.security' | translate }}
+      </a>
+    </li>
+    <!--<li class="dropdown-divider"></li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./file-manager']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="folder"></fa-icon>
+        {{ 'navbar.menu.fileManager' | translate }}
+      </a>
+    </li>-->
+    <li class="dropdown-divider"></li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./catalog/custom-images']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="layer-group"></fa-icon>
+        {{ 'navbar.menu.customImages' | translate }}
+      </a>
+    </li>
+    <!--<li class="nav-item">
+      <a class="nav-link" [routerLink]="['./catalog/docker-images']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" [icon]="['fab', 'docker']"></fa-icon>
+        {{ 'navbar.menu.dockerImages' | translate }}
+      </a>
+    </li>-->
+    <!--<li class="nav-item">
+      <a class="nav-link" [routerLink]="['./catalog/docker-registry']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" [icon]="['fab', 'docker']"></fa-icon>
+        {{ 'navbar.menu.dockerRegistry' | translate }}
+      </a>
+    </li>-->
+    <!--<li class="dropdown-divider"></li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./account']" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <fa-icon [fixedWidth]="true" icon="user-cog"></fa-icon>
+        {{ 'navbar.menu.account' | translate }}
+      </a>
+    </li>-->
+  </ul>
+</nav>

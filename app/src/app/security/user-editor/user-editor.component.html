@@ -1,0 +1,110 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4>User editor</h4>
+
+      <h5>Mandatory fields</h5>
+
+      <div class="row g-4" *ngIf="!changePassword">
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="username" formControlName="username" placeholder="Username"
+                   [appAutofocus]="true" [appAutofocusDelay]="600">
+            <label for="username">Username</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email address">
+            <label for="email">Email address</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-1" formGroupName="password" *ngIf="changePassword">
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password"
+                   [appAutofocus]="user && changePassword" [appAutofocusDelay]="600">
+            <label for="password">Password</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="password" class="form-control" id="passwordCheck" formControlName="passwordCheck" placeholder="Retype password">
+            <label for="passwordCheck">Retype password</label>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="mt-3" *ngIf="!changePassword">Optional fields</h5>
+
+      <div class="row g-4" *ngIf="!changePassword">
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="First name"
+                   appAlphaOnly="^[A-Za-z-. ]+$">
+            <label for="firstName">First name</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last name"
+                   appAlphaOnly="^[A-Za-z-. ]+$">
+            <label for="lastName">Last name</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="tel" class="form-control" id="phone" formControlName="phone" placeholder="Phone">
+            <label for="phone">Phone</label>
+          </div>
+        </div>
+
+        <div class="col-sm-9">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="address" formControlName="address" placeholder="Address">
+            <label for="address">Address</label>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="postalCode" formControlName="postalCode" placeholder="Postal code">
+            <label for="postalCode">Postal code</label>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="city" formControlName="city" placeholder="City">
+            <label for="city">City</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="state" formControlName="state" placeholder="State">
+            <label for="state">State</label>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="country" formControlName="country" placeholder="Country">
+            <label for="country">Country</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

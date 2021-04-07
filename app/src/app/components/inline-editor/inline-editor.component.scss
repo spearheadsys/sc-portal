@@ -1,0 +1,20 @@
+.single-line
+{
+  resize: none;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden !important;
+}
+
+.btn
+{
+  padding-top: .4em;
+}
+
+.form-control
+{
+  background: #0c1321;
+  border-color: #00e7ff;
+  border-radius: 3rem;
+  color: #ff9c07;
+}

@@ -1,0 +1,18 @@
+p
+{
+  color: #ff9c07;
+  font-size: 1.15rem;
+}
+
+.form-control
+{
+  + .form-control
+  {
+    margin-top: .5rem;
+  }
+}
+
+textarea
+{
+  border-radius: 2rem;
+}

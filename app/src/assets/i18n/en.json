@@ -1,0 +1,77 @@
+{
+  "navbar":
+  {
+    "menu":
+    {
+      "dashboard": "Dashboard",
+      "fileManager": "File Manager",
+      "volumes": "Volumes",
+      "customImages": "Custom Images",
+      "dockerImages": "Docker Images",
+      "dockerRegistry": "Docker Registry",
+      "networks": "Networks",
+      "virtualNetworks": "Virtual Networks",
+      "firewallRules": "Firewall rules",
+      "security": "Security",
+      "account": "Account"
+    }
+  },
+  "account":
+  {
+    "title": "Account",
+    "subTitle": "Configure your account's parameters"
+  },
+  "catalog":
+  {
+    "customImages":
+    {
+      "title": "Custom Images",
+      "subTitle": ""
+    },
+    "dockerImages":
+    {
+      "title": "Docker Images",
+      "subTitle": ""
+    },
+    "dockerRegistry":
+    {
+      "title": "Docker Registry",
+      "subTitle": ""
+    }
+  },
+  "fileManager":
+  {
+    "title": "File Manager",
+    "subTitle": "Manage your files"
+  },
+  "instances":
+  {
+    "title": "Dashboard",
+    "subTitle": ""
+  },
+  "networks":
+  {
+    "title": "Networks",
+    "subTitle": "Manage your VLANs and their networks"
+  },
+  "volumes":
+  {
+    "title": "Volumes",
+    "subTitle": ""
+  },
+  "virtualNetworks":
+  {
+    "title": "Virtual Networks",
+    "subTitle": "Manage your virtual networks"
+  },
+  "firewall":
+  {
+    "title": "Firewall",
+    "subTitle": "Configure your firewall rules"
+  },
+  "security":
+  {
+    "title": "Security",
+    "subTitle": "Manage your users, roles and security policies"
+  }
+}

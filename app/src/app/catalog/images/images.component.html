@@ -1,0 +1,20 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>OS</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let image of images">
+      <td>{{ image.name }}</td>
+      <td>{{ image.description }}</td>
+      <td>{{ image.os }}</td>
+      <td>
+        <button class="btn btn-sm btn-secondary" (click)="select.emit(image)">select</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

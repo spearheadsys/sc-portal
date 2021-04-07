@@ -1,0 +1,12 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4>Assign role to users</h4>
+
+    </div>
+  </fieldset>
+</form>

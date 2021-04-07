@@ -1,0 +1,56 @@
+<ul class="list-group list-group-flush">
+  <li class="mb-2 d-flex justify-content-between toolbar">
+    <div class="form-group search-box" [class.focus]="shouldSearch" tooltip="Click to search" container="body" placement="top" [adaptivePosition]="false">
+      <input type="search" class="form-control me-2" placeholder="Search by name..." [(ngModel)]="searchTerm"
+             (focus)="searchBoxFocused()" (blur)="searchBoxFocused(false)" />
+      <fa-icon icon="search" size="sm" [fixedWidth]="true" class="text-info"></fa-icon>
+    </div>
+
+    <div class="input-group input-group-pill ms-2">
+      <input type="text" class="form-control" placeholder="New snapshot name" [(ngModel)]="snapshotName" appAlphaOnly="^[A-Za-z0-9_-]+$">
+      <button class="btn btn-outline-info" type="button" [disabled]="!snapshotName" (click)="createSnapshot()"
+              tooltip="Create a new snapshot" container="body" placement="top" [adaptivePosition]="false">
+        <fa-icon icon="plus" size="sm" [fixedWidth]="true"></fa-icon>
+      </button>
+    </div>
+  </li>
+
+  <li *ngIf="loadingSnapshots" class="text-center">
+    <div class="spinner-border spinner-border-sm text-info text-faded" role="status">
+      <span class="visually-hidden">Loading snapshots...</span>
+    </div>
+  </li>
+
+  <li class="list-group-item text-uppercase ps-0 pe-0 justify-content-between align-items-center d-flex snapshots"
+      *ngFor="let snapshot of filteredSnapshots">
+    <div class="flex-grow-1 me-3">
+      <b>{{ snapshot.name }}</b>
+      <span class="mx-2" *ngIf="snapshot.updated || snapshot.created">{{ (snapshot.updated || snapshot.created) | timeago }}</span>
+      <ng-container *ngIf="snapshot.size">{{ snapshot.size * 1024 * 1024 | fileSize }}</ng-container>
+    </div>
+
+    <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body"
+         *ngIf="snapshot.state === 'created' && !snapshot.working">
+      <button class="btn btn-link text-success" tooltip="Start machine from this snapshot" container="body" placement="top" [adaptivePosition]="false"
+              (click)="restoreSnapshot(snapshot)">
+        <fa-icon icon="history" [fixedWidth]="true" size="sm"></fa-icon>
+      </button>
+
+      <button class="btn btn-link text-info" dropdownToggle
+              tooltip="More options" container="body" placement="top" [adaptivePosition]="false">
+        <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
+      </button>
+      <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+        <li role="menuitem">
+          <button class="dropdown-item" (click)="deleteSnapshot(snapshot)">
+            <fa-icon icon="trash" [fixedWidth]="true"></fa-icon>
+            Delete this snapshot
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <span class="badge bg-light text-dark me-1 float-end" *ngIf="snapshot.state !== 'created'">{{ snapshot.state }}</span>
+    <span class="badge bg-light text-dark me-1 float-end" *ngIf="snapshot.working">restoring</span>
+  </li>
+</ul>

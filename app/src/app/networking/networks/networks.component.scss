@@ -1,0 +1,45 @@
+.vlan-id
+{
+  color: #3d5e8e;
+}
+
+h4, .network-name
+{
+  text-transform: uppercase;
+  color: #8881ff;
+}
+
+.network-name
+{
+  color: #ff9c07;
+}
+
+accordion
+{
+  padding-bottom: 1rem;
+}
+
+.resolvers
+{
+  max-width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  .resolver
+  {
+    display: inline-block;
+
+    + .resolver
+    {
+      padding-left: .75rem;
+    }
+  }
+}
+
+.card .card-header
+{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

@@ -1,0 +1,21 @@
+.list-group-item
+{
+  background: none;
+  color: #3d5e8e;
+
+  span
+  {
+    color: #8881ff;
+  }
+
+  b, .strong
+  {
+    color: #ff9c07;
+    font-weight: normal;
+  }
+}
+
+.form-check-label
+{
+  font-size: 1rem;
+}

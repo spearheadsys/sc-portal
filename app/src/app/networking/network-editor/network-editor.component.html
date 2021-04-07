@@ -1,0 +1,118 @@
+<form novalidate *ngIf="editorForm">
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content">
+      <h4 class="mb-3">Network editor</h4>
+
+      <h5>All fields except "DNS resolvers" and "Routes" are mandatory</h5>
+
+      <div class="row g-4">
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[A-Za-z0-9_-]+$" class="form-control" id="name" formControlName="name" placeholder="Name" [appAutofocus]="true" [appAutofocusDelay]="600">
+            <label for="name">Name</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input type="text" maxlength="64" class="form-control" id="description" formControlName="description" placeholder="Description">
+            <label for="description">Description</label>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[0-9./]+$" class="form-control" id="subnet" formControlName="subnet" placeholder="Subnet CIDR format: #.#.#.#/##">
+            <label for="subnet">Subnet IP address</label>
+          </div>
+          <div class="small text-info text-faded text-truncate pt-1" tooltip="CIDR format: #.#.#.#/##" container="body" placement="top" [adaptivePosition]="false">
+            CIDR format: #.#.#.#/##
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[0-9.]+$" class="form-control" id="startIp" formControlName="startIp" placeholder="Start IP address">
+            <label for="startIp">Start IP address</label>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[0-9.]+$" class="form-control" id="endIp" formControlName="endIp" placeholder="End IP address">
+            <label for="endIp">End IP address</label>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="text" appAlphaOnly="^[0-9.]+$" class="form-control" id="gateway" formControlName="gateway" placeholder="Gateway IP address">
+            <label for="gateway">Gateway IP address</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h5>DNS resolvers</h5>
+          <div class="row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('resolvers')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ control.value.resolver }}</span>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeResolver(index)"
+                            tooltip="Remove this DNS resolver" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-inline-editor buttonTitle="Add a new resolver" [singleLine]="true" [showValue]="false"
+                                 keyLabel="Resolver IP address" [keyPattern]="ipRegex" keyAllowedCharacters="^[0-9./]+$"
+                                 (saved)="addResolver($event)" [disabled]="!canAddResolver">
+              </app-inline-editor>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h5>Routes</h5>
+          <div class="form-row">
+            <div class="col-sm">
+              <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                <div class="list-group-item" *ngFor="let control of editorForm.get('routes')['controls']; let index = index">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ control.value.key }}</span>
+                    <fa-icon icon="arrow-right" size="sm" class="mx-2"></fa-icon>
+                    <span class="text-truncate flex-grow-1">{{ control.value.value }}</span>
+
+                    <button class="btn btn-sm text-danger p-0" (click)="removeRoute(index)"
+                            tooltip="Remove this route" placement="top" container="body" [adaptivePosition]="false">
+                      <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <app-inline-editor buttonTitle="Add route" [singleLine]="true"
+                                 keyLabel="IP/Subnet" [keyPattern]="ipOrSubnetRegex" keyAllowedCharacters="^[0-9./]+$"
+                                 valueLabel="Gateway" [valuePattern]="ipRegex" valueAllowedCharacters="^[0-9.]+$"
+                                 (saved)="addRoute($event)" [disabled]="!canAddRoute">
+              </app-inline-editor>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-2" *ngIf="!network">
+          <span class="form-check">
+            <input class="form-check-input" type="checkbox" id="nat" formControlName="nat">
+            <label class="form-check-label" for="nat">Provision a NAT zone on the gateway address</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-5">
+        <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

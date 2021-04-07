@@ -1,0 +1,55 @@
+<div *ngIf="userInfo" class="pt-3">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4>My profile</h4>
+
+          <button class="btn btn-sm btn-outline-info" (click)="showEditor()">Update profile</button>
+        </div>
+
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Name: <b>{{ userInfo.firstName }} {{ userInfo.lastName }}</b>
+            </li>
+            <li class="list-group-item">
+              Username: <b>{{ userInfo.login }}</b>
+            </li>
+            <li class="list-group-item">
+              Email: <b>{{ userInfo.email }}</b>
+            </li>
+            <li class="list-group-item">
+              Phone: <b>{{ userInfo.phone }}</b>
+            </li>
+            <li class="list-group-item">
+              Container Name Service:
+              <span class="badge border ms-1 text-uppercase"
+                    [ngClass]="userInfo.triton_cns_enabled ? 'border-success text-success' : 'danger-success text-danger'">
+                {{ userInfo.triton_cns_enabled ? 'enabled' : 'disabled' }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4>My SSH keys</h4>
+
+          <button class="btn btn-sm btn-outline-info" (click)="addSshKey()">Add SSH key</button>
+        </div>
+
+        <div class="card-body">
+          <ol class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let userKey of userKeys">
+              {{ userKey.name }}: <b class="text-uppercase">{{ userKey.fingerprint }}</b>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+.list-group-item
+{
+  background: none;
+
+  span
+  {
+    display: inline-block;
+    position: relative;
+
+    &:after
+    {
+      content: '.';
+      color: #3d5e8e;
+    }
+  }
+
+  b, .strong
+  {
+    color: #ff9c07;
+    font-weight: bold;
+  }
+
+  .highlight
+  {
+    color: rgba(#ff9c07, .75);
+  }
+}

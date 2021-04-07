@@ -1,0 +1,27 @@
+{
+  "security":
+  {
+    "users": "Users",
+    "roles": "Roles",
+    "policies": "Policies",
+    "addUser": "Add a new user",
+    "deleteUser": "Delete this user",
+    "editUser": "Update user info",
+    "changePassword": "Change password",
+    "addRole": "Add a new role",
+    "editRole": "Rename this role",
+    "deleteRole": "Delete this role",
+    "addPolicy": "Create a security policy",
+    "editPolicy": "Modify this policy",
+    "deletePolicy": "Delete this policy",
+    "toggleRoles": "Toggle user roles visibility",
+    "togglePolicies": "Toggle role policies visibility",
+    "dragRole": "Drag this role over a user to assign it",
+    "assignRoleToUsers": "Assign this role to multiple users",
+    "assignPolicyToRoles": "Assign this role to multiple roles",
+    "dragPolicy": "Drag this policy over a role to assign it",
+    "removeUserRole": "Remove this role from user",
+    "removeRolePolicy": "Remove this policy from role",
+    "dropHere": "Drop here..."
+  }
+}

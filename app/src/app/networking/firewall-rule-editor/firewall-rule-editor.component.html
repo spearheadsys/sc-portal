@@ -1,0 +1,44 @@
+<button class="btn btn-link text-info" (click)="showEditor()" [collapse]="editorVisible" [disabled]="disabled">
+  Add rule
+</button>
+
+<div [collapse]="!editorVisible">
+  <div class="row gx-1 my-1 align-items-center" [formGroup]="editorForm">
+    <div class="col">
+      <select class="form-select" formControlName="type" [appAutofocus]="editorVisible">
+        <option value="any">Anything</option>
+        <option value="subnet">Subnet</option>
+        <option value="ip">IP address</option>
+        <option value="all">All VMs</option>
+        <option value="tag">Tag</option>
+        <option value="vm">Machine</option>
+      </select>
+    </div>
+
+    <ng-container formGroupName="ruleSettings">
+      <div class="col-sm" *ngIf="editorForm.get('type').value === 'subnet' || editorForm.get('type').value === 'ip' || editorForm.get('type').value === 'tag'">
+        <input type="text" class="form-control" formControlName="key" [appAutofocus]="editorForm.get('type').value" [appAutofocusDelay]="250"
+               [appAlphaOnly]="keyRegex" [placeholder]="keyPlaceholder" />
+      </div>
+
+      <div class="col-sm" *ngIf="editorForm.get('type').value === 'tag'">
+        <input type="text" class="form-control" formControlName="value" placeholder="Value" />
+      </div>
+
+      <div class="col-sm" *ngIf="editorForm.get('type').value === 'vm'">
+        <select class="form-select" formControlName="key" [appAutofocus]="editorForm.get('type').value" [appAutofocusDelay]="250">
+          <option *ngFor="let instance of instances" [value]="instance.id">{{ instance.name }}</option>
+        </select>
+      </div>
+    </ng-container>
+
+    <div class="col-sm-2 d-flex flex-nowrap justify-content-between align-items-start">
+      <button class="btn px-1 text-success" (click)="saveChanges()" [disabled]="editorForm.invalid">
+        <fa-icon [fixedWidth]="true" icon="check"></fa-icon>
+      </button>
+      <button class="btn px-1 text-danger" (click)="cancelChanges($event)">
+        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

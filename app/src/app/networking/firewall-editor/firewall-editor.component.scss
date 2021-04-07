@@ -1,0 +1,40 @@
+h5
+{
+  color: #ff9c07;
+}
+
+.select-list
+{
+  .form-check .form-check-label
+  {
+    padding: .25rem .5rem .25rem .25rem;
+    text-transform: uppercase;
+    font-family: "Bebas Neue", sans-serif;
+
+    small
+    {
+      font-size: .7rem;
+    }
+  }
+
+  .list-group-item
+  {
+    border: none;
+    background: transparent;
+    color: #8881ff;
+    padding: .5rem .5rem .5rem .75rem;
+  }
+
+  .rule
+  {
+    color: #ff9c07;
+    text-transform: uppercase;
+
+    b
+    {
+      margin-left: .5rem;
+      color: #8881ff;
+      text-transform: none;
+    }
+  }
+}

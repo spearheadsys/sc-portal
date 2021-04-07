@@ -1,0 +1,48 @@
+<form novalidate>
+  <fieldset>
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="content d-flex flex-column">
+      <h4 class="mb-3">Machine history</h4>
+
+      <div class="text-center">
+        <div class="spinner-border text-info text-faded" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div class="table-responsive flex-grow-1">
+        <table class="table table-hover" *ngIf="!loading">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Time</th>
+              <th>Finished</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let info of history">
+              <td>
+                <b>{{ info.action }}</b>
+              </td>
+              <td>{{ info.time | timeago }}</td>
+              <td>
+                <span class="badge border text-uppercase" [ngClass]="info.success === 'yes' ? 'text-success border-success' : 'text-danger border-danger'">
+                  {{ info.success }}
+                </span>
+              </td>
+              <td>
+                <fa-icon icon="user" [fixedWidth]="true" size="sm"
+                         [tooltip]="info.caller.keyId" placement="top" container="body" [adaptivePosition]="false">
+                </fa-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </fieldset>
+</form>
