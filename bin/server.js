@@ -6,6 +6,7 @@ const mod_cueball = require('cueball');
 const mod_crypto = require('crypto');
 const mod_fs = require('fs');
 const mod_sdcauth = require('smartdc-auth');
+const mod_bunyan = require('bunyan');
 
 
 // Globals that are assigned to by main(). They are used by proxy() and login().
@@ -25,8 +26,6 @@ const STATIC_RE = new RegExp('^/');
 // from cloudapi to our client caller. Effectively this function is a proxy
 // that solely signs the request as it passes through.
 function proxy(req, res, cb) {
-    console.log('### proxy', req.url)
-
     // return data from cloudapi to the client caller
     function proxyReturn(err, _, res2, data) {
         if (err && !res2) {
@@ -71,8 +70,6 @@ function proxy(req, res, cb) {
             headers: headers
         };
 
-console.dir(opts);
-
         // make the call to cloudapi
         switch (req.method) {
             case 'GET':    CLOUDAPI.get(opts,  proxyReturn); break;
@@ -89,8 +86,6 @@ console.dir(opts);
 // secure token. Once the user successfully logs in, the token is returned
 // through an SSO redirect to token() below.
 function login(req, res, cb) {
-    console.log('### login');
-
     const query = {
         permissions: '{"cloudapi":["/my/*"]}',
         returnto: CONFIG.urls.local,
@@ -159,8 +154,14 @@ function main() {
     };
 
     const server = mod_restify.createServer(options);
+    server.use(mod_restify.requestLogger());
     server.use(mod_restify.authorizationParser());
     server.use(mod_restify.bodyReader());
+
+    // log requests
+    server.on('after', mod_restify.auditLogger({
+        log: mod_bunyan.createLogger({ name: 'proxy' })
+    }));
 
     // login path is /api/login
     server.get(LOGIN_PATH,  login);

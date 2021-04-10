@@ -23,6 +23,12 @@ The SSH key used must be the correct format, e.g. generated with:
 
     node bin/server.js config/prod.json
 
+The server generates a lot of JSON data about every request. This is easier
+for a human to handle if they have bunyan installed ("npm install -g bunyan"),
+and instead:
+
+    node bin/server.js config/prod.json | bunyan
+
 # Endpoints
 
 ## GET /*
