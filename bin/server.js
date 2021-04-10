@@ -21,6 +21,8 @@ let SIGNER = {};
 // from cloudapi to our client caller. Effectively this function is a proxy
 // that solely signs the request as it passes through.
 function proxy(req, res, cb) {
+    console.log('### proxy', req.url)
+
     // return data from cloudapi to the client caller
     function proxyReturn(err, _, res2, data) {
         if (err && !res2) {
@@ -78,9 +80,11 @@ function proxy(req, res, cb) {
 // secure token. Once the user successfully logs in, the token is returned
 // through an SSO redirect to token() below.
 function login(req, res, cb) {
+    console.log('### login');
+
     const query = {
         permissions: '{"cloudapi":["/my/*"]}',
-        returnto: CONFIG.urls.local + '/token',
+        returnto: CONFIG.urls.local,
         now: new Date().toUTCString(),
         keyid: '/' + CONFIG.key.user + '/keys/' + CONFIG.key.id,
         nonce:  mod_crypto.randomBytes(15).toString('base64')
@@ -98,19 +102,7 @@ function login(req, res, cb) {
     const signature = signer.sign(PRIVATE_KEY, 'base64');
     url += '&sig=' + encodeURIComponent(signature);
 
-    res.redirect(url, cb);
-}
-
-
-// Once a user successfully logs in, they are redirected to here. We convert
-// the token that was returned to use as query arg into an X-Auth-Token header
-// that is returned to the client caller. This header must be provided by the
-// client from now on in order to communicate with Cloudapi.
-function token(req, res, cb) {
-    const token = decodeURIComponent(req.query().split('=')[1]);
-    res.header('X-Auth-Token', token);
-    res.send(204);
-    return cb();
+    res.json({ url });
 }
 
 
@@ -169,7 +161,6 @@ function main() {
  
     // route HTTP requests to proper functions
     server.get('/login',  login);
-    server.get('/token',  token);
 
     server.get(/^/,  proxy);
     server.put(/^/,  proxy);
