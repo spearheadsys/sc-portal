@@ -15,6 +15,10 @@ let CLOUDAPI = {};
 let CLOUDAPI_HOST = '';
 let SIGNER = {};
 
+const LOGIN_PATH = '/api/login';
+const API_PATH = '/api'; // all calls here go to cloudapi
+const API_RE = new RegExp('^' + API_PATH + '/');
+const STATIC_RE = new RegExp('^/');
 
 // Take any HTTP request that has a token, sign that request  with an
 // HTTP-Signature header, and pass it along to cloudapi. Return any response
@@ -40,16 +44,19 @@ function proxy(req, res, cb) {
 
     // check the X-Auth-Token is present
     if (req.header('X-Auth-Token') == undefined) {
-        res.send({"Error": "X-Auth-Token header missing"});
+        res.send({'Error': 'X-Auth-Token header missing'});
         res.send(401);
         return cb();
     }
+
+    // strip off /api from path before forwarding to cloudapi
+    let url = req.url.substr(API_PATH.length);
 
     // sign the request before forwarding to cloudapi
     let headers = req.headers;
     var rs = mod_sdcauth.requestSigner({ sign: SIGNER });
     headers.date = rs.writeDateHeader();
-    rs.writeTarget(req.method, req.url);
+    rs.writeTarget(req.method, url);
 
     rs.sign(function signedCb(err, authz) {
         if (err) {
@@ -60,9 +67,11 @@ function proxy(req, res, cb) {
         headers.authorization = authz;
 
         const opts = {
-            path: req.url,
+            path: url,
             headers: headers
         };
+
+console.dir(opts);
 
         // make the call to cloudapi
         switch (req.method) {
@@ -153,20 +162,21 @@ function main() {
     server.use(mod_restify.authorizationParser());
     server.use(mod_restify.bodyReader());
 
-    // where to server static content from
-    server.get(/^\/static.*/, mod_restify.plugins.serveStatic({
+    // login path is /api/login
+    server.get(LOGIN_PATH,  login);
+
+    // all cloudapi calls are proxied through /api
+    server.get(API_RE,  proxy);
+    server.put(API_RE,  proxy);
+    server.del(API_RE,  proxy);
+    server.post(API_RE, proxy);
+    server.head(API_RE, proxy);
+
+    // where to serve static content from
+    server.get(STATIC_RE, mod_restify.plugins.serveStatic({
         directory: 'static',
         default: 'index.html'
     }));
- 
-    // route HTTP requests to proper functions
-    server.get('/login',  login);
-
-    server.get(/^/,  proxy);
-    server.put(/^/,  proxy);
-    server.del(/^/,  proxy);
-    server.post(/^/, proxy);
-    server.head(/^/, proxy);
 
     // enable HTTP server
     server.listen(CONFIG.server.port, function listening() {

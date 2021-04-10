@@ -25,46 +25,39 @@ The SSH key used must be the correct format, e.g. generated with:
 
 # Endpoints
 
-## GET /static/*
+## GET /*
 
 This is where all the front-end code goes. All files will be served as-is as
-found in that directory. The default is static/index.html. There is no
-authentication; all files are public.
+found in that directory (by default a symlink to app/dist). The default is
+static/index.html. There is no authentication; all files are public.
 
-## GET /login
+## GET /api/login
 
 Call this endpoint to begin the login cycle. It will redirect you to the SSO
 login page: an HTTP 302, with a Location header.
 
-## GET /token
+## GET/POST/PUT/DELETE/HEAD /api/*
 
-Upon successful login, the SSO login page will redirect to this endpoint. This
-endpoint will return a 204, along with a X-Auth-Token header that must be saved
-by the front-end code. All subsequent calls should provide this X-Auth-Token
-header.
-
-## Other
-
-All other calls will be passed through to cloudapi. For these calls to succeed,
-they MUST provide the X-Auth-Token header that the /token endpoint returns.
+All calls will be passed through to cloudapi. For these calls to succeed,
+they MUST provide an X-Auth-Token header, containing the token returned from
+SSO.
 
 # Interaction cycle
 
-client --- GET /login --------> this server
+client --- GET /api/login --------> this server
        <-- 302 Location #1 ----
 
 client --- GET <Location #1> --> SSO server
        <separate SSO cycle>
-       <-- 302 Location #2 ----
-
-client --- GET <Location #2> --> this server
-       <-- 204 X-Auth-Token ----
+       <-- 302 with token query arg
 
 From now on call this server as if it were a cloudapi server (using [cloudapi
 paths](https://github.com/joyent/sdc-cloudapi/blob/master/docs/index.md#api-introduction)),
-always providing the X-Auth-Token. For example, to retrieve a list of packages:
+except prefixing any path with "/api". Also always provide the X-Auth-Token.
 
-client --- GET /my/packages --> this server
+For example, to retrieve a list of packages:
+
+client --- GET /api/my/packages --> this server
        <-- 200 JSON body ------
 
 The most useful cloudapi endpoints to begin with will be ListPackages,
