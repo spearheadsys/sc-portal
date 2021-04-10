@@ -110,6 +110,20 @@ function login(req, res, cb) {
 }
 
 
+// Logging function useful to silence bunyan-based logging systems
+function silentLogger() {
+    let stub = function () {};
+
+    return {
+        child: silentLogger,
+        warn:  stub,
+        trace: stub,
+        info:  stub,
+        debug: stub
+    }
+}
+
+
 // Start up HTTP server and pool of cloudapi clients.
 //
 // Read from config file, establish crypto singer needed for requests to
@@ -132,8 +146,11 @@ function main() {
     CLOUDAPI = mod_restify.createStringClient({
         url: CONFIG.urls.cloudapi,
         agent: new mod_cueball.HttpsAgent({
-            spares: 0,
-            maximum: 4,
+            log: silentLogger(), // temporary
+            spares: 2,
+            maximum: 5,
+            ping: '/',
+            pingInterval: 5000, // in ms
             recovery: {
                 default: {
                     timeout: 2000,
