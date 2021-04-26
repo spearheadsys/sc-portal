@@ -6,6 +6,7 @@ const mod_cueball = require('cueball');
 const mod_crypto = require('crypto');
 const mod_fs = require('fs');
 const mod_sdcauth = require('smartdc-auth');
+const mod_bunyan = require('bunyan');
 
 
 // Globals that are assigned to by main(). They are used by proxy() and login().
@@ -15,6 +16,10 @@ let CLOUDAPI = {};
 let CLOUDAPI_HOST = '';
 let SIGNER = {};
 
+const LOGIN_PATH = '/api/login';
+const API_PATH = '/api'; // all calls here go to cloudapi
+const API_RE = new RegExp('^' + API_PATH + '/');
+const STATIC_RE = new RegExp('^/');
 
 // Take any HTTP request that has a token, sign that request  with an
 // HTTP-Signature header, and pass it along to cloudapi. Return any response
@@ -38,16 +43,19 @@ function proxy(req, res, cb) {
 
     // check the X-Auth-Token is present
     if (req.header('X-Auth-Token') == undefined) {
-        res.send({"Error": "X-Auth-Token header missing"});
+        res.send({'Error': 'X-Auth-Token header missing'});
         res.send(401);
         return cb();
     }
+
+    // strip off /api from path before forwarding to cloudapi
+    let url = req.url.substr(API_PATH.length);
 
     // sign the request before forwarding to cloudapi
     let headers = req.headers;
     var rs = mod_sdcauth.requestSigner({ sign: SIGNER });
     headers.date = rs.writeDateHeader();
-    rs.writeTarget(req.method, req.url);
+    rs.writeTarget(req.method, url);
 
     rs.sign(function signedCb(err, authz) {
         if (err) {
@@ -58,7 +66,7 @@ function proxy(req, res, cb) {
         headers.authorization = authz;
 
         const opts = {
-            path: req.url,
+            path: url,
             headers: headers
         };
 
@@ -80,7 +88,7 @@ function proxy(req, res, cb) {
 function login(req, res, cb) {
     const query = {
         permissions: '{"cloudapi":["/my/*"]}',
-        returnto: CONFIG.urls.local + '/token',
+        returnto: CONFIG.urls.local,
         now: new Date().toUTCString(),
         keyid: '/' + CONFIG.key.user + '/keys/' + CONFIG.key.id,
         nonce:  mod_crypto.randomBytes(15).toString('base64')
@@ -98,19 +106,21 @@ function login(req, res, cb) {
     const signature = signer.sign(PRIVATE_KEY, 'base64');
     url += '&sig=' + encodeURIComponent(signature);
 
-    res.redirect(url, cb);
+    res.json({ url });
 }
 
 
-// Once a user successfully logs in, they are redirected to here. We convert
-// the token that was returned to use as query arg into an X-Auth-Token header
-// that is returned to the client caller. This header must be provided by the
-// client from now on in order to communicate with Cloudapi.
-function token(req, res, cb) {
-    const token = decodeURIComponent(req.query().split('=')[1]);
-    res.header('X-Auth-Token', token);
-    res.send(204);
-    return cb();
+// Logging function useful to silence bunyan-based logging systems
+function silentLogger() {
+    let stub = function () {};
+
+    return {
+        child: silentLogger,
+        warn:  stub,
+        trace: stub,
+        info:  stub,
+        debug: stub
+    }
 }
 
 
@@ -136,8 +146,11 @@ function main() {
     CLOUDAPI = mod_restify.createStringClient({
         url: CONFIG.urls.cloudapi,
         agent: new mod_cueball.HttpsAgent({
-            spares: 0,
-            maximum: 4,
+            log: silentLogger(), // temporary
+            spares: 2,
+            maximum: 5,
+            ping: '/',
+            pingInterval: 5000, // in ms
             recovery: {
                 default: {
                     timeout: 2000,
@@ -158,24 +171,30 @@ function main() {
     };
 
     const server = mod_restify.createServer(options);
+    server.use(mod_restify.requestLogger());
     server.use(mod_restify.authorizationParser());
     server.use(mod_restify.bodyReader());
 
-    // where to server static content from
-    server.get(/^\/static.*/, mod_restify.plugins.serveStatic({
+    // log requests
+    server.on('after', mod_restify.auditLogger({
+        log: mod_bunyan.createLogger({ name: 'proxy' })
+    }));
+
+    // login path is /api/login
+    server.get(LOGIN_PATH,  login);
+
+    // all cloudapi calls are proxied through /api
+    server.get(API_RE,  proxy);
+    server.put(API_RE,  proxy);
+    server.del(API_RE,  proxy);
+    server.post(API_RE, proxy);
+    server.head(API_RE, proxy);
+
+    // where to serve static content from
+    server.get(STATIC_RE, mod_restify.plugins.serveStatic({
         directory: 'static',
         default: 'index.html'
     }));
- 
-    // route HTTP requests to proper functions
-    server.get('/login',  login);
-    server.get('/token',  token);
-
-    server.get(/^/,  proxy);
-    server.put(/^/,  proxy);
-    server.del(/^/,  proxy);
-    server.post(/^/, proxy);
-    server.head(/^/, proxy);
 
     // enable HTTP server
     server.listen(CONFIG.server.port, function listening() {
