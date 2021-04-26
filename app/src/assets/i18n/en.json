@@ -6,9 +6,7 @@
       "dashboard": "Dashboard",
       "fileManager": "File Manager",
       "volumes": "Volumes",
-      "customImages": "Custom Images",
-      "dockerImages": "Docker Images",
-      "dockerRegistry": "Docker Registry",
+      "images": "Images",
       "networks": "Networks",
       "virtualNetworks": "Virtual Networks",
       "firewallRules": "Firewall rules",
@@ -23,19 +21,9 @@
   },
   "catalog":
   {
-    "customImages":
+    "images":
     {
-      "title": "Custom Images",
-      "subTitle": ""
-    },
-    "dockerImages":
-    {
-      "title": "Docker Images",
-      "subTitle": ""
-    },
-    "dockerRegistry":
-    {
-      "title": "Docker Registry",
+      "title": "Images",
       "subTitle": ""
     }
   },

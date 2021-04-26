@@ -24,7 +24,10 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
   loadNetworks: boolean;
 
   @Output()
-  beforeLoad = new EventEmitter();
+  processing = new EventEmitter();
+
+  @Output()
+  finishedProcessing = new EventEmitter();
 
   @Output()
   load = new EventEmitter();
@@ -62,14 +65,16 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
         }
       }, err =>
       {
-          const errorDetails = err.error?.message ? `(${err.error.message})` : '';
-          this.toastr.error(`Failed to load the list of available networks for machine "${this.instance.name}" ${errorDetails}`);
+        const errorDetails = err.error?.message ? `(${err.error.message})` : '';
+        this.toastr.error(`Failed to load the list of available networks for machine "${this.instance.name}" ${errorDetails}`);
       });
   }
 
   // ----------------------------------------------------------------------------------------------------------------
   private getNetworks()
   {
+    if (this.finishedLoading) return;
+
     this.loading = true;
 
     const observables = this.nics.map(x => this.networkingService.getNetwork(x.network));
@@ -83,8 +88,9 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
           nic.networkName = nic.networkDetails ? nic.networkDetails.name : '';
         }
 
-        this.finishedLoading = true;
         this.loading = false;
+        this.finishedLoading = true;
+        this.load.emit(this.nics);
       },
         err =>
         {
@@ -113,7 +119,7 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
       first(),
       tap(() =>
       {
-        this.beforeLoad.emit();
+        this.processing.emit();
 
         this.toastr.info(`Connecting machine "${this.instance.name}" to the "${network.name}" network...`);
       }),
@@ -160,8 +166,10 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
           nic.networkName = nic.networkDetails?.name || '';
         }
 
+        this.load.emit(this.nics);
+
         this.toastr.info(`The machine "${this.instance.name}" has been connected to the "${network.name}" network`);
-        this.load.emit();
+        this.finishedProcessing.emit();
       },
         err =>
         {
@@ -171,7 +179,7 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
 
           const errorDetails = err.error?.message ? `(${err.error.message})` : '';
           this.toastr.error(`Failed to connect machine "${this.instance.name}" to the "${network.name}" network ${errorDetails}`);
-          this.load.emit();
+          this.finishedProcessing.emit();
         });
   }
 
@@ -196,7 +204,7 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
       first(),
       tap(() =>
       {
-        this.beforeLoad.emit();
+        this.processing.emit();
 
         this.toastr.info(`Removing network interface "${nic.mac.toUpperCase()}" from machine "${this.instance.name}"...`);
       }),
@@ -238,13 +246,15 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
           found.primary = networkInterface.primary;
       }
 
-      this.load.emit();
+      this.finishedProcessing.emit();
+
+      this.load.emit(this.nics);
 
       this.toastr.info(`The network interface has been removed from machine "${this.instance.name}"`);
     }, err =>
     {
       this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
-      this.load.emit();
+      this.finishedProcessing.emit();
     });
   }
 
@@ -277,9 +287,12 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
   {
     this.nics = this.instance?.nics || [];
 
+    if (this.instance.networksLoaded)
+      this.finishedLoading = true;
+
     this.onChanges$.pipe(takeUntil(this.destroy$)).subscribe(() =>
     {
-      if (!this.finishedLoading && this.loadNetworks && this.instance)
+      if (!this.finishedLoading && this.loadNetworks && !this.instance?.networksLoaded)
         this.getNetworks();
     });
   }

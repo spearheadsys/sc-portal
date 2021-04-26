@@ -1,6 +1,13 @@
 {
   "networking":
   {
-
+    "networks":
+    {
+      "title": "Networks"
+    },
+    "firewall":
+    {
+      "title": "Firewall rules"
+    }
   }
 }

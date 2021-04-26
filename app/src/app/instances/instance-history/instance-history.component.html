@@ -20,7 +20,7 @@
               <th>Action</th>
               <th>Time</th>
               <th>Finished</th>
-              <th></th>
+              <th>User</th>
             </tr>
           </thead>
           <tbody>
@@ -35,9 +35,7 @@
                 </span>
               </td>
               <td>
-                <fa-icon icon="user" [fixedWidth]="true" size="sm"
-                         [tooltip]="info.caller.keyId" placement="top" container="body" [adaptivePosition]="false">
-                </fa-icon>
+                <div class="text-truncate">{{ info.caller.keyId }}</div>
               </td>
             </tr>
           </tbody>

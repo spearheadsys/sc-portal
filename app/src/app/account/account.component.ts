@@ -9,6 +9,8 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { AccountEditorComponent } from './account-editor/account-editor.component';
 import { ToastrService } from 'ngx-toastr';
 import { SshKeyEditorComponent } from './ssh-key-editor/ssh-key-editor.component';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account',
@@ -26,8 +28,12 @@ export class AccountComponent implements OnInit, OnDestroy
   constructor(private readonly accountService: AccountService,
     private readonly authService: AuthService,
     private readonly modalService: BsModalService,
-    private readonly toastr: ToastrService)
+    private readonly toastr: ToastrService,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('account.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+
     //accountService.getUsers().subscribe(x => console.log(x));
 
     accountService.getUserLimits().subscribe(x => console.log(x));
@@ -64,17 +70,6 @@ export class AccountComponent implements OnInit, OnDestroy
     };
 
     const modalRef = this.modalService.show(SshKeyEditorComponent, modalConfig);
-
-
-    modalRef.content.save.pipe(first()).subscribe(x => this.userKeys = [...this.userKeys, x]);
-    //  this.accountService.addKey('test',
-    //    'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAzf7Cbu8tPvxgwG3MhXK959F7TtsSCQQXb3jSPAJtQT+CltA+OYLod/ojclfQfnutIHUpqq6PsCD/nhxiF2JYkKWve7olJV6akvXQOGNLqRdXTcEouUhevLAQV3sB+YNvjr5FRpspNK8prAn7UU4vyZhCKBT8VAgwkio3u8eR/26XDNow1C9NXC6P+2BYWjjKbJCI41XpLFIzsmHBw+XZox+IbVg8mcVsWfdhEHRDyxM1HgvOKU9vkCwigmww9nsIatSQuM0jCtohQRkddc2DlfKieBmpeC/VqNoWE77iei/nVOcgIaLjwwevdCGHhwtSBmkE+W14JCwFbzl0yThL2w== rsa-key-20210314',
-    //    'ba:04:55:94:64:24:75:a4:b2:60:e5:bf:77:19:df:34')
-    //    .subscribe(response => this.userKeys = [...this.userKeys, response],
-    //      err =>
-    //      {
-    //        this.toastr.error(err.error.message)
-    //      });
   }
 
   // ----------------------------------------------------------------------------------------------------------------

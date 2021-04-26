@@ -11,6 +11,8 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
 import { InstancesService } from '../../instances/helpers/instances.service';
 import { FirewallService } from '../helpers/firewall.service';
 import { sortArray } from '../../helpers/utils.service';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-firewall-rules',
@@ -33,8 +35,12 @@ export class FirewallRulesComponent implements OnInit, OnDestroy
     private readonly instancesService: InstancesService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
-    private readonly fb: FormBuilder)
+    private readonly fb: FormBuilder,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('networking.firewall.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+
     // Configure FuseJs
     this.fuseJsOptions = {
       includeScore: false,

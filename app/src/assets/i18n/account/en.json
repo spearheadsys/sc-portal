@@ -1,5 +1,10 @@
 {
   "account":
   {
+    "title": "Account",
+    "myProfile": "My profile",
+    "updateProfile": "Update profile",
+    "myKeys": "My keys",
+    "addKey": "Add key"
   }
 }

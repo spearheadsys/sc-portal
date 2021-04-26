@@ -1,236 +1,247 @@
-<div class="overflow-auto h-100">
-  <div class="container h-100 py-3">
-    <div class="row h-100" id="securitySettings">
-      <div class="col-sm py-2">
-        <fieldset>
-          <legend>
-            <span>
-              <fa-icon [fixedWidth]="true" icon="key" size="sm"></fa-icon>
-              {{ 'security.policies' | translate }}
-            </span>
+<div class="d-flex flex-column h-100">
+  <div class="overflow-auto flex-grow-1 d-flex">
+    <div class="container flex-grow-1 d-flex mb-3">
+      <div class="row flex-grow-1">
+        <div class="col-sm py-2">
+          <fieldset>
+            <legend>
+              <span>
+                <fa-icon [fixedWidth]="true" icon="key" size="sm"></fa-icon>
+                {{ 'security.policies' | translate }}
+              </span>
 
-            <button class="btn btn-outline-info" container="body" (click)="showPolicyEditor()">
-              {{ 'security.addPolicy' | translate }}
-            </button>
-          </legend>
+              <button class="btn btn-outline-info" container="body" (click)="showPolicyEditor()">
+                <span class="d-none d-lg-inline-block">{{ 'security.addPolicy' | translate }}</span>
+                <fa-icon icon="plus" class="d-lg-none d-inline-block" tooltip="{{ 'security.addPolicy' | translate }}"
+                  container="body" placement="top" [adaptivePosition]="false">
+                </fa-icon>
+              </button>
+            </legend>
 
-          <p class="px-3">Policies are just access rules grouped together</p>
+            <p class="px-3">Policies are just access rules grouped together</p>
 
-          <ul class="list-group list-group-flush p-0" id="policies"
-              cdkDropList [cdkDropListData]="policies" [cdkDropListConnectedTo]="roleDropLists"
-              cdkDropListSortingDisabled sortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate">
-            <li class="list-group-item pr-1" *ngFor="let policy of policies"
-                cdkDrag [cdkDragData]="policy" cdkDragBoundary="#securitySettings">
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="grip" cdkDragHandle>
-                  <fa-icon [fixedWidth]="true" icon="arrows-alt" size="sm"></fa-icon>
-                  {{ policy.name }}
-                </span>
+            <ul class="list-group list-group-flush p-0" id="policies" cdkDropList [cdkDropListData]="policies"
+              [cdkDropListConnectedTo]="roleDropLists" cdkDropListSortingDisabled sortingDisabled
+              [cdkDropListEnterPredicate]="noReturnPredicate">
+              <li class="list-group-item pr-1" *ngFor="let policy of policies" cdkDrag [cdkDragData]="policy"
+                cdkDragBoundary="#securitySettings">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="grip" cdkDragHandle>
+                    <fa-icon [fixedWidth]="true" icon="arrows-alt" size="sm"></fa-icon>
+                    {{ policy.name }}
+                  </span>
 
-                <div class="btn-group btn-group-sm float-end" dropdown>
-                  <!--<button class="btn text-info" tooltip="{{ 'security.assignPolicyToRoles' | translate }}" container="body" (click)="assignPolicyToRoles(policy)">
+                  <div class="btn-group btn-group-sm float-end" dropdown>
+                    <!--<button class="btn text-info" tooltip="{{ 'security.assignPolicyToRoles' | translate }}" container="body" (click)="assignPolicyToRoles(policy)">
                   <fa-icon [fixedWidth]="true" icon="tags" size="sm"></fa-icon>
                 </button>-->
-                  <button class="btn text-info" dropdownToggle>
-                    <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="showPolicyEditor(policy)">
-                        <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
-                        {{ 'security.editPolicy' | translate }}
-                      </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="deletePolicy(policy)">
-                        <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
-                        {{ 'security.deletePolicy' | translate }}
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div *cdkDragPreview>
-                <fa-icon [fixedWidth]="true" icon="key"></fa-icon>
-                {{ policy.name }}
-              </div>
-
-              <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
-      <div class="col-sm py-2">
-        <fieldset>
-          <legend>
-            <span>
-              <fa-icon [fixedWidth]="true" icon="tag" size="sm"></fa-icon>
-              {{ 'security.roles' | translate }}
-            </span>
-
-            <button class="btn btn-outline-info" container="body" (click)="showRoleEditor()">
-              {{ 'security.addRole' | translate }}
-            </button>
-          </legend>
-
-          <p class="px-3">To assign policies drag them over a role</p>
-
-          <ul class="list-group list-group-flush p-0" id="roles"
-              cdkDropList [cdkDropListData]="roles" [cdkDropListConnectedTo]="userDropLists"
-              cdkDropListSortingDisabled sortingDisabled>
-            <li class="list-group-item px-1" *ngFor="let role of roles; let i = index" id="{{ 'role' + i }}"
-                cdkDropList [cdkDropListData]="role"
-                cdkDropListSortingDisabled sortingDisabled [cdkDropListEnterPredicate]="rolesEnterPredicate"
-                (cdkDropListDropped)="drop($event)"
-                cdkDrag [cdkDragData]="role" cdkDragBoundary="#securitySettings">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="role.collapsed ? 0 : 90"
-                           class="px-2 py-1 float-start" [ngClass]="role.policies.length ? 'text-secondary' : 'text-muted'"
-                           (click)="role.policies.length && role.collapsed = !role.collapsed"
-                           tooltip="{{ 'security.togglePolicies' | translate }}" container="body"></fa-icon>
-
-                  <div class="grip" cdkDragHandle>
-                    <fa-icon [fixedWidth]="true" icon="arrows-alt" size="sm"></fa-icon>
-                    {{ role.name }} <sup *ngIf="role.policies.length">({{ role.policies.length }})</sup>
+                    <button class="btn text-info" dropdownToggle>
+                      <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="showPolicyEditor(policy)">
+                          <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
+                          {{ 'security.editPolicy' | translate }}
+                        </button>
+                      </li>
+                      <li class="dropdown-divider"></li>
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="deletePolicy(policy)">
+                          <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                          {{ 'security.deletePolicy' | translate }}
+                        </button>
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
-                <div class="btn-group btn-group-sm float-end" dropdown>
-                  <!--<button class="btn text-info" tooltip="{{ 'security.assignRoleToUsers' | translate }}" container="body" (click)="assignRoleToUsers(role)">
+                <div *cdkDragPreview>
+                  <fa-icon [fixedWidth]="true" icon="key"></fa-icon>
+                  {{ policy.name }}
+                </div>
+
+                <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
+              </li>
+            </ul>
+          </fieldset>
+        </div>
+        <div class="col-sm py-2">
+          <fieldset>
+            <legend>
+              <span>
+                <fa-icon [fixedWidth]="true" icon="tag" size="sm"></fa-icon>
+                {{ 'security.roles' | translate }}
+              </span>
+
+              <button class="btn btn-outline-info" container="body" (click)="showRoleEditor()">
+                <span class="d-none d-lg-inline-block">{{ 'security.addRole' | translate }}</span>
+                <fa-icon icon="plus" class="d-lg-none d-inline-block" tooltip="{{ 'security.addRole' | translate }}"
+                  container="body" placement="top" [adaptivePosition]="false">
+                </fa-icon>
+              </button>
+            </legend>
+
+            <p class="px-3">To assign policies drag them over a role</p>
+
+            <ul class="list-group list-group-flush p-0" id="roles" cdkDropList [cdkDropListData]="roles"
+              [cdkDropListConnectedTo]="userDropLists" cdkDropListSortingDisabled sortingDisabled>
+              <li class="list-group-item px-1" *ngFor="let role of roles; let i = index" id="{{ 'role' + i }}"
+                cdkDropList [cdkDropListData]="role" cdkDropListSortingDisabled sortingDisabled
+                [cdkDropListEnterPredicate]="rolesEnterPredicate" (cdkDropListDropped)="drop($event)" cdkDrag
+                [cdkDragData]="role" cdkDragBoundary="#securitySettings">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="role.collapsed ? 0 : 90"
+                      class="px-2 py-1 float-start" [ngClass]="role.policies.length ? 'text-secondary' : 'text-muted'"
+                      (click)="role.policies.length && role.collapsed = !role.collapsed"
+                      tooltip="{{ 'security.togglePolicies' | translate }}" container="body" placement="top"
+                      [adaptivePosition]="false"></fa-icon>
+
+                    <div class="grip" cdkDragHandle>
+                      <fa-icon [fixedWidth]="true" icon="arrows-alt" size="sm"></fa-icon>
+                      {{ role.name }} <sup *ngIf="role.policies.length">({{ role.policies.length }})</sup>
+                    </div>
+                  </div>
+
+                  <div class="btn-group btn-group-sm float-end" dropdown>
+                    <!--<button class="btn text-info" tooltip="{{ 'security.assignRoleToUsers' | translate }}" container="body" (click)="assignRoleToUsers(role)">
                   <fa-icon [fixedWidth]="true" icon="users" size="sm"></fa-icon>
                 </button>-->
-                  <button class="btn text-info" dropdownToggle>
-                    <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="showRoleEditor(role)">
-                        <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
-                        {{ 'security.editRole' | translate }}
-                      </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="deleteRole(role)">
-                        <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
-                        {{ 'security.deleteRole' | translate }}
-                      </button>
+                    <button class="btn text-info" dropdownToggle>
+                      <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="showRoleEditor(role)">
+                          <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
+                          {{ 'security.editRole' | translate }}
+                        </button>
+                      </li>
+                      <li class="dropdown-divider"></li>
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="deleteRole(role)">
+                          <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                          {{ 'security.deleteRole' | translate }}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div *cdkDragPreview>
+                  <fa-icon [fixedWidth]="true" icon="tag"></fa-icon>
+                  {{ role.name }}
+                </div>
+
+                <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
+
+                <div [collapse]="role.collapsed" [isAnimated]="true">
+                  <ul class="list-group list-group-flush pl-5 mt-2">
+                    <li class="list-group-item pl-1 pr-0" *ngFor="let policy of role.policies">
+                      <fa-icon [fixedWidth]="true" icon="key" size="sm"></fa-icon>
+                      {{ policy.name }}
+                      <div class="btn-group btn-group-sm float-end">
+                        <button class="btn text-danger" tooltip="{{ 'security.removeRolePolicy' | translate }}"
+                          container="body" placement="top" [adaptivePosition]="false"
+                          (click)="removePolicyFromRole(policy, role)">
+                          <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
+                        </button>
+                      </div>
                     </li>
                   </ul>
                 </div>
-              </div>
+              </li>
+            </ul>
+          </fieldset>
+        </div>
+        <div class="col-sm py-2">
+          <fieldset>
+            <legend>
+              <span>
+                <fa-icon [fixedWidth]="true" icon="user" size="sm"></fa-icon>
+                {{ 'security.users' | translate }}
+              </span>
 
-              <div *cdkDragPreview>
-                <fa-icon [fixedWidth]="true" icon="tag"></fa-icon>
-                {{ role.name }}
-              </div>
+              <button class="btn btn-outline-info" container="body" (click)="showUserEditor()">
+                <span class="d-none d-lg-inline-block">{{ 'security.addUser' | translate }}</span>
+                <fa-icon icon="plus" class="d-lg-none d-inline-block" tooltip="{{ 'security.addUser' | translate }}"
+                  container="body" placement="top" [adaptivePosition]="false">
+                </fa-icon>
+              </button>
+            </legend>
 
-              <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
+            <p class="px-3">To assign roles drag them over a user</p>
 
-              <div [collapse]="role.collapsed" [isAnimated]="true">
-                <ul class="list-group list-group-flush pl-5 mt-2">
-                  <li class="list-group-item pl-1 pr-0" *ngFor="let policy of role.policies">
-                    <fa-icon [fixedWidth]="true" icon="key" size="sm"></fa-icon>
-                    {{ policy.name }}
-                    <div class="btn-group btn-group-sm float-end">
-                      <button class="btn text-danger" tooltip="{{ 'security.removeRolePolicy' | translate }}" container="body"
-                              (click)="removePolicyFromRole(policy, role)">
-                        <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
-      <div class="col-sm py-2">
-        <fieldset>
-          <legend>
-            <span>
-              <fa-icon [fixedWidth]="true" icon="user" size="sm"></fa-icon>
-              {{ 'security.users' | translate }}
-            </span>
+            <ul class="list-group list-group-flush p-0">
+              <li class="list-group-item px-1" *ngFor="let user of users; let i = index" id="{{ 'user' + i }}"
+                cdkDropList [cdkDropListData]="user" cdkDropListSortingDisabled sortingDisabled
+                [cdkDropListEnterPredicate]="usersEnterPredicate" (cdkDropListDropped)="drop($event)">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="user.collapsed ? 0 : 90" class="px-2 py-1"
+                      [ngClass]="user.roles.length ? 'text-secondary' : 'text-muted'"
+                      (click)="user.roles.length && user.collapsed = !user.collapsed"
+                      tooltip="{{ 'security.toggleRoles' | translate }}" container="body" placement="top"
+                      [adaptivePosition]="false"></fa-icon>
 
-            <button class="btn btn-outline-info" container="body" (click)="showUserEditor()">
-              {{ 'security.addUser' | translate }}
-            </button>
-          </legend>
+                    {{ user.login }} <sup *ngIf="user.roles?.length">({{ user.roles.length }})</sup>
+                  </div>
 
-          <p class="px-3">To assign roles drag them over a user</p>
-
-          <ul class="list-group list-group-flush p-0">
-            <li class="list-group-item px-1" *ngFor="let user of users; let i = index" id="{{ 'user' + i }}"
-                cdkDropList [cdkDropListData]="user"
-                cdkDropListSortingDisabled sortingDisabled [cdkDropListEnterPredicate]="usersEnterPredicate"
-                (cdkDropListDropped)="drop($event)">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="user.collapsed ? 0 : 90"
-                           class="px-2 py-1" [ngClass]="user.roles.length ? 'text-secondary' : 'text-muted'"
-                           (click)="user.roles.length && user.collapsed = !user.collapsed"
-                           tooltip="{{ 'security.toggleRoles' | translate }}" container="body"></fa-icon>
-
-                  {{ user.login }} <sup *ngIf="user.roles?.length">({{ user.roles.length }})</sup>
+                  <div class="btn-group btn-group-sm float-end" dropdown>
+                    <button class="btn text-info" dropdownToggle>
+                      <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="showUserEditor(user)">
+                          <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
+                          {{ 'security.editUser' | translate }}
+                        </button>
+                      </li>
+                      <li role="menuitem">
+                        <button class="dropdown-item" (click)="showUserEditor(user, true)">
+                          <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
+                          {{ 'security.changePassword' | translate }}
+                        </button>
+                      </li>
+                      <li class="dropdown-divider"></li>
+                      <li role="menuitem">
+                        <button class="dropdown-item">
+                          <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
+                          {{ 'security.deleteUser' | translate }}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
-                <div class="btn-group btn-group-sm float-end" dropdown>
-                  <button class="btn text-info" dropdownToggle>
-                    <fa-icon [fixedWidth]="true" icon="ellipsis-v" size="sm"></fa-icon>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="showUserEditor(user)">
-                        <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
-                        {{ 'security.editUser' | translate }}
-                      </button>
-                    </li>
-                    <li role="menuitem">
-                      <button class="dropdown-item" (click)="showUserEditor(user, true)">
-                        <fa-icon [fixedWidth]="true" icon="pen-nib"></fa-icon>
-                        {{ 'security.changePassword' | translate }}
-                      </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li role="menuitem">
-                      <button class="dropdown-item">
-                        <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
-                        {{ 'security.deleteUser' | translate }}
-                      </button>
+                <div *cdkDragPreview>
+                  <fa-icon [fixedWidth]="true" icon="user"></fa-icon>
+                  {{ user.login }}
+                </div>
+
+                <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
+
+                <div [collapse]="user.collapsed" [isAnimated]="true">
+                  <ul class="list-group list-group-flush pl-5 mt-2">
+                    <li class="list-group-item pl-1 pr-0" *ngFor="let role of user.roles">
+                      <fa-icon [fixedWidth]="true" icon="tag" size="sm"></fa-icon>
+                      {{ role.name }}
+                      <div class="btn-group btn-group-sm float-end">
+                        <button class="btn text-danger" tooltip="{{ 'security.removeUserRole' | translate }}"
+                          container="body" (click)="removeRoleFromUser(role, user)">
+                          <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
+                        </button>
+                      </div>
                     </li>
                   </ul>
                 </div>
-              </div>
+              </li>
+            </ul>
 
-              <div *cdkDragPreview>
-                <fa-icon [fixedWidth]="true" icon="user"></fa-icon>
-                {{ user.login }}
-              </div>
-
-              <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
-
-              <div [collapse]="user.collapsed" [isAnimated]="true">
-                <ul class="list-group list-group-flush pl-5 mt-2">
-                  <li class="list-group-item pl-1 pr-0" *ngFor="let role of user.roles">
-                    <fa-icon [fixedWidth]="true" icon="tag" size="sm"></fa-icon>
-                    {{ role.name }}
-                    <div class="btn-group btn-group-sm float-end">
-                      <button class="btn text-danger" tooltip="{{ 'security.removeUserRole' | translate }}" container="body"
-                              (click)="removeRoleFromUser(role, user)">
-                        <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-
-        </fieldset>
+          </fieldset>
+        </div>
       </div>
     </div>
   </div>

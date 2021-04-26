@@ -43,8 +43,8 @@
     </div>
   </div>
 
-  <div class="overflow-auto">
-    <div class="container my-4">
+  <div class="overflow-auto flex-grow-1 my-3">
+    <div class="container my-2">
       <div class="table-responsive" *ngIf="!loadingIndicator">
         <p *ngIf="!volumes.length" class="text-center text-info text-faded p-3 mb-0">
           There are no volumes yet.
@@ -62,7 +62,7 @@
           <tbody>
             <tr *ngFor="let volume of listItems">
               <td>
-                <b class="text-uppercase">{{ volume.name }}</b>
+                <b>{{ volume.name }}</b>
               </td>
               <td>
                 {{ volume.size * 1024 * 1024 | fileSize}}
@@ -93,6 +93,9 @@
                     </li>
                   </ul>
                 </div>
+
+                <fa-icon icon="lock" class="in-use text-danger" *ngIf="volume.refs && volume.refs.length"
+                         tooltip="In use by one or more machines" placement="top" [adaptivePosition]="false"></fa-icon>
               </td>
             </tr>
           </tbody>

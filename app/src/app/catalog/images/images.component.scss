@@ -1,0 +1,32 @@
+:host 
+{
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.table-responsive
+{
+  .highlight
+  {
+    color: #8881ff;
+  }
+
+  .text-truncate
+  {
+    max-width: 350px;
+  }
+}
+
+th, td
+{
+  &.w-max-200
+  {
+    max-width: 200px;
+  }
+
+  b, .strong
+  {
+    color: #ff9c07;
+    font-weight: normal;
+  }
+}

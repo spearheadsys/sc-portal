@@ -13,6 +13,7 @@ body
   color: #3d5e8e;
   font-family: 'Mukta', sans-serif;
   line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 
 body, div, virtual-scroller
@@ -450,7 +451,7 @@ body, div, virtual-scroller
 {
   + .panel
   {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 
   .card
@@ -609,9 +610,6 @@ virtual-scroller
     flex-wrap: wrap;
     justify-content: start;
     margin-top: -1rem;
-    /* margin-top: calc(var(--bs-gutter-y) * -1);
-    margin-right: calc(var(--bs-gutter-x)/ -2);
-    margin-left: calc(var(--bs-gutter-x)/ -2); */
     --bs-gutter-y: 2rem;
     position: relative;
 
@@ -621,7 +619,8 @@ virtual-scroller
       max-width: 100%;
       padding-right: calc(var(--bs-gutter-x)/ 2);
       padding-left: calc(var(--bs-gutter-x)/ 2);
-      margin-top: var(--bs-gutter-y);
+      padding-bottom: calc(var(--bs-gutter-y) / 2);
+      margin-top: calc(var(--bs-gutter-y) / 2);
     }
   }
 }
@@ -652,6 +651,14 @@ virtual-scroller
   }
 }
 
+@media (min-width: 992px)
+{
+  .w-lg-auto
+  {
+    width: auto !important;
+  }
+}
+
 accordion
 {
   .panel-heading
@@ -673,7 +680,7 @@ accordion
   font-family: "Bebas Neue", sans-serif;
   font-size: 1.2rem;
   z-index: 1020;
-  max-height: 50vh;
+  max-height: 60vh;
   overflow: auto;
 }
 
@@ -720,12 +727,15 @@ accordion
     }
   }
 
-  .form-control
+  .form-control, .form-select
   {
-    border-color: #11182b;
-    background: #11182b;
-    box-shadow: 0 0 0 1px rgb(0 231 255 / 75%) inset;
+    background-color: #11182b;
     padding: .5rem .75rem .375rem;
+  }
+
+  .form-select
+  {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ff9c07' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
   }
 
   .form-switch
@@ -927,4 +937,15 @@ accordion
 .no-overflow
 {
   overflow: hidden;
+}
+
+.list-group-item
+{
+  border: none;
+  padding: .25rem 1rem;
+}
+
+.machine-brand b
+{
+  text-transform: uppercase;
 }

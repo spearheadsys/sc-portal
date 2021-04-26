@@ -1,6 +1,7 @@
 {
   "security":
   {
+    "title": "Security",
     "users": "Users",
     "roles": "Roles",
     "policies": "Policies",

@@ -43,12 +43,12 @@
     </div>
   </div>
 
-  <div class="overflow-auto">
-    <div class="container my-4">
+  <div class="overflow-auto flex-grow-1 mt-1">
+    <div class="container my-2">
       <accordion [isAnimated]="false" [closeOthers]="false">
         <accordion-group *ngFor="let vlan of listItems" (isOpenChange)="getNetworks($event, vlan)">
           <div class="d-flex justify-content-between align-items-center sticky-top" accordion-heading
-               tooltip="Click to expand this virtual network and show all its networks" placement="top" container="body">
+               tooltip="Show or hide this VLAN's networks" placement="top" container="body">
             <h4 class="mb-0">
               <span class="text-info me-2">{{ vlan.name }}</span>
               <span class="vlan-id">
@@ -133,17 +133,29 @@
           </div>
 
           <div class="card-footer px-2 d-flex justify-content-between align-items-center">
-            <button class="btn btn-sm btn-link text-info px-1" tooltip="Rename this virtual network" container="body" placement="top" [adaptivePosition]="false"
-                    (click)="showVlanEditor(vlan)">
-              <fa-icon icon="pen" [fixedWidth]="true" size="sm"></fa-icon>
-            </button>
+            <button class="btn btn-outline-info" (click)="showNetworkEditor(vlan)">Configure a new network</button>
 
-            <button class="btn btn-outline-info" (click)="showNetworkEditor(vlan)">Add a network</button>
-
-            <button class="btn btn-sm btn-link text-danger px-1" tooltip="Delete this virtual network" container="body" placement="top" [adaptivePosition]="false"
-                    (click)="deleteVlan(vlan)">
-              <fa-icon icon="trash" [fixedWidth]="true" size="sm"></fa-icon>
-            </button>
+            <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body">
+              <button class="btn btn-link text-info" dropdownToggle
+                      tooltip="Virtual network options" container="body" placement="top" [adaptivePosition]="false">
+                <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
+              </button>
+              <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-split">
+                <li role="menuitem">
+                  <button class="dropdown-item" (click)="showVlanEditor(vlan)">
+                    <fa-icon icon="pen" [fixedWidth]="true"></fa-icon>
+                    Rename this virtual network
+                  </button>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li role="menuitem">
+                  <button class="dropdown-item" (click)="deleteVlan(vlan)">
+                    <fa-icon icon="trash" [fixedWidth]="true"></fa-icon>
+                    Delete this virtual network
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </accordion-group>
       </accordion>

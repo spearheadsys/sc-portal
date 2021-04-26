@@ -3,7 +3,6 @@ import { InstancesService } from './helpers/instances.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { debounceTime, delay, distinctUntilChanged, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { InstanceWizardComponent } from './instance-wizard/instance-wizard.component';
-import { SelectionType, ColumnMode } from '@swimlane/ngx-datatable';
 import { Instance } from './models/instance';
 import { forkJoin, Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -21,6 +20,8 @@ import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { FileSizePipe } from '../pipes/file-size.pipe';
 import { sortArray } from '../helpers/utils.service';
 import { VolumesService } from '../volumes/helpers/volumes.service';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-instances',
@@ -42,6 +43,7 @@ export class InstancesComponent implements OnInit, OnDestroy
   canPrepareForLoading: boolean;
   editorForm: FormGroup;
   showMachineDetails: boolean;
+  fullDetailsTwoColumns: boolean;
   runningInstanceCount = 0;
   stoppedInstanceCount = 0;
   instanceStateArray: string[] = [];
@@ -72,8 +74,12 @@ export class InstancesComponent implements OnInit, OnDestroy
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
     private readonly fb: FormBuilder,
-    private readonly fileSizePipe: FileSizePipe)
+    private readonly fileSizePipe: FileSizePipe,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('dashboard.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+
     this.lazyLoadDelay = this.minimumLazyLoadDelay;
 
     // Configure FuseJs
@@ -93,6 +99,7 @@ export class InstancesComponent implements OnInit, OnDestroy
     };
 
     this.showMachineDetails = !!JSON.parse(localStorage.getItem('showMachineDetails') || '0');
+    this.fullDetailsTwoColumns = !!JSON.parse(localStorage.getItem('fullDetailsTwoColumns') || '1');
 
     this.createForm();
   }
@@ -108,9 +115,9 @@ export class InstancesComponent implements OnInit, OnDestroy
     switch (label)
     {
       case LabelType.Low:
-        return `<b>Between</b> ${formattedValue}`;
+        return `Between ${formattedValue}`;
       case LabelType.High:
-        return `<b>and</b> ${formattedValue}`;
+        return `and ${formattedValue}`;
       default:
         return formattedValue;
     }
@@ -187,7 +194,8 @@ export class InstancesComponent implements OnInit, OnDestroy
             imageFilter: [], // instances provisioned with a certain image
           }),
         filtersActive: [false],
-        showMachineDetails: [this.showMachineDetails]
+        showMachineDetails: [this.showMachineDetails],
+        fullDetailsTwoColumns: [{ value: this.fullDetailsTwoColumns, disabled: !this.showMachineDetails }]
       });
 
     this.editorForm.get('searchTerm').valueChanges
@@ -232,7 +240,15 @@ export class InstancesComponent implements OnInit, OnDestroy
         // Store this setting in the local storage
         localStorage.setItem('showMachineDetails', JSON.stringify(showMachineDetails));
 
-        setTimeout(() => this.editorForm.get('showMachineDetails').enable(), 300);
+        setTimeout(() =>
+        {
+          this.editorForm.get('showMachineDetails').enable();
+
+          if (showMachineDetails)
+            this.editorForm.get('fullDetailsTwoColumns').enable();
+          else
+            this.editorForm.get('fullDetailsTwoColumns').disable();
+        }, 300);
       });
   }
 
@@ -289,6 +305,12 @@ export class InstancesComponent implements OnInit, OnDestroy
   setSortProperty(propertyName: string)
   {
     this.editorForm.get('sortProperty').setValue(propertyName);
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  setStateFilter(state?: string)
+  {
+    this.editorForm.get(['filters', 'stateFilter']).setValue(state);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -700,6 +722,7 @@ export class InstancesComponent implements OnInit, OnDestroy
     };
 
     const modalRef = this.modalService.show(InstanceHistoryComponent, modalConfig);
+    modalRef.setClass('modal-lg');
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -711,8 +734,6 @@ export class InstancesComponent implements OnInit, OnDestroy
       instance.shouldLoadSnapshots = this.editorForm.get('showMachineDetails').value;
     else if (event.id.endsWith('networks'))
       instance.shouldLoadNetworks = this.editorForm.get('showMachineDetails').value;
-    else if (event.id.endsWith('firewall'))
-      instance.shouldLoadFirewallRules = this.editorForm.get('showMachineDetails').value;
     else if (event.id.endsWith('volumes'))
     {
       //instance.shouldLoadVolumes = this.editorForm.get('showMachineDetails').value;
@@ -780,6 +801,33 @@ export class InstancesComponent implements OnInit, OnDestroy
   updateInstance(instance: Instance, updates: Instance)
   {
     instance.state = updates.state;
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  setInstanceInfo(instance: Instance, dnsList)
+  {
+    // Update the instance as a result of the info panel's "load" event. We do this because the intances are (un)loaded
+    // from the viewport as the user scrolls through the page, to optimize memory consumption.
+    instance.dnsList = dnsList;
+    instance.infoLoaded = true;
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  setInstanceNetworks(instance: Instance, nics)
+  {
+    // Update the instance as a result of the networks panel's "load" event. We do this because the intances are (un)loaded
+    // from the viewport as the user scrolls through the page, to optimize memory consumption.
+    instance.nics = nics;
+    instance.networksLoaded = true;
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  setInstanceSnapshot(instance: Instance, snapshots)
+  {
+    // Update the instance as a result of the snapshots panel's "load" event. We do this because the intances are (un)loaded
+    // from the viewport as the user scrolls through the page, to optimize memory consumption.
+    instance.snapshots = snapshots;
+    instance.snapshotsLoaded = true;
   }
 
   // ----------------------------------------------------------------------------------------------------------------

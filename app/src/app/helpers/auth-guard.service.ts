@@ -36,7 +36,7 @@ export class AuthGuardService implements CanActivate, CanLoad
     if (this.tokenService.accessTokenUpdated$.getValue())
       return true;
 
-    this.router.navigate(['/unauthorized'], { state: { data: route.data } });
+    //this.router.navigate(['/unauthorized'], { state: { data: route.data } });
     return false;
   }
 }

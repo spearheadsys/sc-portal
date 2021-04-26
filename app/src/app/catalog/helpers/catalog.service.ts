@@ -63,15 +63,6 @@ export class CatalogService
   @Cacheable({
     cacheBusterObserver: imagesCacheBuster$
   })
-  getCustomImages(ownerId: string): Observable<CatalogImage[]>
-  {
-    return this.httpClient.get<CatalogImage[]>(`/api/my/images?$state=all&owner=${ownerId}`);
-  }
-
-  // ----------------------------------------------------------------------------------------------------------------
-  @Cacheable({
-    cacheBusterObserver: imagesCacheBuster$
-  })
   getImage(id: string): Observable<CatalogImage>
   {
     return this.httpClient.get<CatalogImage>(`/api/my/images/${id}`);

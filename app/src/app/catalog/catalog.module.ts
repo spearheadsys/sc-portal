@@ -10,21 +10,13 @@ import { TranslateCompiler } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 
 import { CatalogComponent } from './catalog.component';
-import { CustomImagesComponent } from './custom-images/custom-images.component';
-import { DockerImagesComponent } from './docker-images/docker-images.component';
-import { DockerRegistryComponent } from './docker-registry/docker-registry.component';
-import { DockerImageEditorComponent } from './docker-image-editor/docker-image-editor.component';
-import { DockerRegistryEditorComponent } from './docker-registry-editor/docker-registry-editor.component';
+import { ImagesComponent } from './images/images.component';
 import { CustomImageEditorComponent } from './custom-image-editor/custom-image-editor.component';
 
 @NgModule({
   declarations: [
     CatalogComponent,
-    CustomImagesComponent,
-    DockerImagesComponent,
-    DockerRegistryComponent,
-    DockerImageEditorComponent,
-    DockerRegistryEditorComponent
+    ImagesComponent
   ],
   imports: [
     SharedModule,
@@ -35,38 +27,19 @@ import { CustomImageEditorComponent } from './custom-image-editor/custom-image-e
         children: [
           {
             path: '',
-            redirectTo: 'custom-images'
+            redirectTo: 'images'
           },
           {
-            path: 'custom-images',
-            component: CustomImagesComponent,
+            path: 'images',
+            component: ImagesComponent,
             data:
             {
-              title: 'catalog.customImages.title',
-              subTitle: 'catalog.customImages.subTitle',
+              title: 'catalog.images.title',
+              subTitle: 'catalog.images.subTitle',
               icon: 'layer-group'
             }
-          },
-          {
-            path: 'docker-images',
-            component: DockerImagesComponent,
-            data:
-            {
-              title: 'catalog.dockerImages.title',
-              subTitle: 'catalog.dockerImages.subTitle',
-              icon: ['fab', 'docker']
-            }
-          },
-          {
-            path: 'docker-registry',
-            component: DockerRegistryComponent,
-            data:
-            {
-              title: 'catalog.dockerRegistry.title',
-              subTitle: 'catalog.dockerRegistry.subTitle',
-              icon: ['fab', 'docker']
-            }
-          }]
+          }
+        ]
       }
     ]),
     TranslateModule.forChild({
@@ -83,8 +56,6 @@ import { CustomImageEditorComponent } from './custom-image-editor/custom-image-e
     })
   ],
   entryComponents: [
-    DockerImageEditorComponent,
-    DockerRegistryEditorComponent,
     CustomImageEditorComponent
   ]
 })

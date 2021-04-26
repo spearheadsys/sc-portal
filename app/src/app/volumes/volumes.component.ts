@@ -13,6 +13,8 @@ import { sortArray } from '../helpers/utils.service';
 import Fuse from 'fuse.js';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
 import { distinctUntilChanged, first, takeUntil, debounceTime, filter, switchMap } from 'rxjs/operators';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-volumes',
@@ -37,8 +39,11 @@ export class VolumesComponent implements OnInit, OnDestroy
     private readonly instancesService: InstancesService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
-    private readonly fb: FormBuilder)
+    private readonly fb: FormBuilder,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('volumes.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
 
     // Configure FuseJs
     this.fuseJsOptions = {

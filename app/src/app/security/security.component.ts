@@ -16,6 +16,8 @@ import { ConfirmationDialogComponent } from '../components/confirmation-dialog/c
 import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
 import { RolePolicy } from './models/role-policy';
 import { RoleUser } from './models/role-user';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-security',
@@ -33,8 +35,12 @@ export class SecurityComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly securityService: SecurityService,
     private readonly modalService: BsModalService,
-    private readonly toastr: ToastrService)
+    private readonly toastr: ToastrService,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('security.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+
     forkJoin({
       users: securityService.getUsers(),
       roles: securityService.getRoles(),

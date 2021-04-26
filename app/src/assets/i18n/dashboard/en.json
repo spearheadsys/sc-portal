@@ -1,6 +1,7 @@
 {
   "dashboard":
   {
+    "title": "Dashboard",
     "general":
     {
       "save": "Save changes",
@@ -15,23 +16,25 @@
       "noResults": "No machine matches your filters",
       "filters": "Showing {filteredCount} (out of {totalCount}: {totalRunning} running, {totalStopped} stopped)",
       "filterByState": "Filter by state",
+      "anyState": "Any state",
       "filterByMemory": "Filter by memory",
       "filterByDisk": "Filter by disk size",
+      "between": "Between",
+      "and": "and",
       "resetFilters": "Reset filters",
       "showDetails": "Show machine details",
-      "sortBy": "Sort by {}",
+      "dualColumns": "2 columns on large displays",
+      "sortBy": "Sort by {sortProperty}",
       "sortByName": "Name",
       "sortByOs": "Operating system",
       "sortByBrand": "Brand",
       "sortByImage": "Image",
-      "sortByState": "State",
-      "between": "Between",
-      "and": "and"
+      "sortByState": "State"
     },
     "listItem":
     {
-      "infrastructureContainer": "{type} - insfrastructure container",
-      "virtualMachine": "{type} - virtual machine",
+      "infrastructureContainer": "<b>{brand}</b> - Infrastructure container",
+      "virtualMachine": "<b>{brand}</b> - Virtual machine",
       "stateRunning": "Running",
       "stateStopping": "Stopping",
       "stateProvisioning": "Provisioning",

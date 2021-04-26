@@ -1,7 +1,7 @@
-ul, ol
+:host
 {
-  background-color: rgba(16, 21, 39, .75);
-  height: 100%;
+  overflow: hidden;
+  flex-grow: 1;
 }
 
 h4
@@ -11,10 +11,10 @@ h4
 
 .list-group-item
 {
-  background: none;
-  padding: 1rem;
-  border-color: rgb(61, 94, 142, .25);
+  background-color: transparent;
+  border-color: #354164;
   color: #5a8cd8;
+  padding: .5rem 1rem;
 
   b
   {
@@ -22,21 +22,32 @@ h4
   }
 }
 
-.card
+fieldset
 {
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  background-color: rgba(16, 21, 39, 0.5);
-  box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px #0b284b, 0 0 10px 3px #0e162a;
-  transition: box-shadow 0.15s ease-out;
+  background-color: rgba(16,21,39, .5);
+  border-radius: .3rem;
   height: 100%;
+  transition: all 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+  height: 100%;
+  box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px #0b284b, 0 0 10px 3px #0e162a;
 
   &:hover
   {
-    box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px rgba(18, 203, 240, .4), 0 0 10px 3px #0e162a;
+    box-shadow: 0 0 0 2px #0b2b51, 0 0 2px 4px rgb(18 203 240 / 40%), 0 0 10px 3px #0e162a;
   }
 
-  .card-body
+  legend
   {
-    padding: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 1.2;
+    color: #3d5e8e;
+    padding: .75rem .5rem .75rem 1rem;
+    position: relative;
+    background-color: rgba(16,21,39, .5);
+    border-radius: .3rem .3rem 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
+

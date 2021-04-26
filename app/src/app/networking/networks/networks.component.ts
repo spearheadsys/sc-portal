@@ -12,6 +12,8 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import Fuse from 'fuse.js';
 import { Subject } from 'rxjs';
 import { sortArray } from '../../helpers/utils.service';
+import { Title } from "@angular/platform-browser";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-networks',
@@ -32,8 +34,12 @@ export class NetworksComponent implements OnInit, OnDestroy
   constructor(private readonly networkingService: NetworkingService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
-    private readonly fb: FormBuilder)
+    private readonly fb: FormBuilder,
+    private readonly titleService: Title,
+    private readonly translationService: TranslateService)
   {
+    translationService.get('networking.networks.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+
     this.getVlans();
 
     // Configure FuseJs

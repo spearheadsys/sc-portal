@@ -1,32 +1,36 @@
 <ul class="list-group list-group-flush list-info">
-  <li class="list-group-item text-uppercase ps-0" tooltip="Machine ID" container="body" placement="top" [adaptivePosition]="false">
-    <fa-icon icon="fingerprint" [fixedWidth]="true" size="sm"></fa-icon>
-    <b class="ms-1">{{ instance.id }}</b>
+  <li class="dropdown-header">Machine identifier</li>
+  <li class="list-group-item text-uppercase ps-0">
+    <b>{{ instance.id }}</b>
   </li>
 
-  <li class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
-      *ngFor="let keyValue of instance.dnsList | keyvalue; let index = index">
-    <div class="text-truncate">
-      <fa-icon icon="link" [fixedWidth]="true" size="sm"></fa-icon>
-      <span class="ms-1" [ngClass]="keyValue.value[0] === instance.id || keyValue.value[0] === instance.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
-        {{ keyValue.value[0] }}
-      </span>
+  <ng-container *ngIf="instance.dnsList">
+    <li class="dropdown-header">DNS list</li>
+    <li class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
+        *ngFor="let keyValue of instance.dnsList | keyvalue; let index = index">
+      <div class="text-truncate text-info text-faded" [tooltip]="keyValue.key" container="body" placement="top" [adaptivePosition]="false">
+        <!--<span class="ms-1" [ngClass]="keyValue.value[0] === instance.id || keyValue.value[0] === instance.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
+          {{ keyValue.value[0] }}
+        </span>
 
-      <span *ngIf="keyValue.value[1]" [ngClass]="keyValue.value[1] === instance.id || keyValue.value[1] === instance.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
-        {{ keyValue.value[1] }}
-      </span>
+        <span *ngIf="keyValue.value[1]" [ngClass]="keyValue.value[1] === instance.id || keyValue.value[1] === instance.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
+          {{ keyValue.value[1] }}
+        </span>
 
-      {{ keyValue.value[2] }}
-    </div>
+        {{ keyValue.value[2] }}-->
+        {{ keyValue.key }}
+      </div>
 
-    <div class="btn-group btn-group-sm" *ngxClipboardIfSupported
-         tooltip="Copy link to clipboard" container="body" placement="top" [adaptivePosition]="false">
-      <button class="btn btn-link py-0 text-info" ngxClipboard [cbContent]="keyValue.key" (cbOnSuccess)="dnsCopied($event)">
-        <fa-icon icon="clipboard" [fixedWidth]="true" size="sm"></fa-icon>
-      </button>
-    </div>
-  </li>
+      <div class="btn-group btn-group-sm" *ngxClipboardIfSupported
+           tooltip="Copy link to clipboard" container="body" placement="top" [adaptivePosition]="false">
+        <button class="btn btn-link py-0 text-info" ngxClipboard [cbContent]="keyValue.key" (cbOnSuccess)="dnsCopied($event)">
+          <fa-icon icon="clipboard" [fixedWidth]="true" size="sm"></fa-icon>
+        </button>
+      </div>
+    </li>
+  </ng-container>
 
+  <li class="dropdown-header">Deletion protection</li>
   <li class="list-group-item ps-0 pb-0">
     <div class="form-check form-switch">
       <input class="form-check-input mt-0" type="checkbox" id="dp{{ instance.id }}" [(ngModel)]="instance.deletion_protection"

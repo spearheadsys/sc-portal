@@ -11,7 +11,7 @@ import { CatalogService } from '../../catalog/helpers/catalog.service';
 import { NetworkingService } from '../../networking/helpers/networking.service';
 import { ToastrService } from 'ngx-toastr';
 import { VolumesService } from '../../volumes/helpers/volumes.service';
-import { VolumeResponse } from '../../volumes/models/volume';
+import { AuthService } from '../../helpers/auth.service';
 
 @Component({
   selector: 'app-instance-wizard',
@@ -51,12 +51,14 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
   kvmRequired: boolean;
 
   private destroy$ = new Subject();
+  private userId: string;
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly modalRef: BsModalRef,
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly fileSizePipe: FileSizePipe,
+    private readonly authService: AuthService,
     private readonly instancesService: InstancesService,
     private readonly catalogService: CatalogService,
     private readonly networkingService: NetworkingService,
@@ -93,6 +95,10 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         description: 'Tag and create your machine'
       }
     ];
+
+    authService.userInfoUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(x => this.userId = x.id);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -163,7 +169,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         if (imageType === 1)
         {
           for (const image of this.images)
-            if (['zvol'].includes(image.type))
+            if (['lx-dataset', 'zone-dataset'].includes(image.type) && image.owner !== this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -172,7 +178,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         else if (imageType === 2)
         {
           for (const image of this.images)
-            if (['lx-dataset', 'zone-dataset'].includes(image.type))
+            if (['zvol'].includes(image.type) && image.owner !== this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -181,7 +187,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         else if (imageType === 3)
         {
           for (const image of this.images)
-            if (!['zvol', 'lx-dataset', 'zone-dataset'].includes(image.type))
+            if (image.owner === this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -213,7 +219,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         if (imageType === 1)
         {
           for (const image of this.images)
-            if (['zvol'].includes(image.type) && (!imageOs || imageOs === image.os))
+            if (['lx-dataset', 'zone-dataset'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -222,7 +228,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         else if (imageType === 2)
         {
           for (const image of this.images)
-            if (['lx-dataset', 'zone-dataset'].includes(image.type) && (!imageOs || imageOs === image.os))
+            if (['zvol'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -231,7 +237,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         else if (imageType === 3)
         {
           for (const image of this.images)
-            if (!['zvol', 'lx-dataset', 'zone-dataset'].includes(image.type) && (!imageOs || imageOs === image.os))
+            if (image.owner === this.userId)
             {
               operatingSystems[image.os] = true;
               imageList.push(image);
@@ -552,9 +558,9 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
 
     if (this.instance)
     {
-      if (this.instance.type === 'virtualmachine')
+      if (this.instance.type === 'smartmachine')
         this.imageType = 1;
-      else if (this.instance.type === 'smartmachine')
+      else if (this.instance.type === 'virtualmachine')
         this.imageType = 2;
 
       this.preselectedPackage = this.instance.package;

@@ -24,4 +24,16 @@
   {
     color: rgba(#ff9c07, .75);
   }
+
+  + .dropdown-header
+  {
+    margin-top: .5rem;
+  }
+}
+
+.dropdown-header
+{
+  opacity: 1;
+  color: #3d5e8e;
+  padding: .5rem 0 0;
 }

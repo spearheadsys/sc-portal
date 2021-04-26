@@ -1,3 +1,9 @@
+:host
+{
+  overflow: hidden;
+  flex-grow: 1;
+}
+
 .table-responsive
 {
   background-color: rgba(16, 21, 39, 0.75);
@@ -30,6 +36,11 @@
   .text-truncate
   {
     max-width: 350px;
+  }
+
+  .text-transform-none
+  {
+    text-transform: none;
   }
 
   .inline-list-item + .inline-list-item

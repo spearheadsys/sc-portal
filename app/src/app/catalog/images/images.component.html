@@ -1,20 +1,200 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>OS</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let image of images">
-      <td>{{ image.name }}</td>
-      <td>{{ image.description }}</td>
-      <td>{{ image.os }}</td>
-      <td>
-        <button class="btn btn-sm btn-secondary" (click)="select.emit(image)">select</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="d-flex flex-column h-100">
+  <div class="container text-center mt-1" [formGroup]="editorForm">
+    <div class="btn-toolbar pt-2">
+      <span class="d-none d-sm-block flex-grow-1"></span>
+
+      <ng-container *ngIf="images && images.length">
+        <div class="input-group input-group-pill flex-grow-1 flex-grow-sm-0 me-sm-3 w-sm-auto w-100">
+          <input type="text" class="form-control" placeholder="Search by name..." formControlName="searchTerm" appAlphaOnly="^[A-Za-z0-9_-]+$">
+          <button class="btn btn-outline-info" type="button" (click)="clearSearch()" [disabled]="!editorForm.get('searchTerm').value"
+                  tooltip="Clear search" container="body" placement="top" [adaptivePosition]="false">
+            <fa-icon icon="times" size="sm" [fixedWidth]="true"></fa-icon>
+          </button>
+        </div>
+
+        <div class="btn-group flex-grow-1 flex-grow-sm-0 w-sm-auto w-100" dropdown placement="bottom left">
+          <button class="btn btn-outline-info dropdown-toggle" dropdownToggle>
+            Sort by
+            <b *ngIf="editorForm.get('sortProperty').value === 'name'">name</b>
+            <b *ngIf="editorForm.get('sortProperty').value === 'description'">description</b>
+            <b *ngIf="editorForm.get('sortProperty').value === 'os'">operating system</b>
+            <b *ngIf="editorForm.get('sortProperty').value === 'type'">type</b>
+            <b *ngIf="editorForm.get('sortProperty').value === 'state'">status</b>
+          </button>
+          <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'name'" (click)="setSortProperty('name')">
+                Name
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'description'" (click)="setSortProperty('description')">
+                Description
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'os'" (click)="setSortProperty('os')">
+                Operating system
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'type'" (click)="setSortProperty('type')">
+                Type
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'status'" (click)="setSortProperty('status')">
+                Status
+              </button>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="spinner-border text-center text-info text-faded" role="status" *ngIf="loadingIndicator">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div class="overflow-auto flex-grow-1 my-3">
+    <div class="container my-2">
+      <accordion [isAnimated]="false" [closeOthers]="false">
+        <accordion-group [isOpen]="myImagesExpanded">
+          <div class="d-flex justify-content-between align-items-center sticky-top" accordion-heading
+               tooltip="Show or hide my images" placement="top" container="body">
+            <h4 class="text-info text-uppercase mb-0">My images</h4>
+
+            <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="myImagesExpanded ? 90 : 0" class="text-info"></fa-icon>
+          </div>
+
+          <div class="table-responsive" *ngIf="!loadingIndicator">
+            <p *ngIf="!images.length" class="text-center text-info text-faded p-3 mb-0">
+              You don't have any custom images yet
+            </p>
+
+            <table class="table table-hover" *ngIf="myImages.length">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th class="w-max-200">Description</th>
+                  <th>OS</th>
+                  <th>Type</th>
+                  <th>Brand</th>
+                  <th>Publish date</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let image of myListItems">
+                  <td>
+                    <b>{{ image.name }}</b>
+                  </td>
+                  <td class="w-max-200">
+                    <div class="text-truncate" [tooltip]="image.description" placement="top" [adaptivePosition]="false">{{ image.description }}</div>
+                  </td>
+                  <td class="text-uppercase">
+                    {{ image.os }}
+                  </td>
+                  <td class="text-uppercase">
+                    {{ image.type }}
+                  </td>
+                  <td class="text-uppercase">
+                    <span class="badge text-warning border border-warning" *ngIf="image.requirements">{{ image.requirements.brand }}</span>
+                  </td>
+                  <td>
+                    {{ image.published_at ? (image.published_at | timeago) : '' }}
+                  </td>
+                  <td>
+                    <span class="badge text-uppercase" [ngClass]="image.state === 'active' ? 'bg-success' : 'bg-warning text-dark'">{{ image.state }}</span>
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body" [isDisabled]="image.working">
+                      <button class="btn btn-link text-info" dropdownToggle
+                              tooltip="More options" container="body" placement="top" [adaptivePosition]="false">
+                        <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
+                      </button>
+                      <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-split">
+                        <li role="menuitem">
+                          <button class="dropdown-item" (click)="deleteCustomImage(image)">
+                            <fa-icon icon="trash" [fixedWidth]="true"></fa-icon>
+                            Delete this image
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot *ngIf="!listItems.length">
+                <tr>
+                  <td colspan="7" class="text-uppercase">
+                    No images match your search criteria
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </accordion-group>
+
+        <!--<accordion-group>
+          <div class="d-flex justify-content-between align-items-center sticky-top" accordion-heading
+               tooltip="Show or hide other images" placement="top" container="body">
+            <h4 class="text-info text-uppercase mb-0">Other images</h4>
+
+            <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="otherImagesExpanded ? 90 : 0" class="text-info"></fa-icon>
+          </div>
+
+          <table class="table table-hover" *ngIf="images.length">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th class="w-max-200">Description</th>
+                <th>OS</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Publish date</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let image of listItems">
+                <td>
+                  <b>{{ image.name }}</b>
+                </td>
+                <td class="w-max-200">
+                  <div class="text-truncate" [tooltip]="image.description" placement="top" [adaptivePosition]="false">{{ image.description }}</div>
+                </td>
+                <td class="text-uppercase">
+                  {{ image.os }}
+                </td>
+                <td class="text-uppercase">
+                  {{ image.type }}
+                </td>
+                <td class="text-uppercase">
+                  <span class="badge text-warning border border-warning" *ngIf="image.requirements">{{ image.requirements.brand }}</span>
+                </td>
+                <td>
+                  {{ image.published_at ? (image.published_at | timeago) : '' }}
+                </td>
+                <td>
+                  <span class="badge text-uppercase" [ngClass]="image.state === 'active' ? 'bg-success' : 'bg-warning text-dark'">{{ image.state }}</span>
+                </td>
+                <td class="text-end"></td>
+              </tr>
+            </tbody>
+            <tfoot *ngIf="!listItems.length">
+              <tr>
+                <td colspan="7" class="text-uppercase">
+                  No images match your search criteria
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </accordion-group>-->
+      </accordion>
+    </div>
+  </div>
+</div>

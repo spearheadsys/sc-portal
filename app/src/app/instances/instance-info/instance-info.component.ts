@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CatalogService } from '../../catalog/helpers/catalog.service';
-import { empty, forkJoin, Observable, of, Subject } from 'rxjs';
+import { empty, forkJoin, Observable, of, Subject, ReplaySubject } from 'rxjs';
 import { delay, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { InstancesService } from '../helpers/instances.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -12,20 +12,19 @@ import { Instance } from '../models/instance';
   templateUrl: './instance-info.component.html',
   styleUrls: ['./instance-info.component.scss']
 })
-export class InstanceInfoComponent implements OnInit, OnDestroy
+export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
 {
   @Input()
   instance: Instance;
 
   @Input()
-  set loadInfo(value: boolean)
-  {
-    if (!this.finishedLoading && value && this.instance)
-      this.getInfo();
-  }
+  loadInfo: boolean;
 
   @Output()
-  beforeLoad = new EventEmitter();
+  processing = new EventEmitter();
+
+  @Output()
+  finishedProcessing = new EventEmitter();
 
   @Output()
   load = new EventEmitter();
@@ -34,6 +33,7 @@ export class InstanceInfoComponent implements OnInit, OnDestroy
   
   private finishedLoading: boolean;
   private destroy$ = new Subject();
+  private onChanges$ = new ReplaySubject();
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly instancesService: InstancesService,
@@ -46,18 +46,18 @@ export class InstanceInfoComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   toggleDeletionProtection(event, instance: Instance)
   {
-    this.beforeLoad.emit();
+    this.processing.emit();
 
     this.instancesService.toggleDeletionProtection(instance.id, event.target.checked)
       .subscribe(() =>
       {
         this.toastr.info(`The deletion protection for machine "${instance.name}" is now ${event.target.checked ? 'enabled' : 'disabled'}`);
-        this.load.emit();
+        this.finishedProcessing.emit();
       },
         err =>
         {
           this.toastr.error(`Machine "${instance.name}" error: ${err.error.message}`);
-          this.load.emit();
+          this.finishedProcessing.emit();
         });
   }
 
@@ -85,6 +85,7 @@ export class InstanceInfoComponent implements OnInit, OnDestroy
 
         this.loading = false;
         this.finishedLoading = true;
+        this.load.emit(dnsList);
       },
         err =>
         {
@@ -109,7 +110,20 @@ export class InstanceInfoComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   ngOnInit(): void
   {
+    this.onChanges$.pipe(takeUntil(this.destroy$)).subscribe(() =>
+    {
+      if (!this.finishedLoading && this.loadInfo && !this.instance?.infoLoaded)
+        this.getInfo();
+    });
   }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  ngOnChanges(changes: SimpleChanges): void
+  {
+    // Since we can't control if ngOnChanges is executed before ngOnInit, we need this trick
+    this.onChanges$.next(changes);
+  }
+
 
   // ----------------------------------------------------------------------------------------------------------------
   ngOnDestroy()

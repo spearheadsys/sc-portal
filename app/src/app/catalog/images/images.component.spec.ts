@@ -1,17 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImagesComponent } from './images.component';
 
-describe('ImagesComponent', () => {
+describe('CustomImagesComponent', () => {
   let component: ImagesComponent;
   let fixture: ComponentFixture<ImagesComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
       declarations: [ ImagesComponent ]
     })
     .compileComponents();
-  });
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ImagesComponent);

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CatalogService } from '../../catalog/helpers/catalog.service';
 import { InstancesService } from '../helpers/instances.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import Fuse from 'fuse.js';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -15,20 +15,19 @@ import { SnapshotsService } from '../helpers/snapshots.service';
   templateUrl: './instance-snapshots.component.html',
   styleUrls: ['./instance-snapshots.component.scss']
 })
-export class InstanceSnapshotsComponent implements OnInit, OnDestroy
+export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
 {
   @Input()
   instance: any;
 
   @Input()
-  set loadSnapshots(value: boolean)
-  {
-    if (value && this.instance && !this.snapshots)
-      this.getSnapshots();
-  }
+  loadSnapshots: boolean;
 
   @Output()
-  beforeLoad = new EventEmitter();
+  processing = new EventEmitter();
+
+  @Output()
+  processingFinished = new EventEmitter();
 
   @Output()
   load = new EventEmitter();
@@ -37,13 +36,16 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
   instanceStateUpdate = new EventEmitter();
 
   loadingSnapshots: boolean;
+  snapshotsLoaded: boolean;
   filteredSnapshots: any[];
   snapshotName: string;
   _searchTerm: string;
   shouldSearch: boolean;
 
   private destroy$ = new Subject();
+  private onChanges$ = new ReplaySubject();
   private snapshots: any[];
+  private finishedLoading: boolean
   private readonly fuseJsOptions: {};
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -69,7 +71,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   createSnapshot()
   {
-    this.beforeLoad.emit();
+    this.processing.emit();
 
     this.snapshots = this.snapshots || [];
 
@@ -95,7 +97,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
         if (index >= 0)
           this.snapshots[index] = x;
 
-        this.load.emit();
+        this.processingFinished.emit();
         this.toastr.info(`A new snapshot "${snapshotName}" has been created for machine "${this.instance.name}"`);
       },
         err =>
@@ -106,7 +108,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
           if (index >= 0)
             this.snapshots.splice(index, 1);
 
-          this.load.emit();
+          this.processingFinished.emit();
           this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
         });
   }
@@ -117,7 +119,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
     this.confirmRestore(snapshot)
       .subscribe(() =>
       {
-        this.beforeLoad.emit();
+        this.processing.emit();
 
         snapshot.working = true;
 
@@ -135,7 +137,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
               err =>
               {
                 snapshot.working = false;
-                this.load.emit();
+                this.processingFinished.emit();
 
                 this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
               });
@@ -166,7 +168,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   private startMachineFromSnapshot(snapshot: Snapshot)
   {
-    this.beforeLoad.emit();
+    this.processing.emit();
 
     this.toastr.info(`Restoring machine "${this.instance.name}" from "${snapshot.name}" snapshot`);
 
@@ -182,14 +184,14 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
       {
         snapshot.working = false;
 
-        this.load.emit();
+        this.processingFinished.emit();
 
         this.toastr.info(`The machine "${this.instance.name}" has been started from the "${snapshot.name}" snapshot`);
       }, err =>
       {
         snapshot.working = false;
 
-        this.load.emit();
+        this.processingFinished.emit();
 
         this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
       });
@@ -214,7 +216,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
 
     modalRef.content.confirm.pipe(first()).subscribe(() =>
     {
-      this.beforeLoad.emit();
+      this.processing.emit();
 
       this.snapshotsService.deleteSnapshot(this.instance.id, snapshot.name)
         .subscribe(() =>
@@ -223,12 +225,12 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
           if (index >= 0)
             this.snapshots.splice(index, 1);
 
-          this.load.emit();
+          this.processingFinished.emit();
 
           this.toastr.info(`The "${snapshot.name}" snapshot has been deleted`);
         }, err =>
         {
-          this.load.emit();
+          this.processingFinished.emit();
 
           this.toastr.error(`The "${snapshot.name}" snapshot couldn't be deleted: ${err.error.message}`);
         });
@@ -238,6 +240,8 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   private getSnapshots()
   {
+    if (this.snapshotsLoaded) return
+
     this.loadingSnapshots = true;
 
     // Get the list of snapshots
@@ -246,7 +250,10 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
       {
         this.snapshots = x;
         this.filteredSnapshots = x;
+
         this.loadingSnapshots = false;
+        this.snapshotsLoaded = true;
+        this.load.emit(x);
       },
         err =>
         {
@@ -288,6 +295,21 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   ngOnInit(): void
   {
+    this.snapshots = this.instance?.snapshots;
+    this.filteredSnapshots = this.snapshots;
+
+    this.onChanges$.pipe(takeUntil(this.destroy$)).subscribe(() =>
+    {
+      if (!this.finishedLoading && this.loadSnapshots && !this.instance?.snapshotsLoaded)
+        this.getSnapshots();
+    });
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  ngOnChanges(changes: SimpleChanges): void
+  {
+    // Since we can't control if ngOnChanges is executed before ngOnInit, we need this trick
+    this.onChanges$.next(changes);
   }
 
   // ----------------------------------------------------------------------------------------------------------------

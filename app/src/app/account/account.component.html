@@ -1,55 +1,60 @@
-<div *ngIf="userInfo" class="pt-3">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h4>My profile</h4>
+<div class="d-flex flex-column h-100">
+  <div class="overflow-auto flex-grow-1">
+    <div class="container mb-3">
 
-          <button class="btn btn-sm btn-outline-info" (click)="showEditor()">Update profile</button>
+      <div *ngIf="userInfo" class="row pt-2">
+        <div class="col-sm-6">
+          <fieldset>
+            <legend>
+              {{ 'account.myProfile' | translate }}
+
+              <button class="btn btn-outline-info" container="body" (click)="showEditor()">
+                {{ 'account.updateProfile' | translate }}
+              </button>
+            </legend>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                Name: <b>{{ userInfo.firstName }} {{ userInfo.lastName }}</b>
+              </li>
+              <li class="list-group-item">
+                Username: <b>{{ userInfo.login }}</b>
+              </li>
+              <li class="list-group-item">
+                Email: <b>{{ userInfo.email }}</b>
+              </li>
+              <li class="list-group-item">
+                Phone: <b>{{ userInfo.phone }}</b>
+              </li>
+              <li class="list-group-item">
+                Container Name Service:
+                <span class="badge border ms-1 text-uppercase"
+                  [ngClass]="userInfo.triton_cns_enabled ? 'border-success text-success' : 'danger-success text-danger'">
+                  {{ userInfo.triton_cns_enabled ? 'enabled' : 'disabled' }}
+                </span>
+              </li>
+            </ul>
+          </fieldset>
         </div>
 
-        <div class="card-body">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              Name: <b>{{ userInfo.firstName }} {{ userInfo.lastName }}</b>
-            </li>
-            <li class="list-group-item">
-              Username: <b>{{ userInfo.login }}</b>
-            </li>
-            <li class="list-group-item">
-              Email: <b>{{ userInfo.email }}</b>
-            </li>
-            <li class="list-group-item">
-              Phone: <b>{{ userInfo.phone }}</b>
-            </li>
-            <li class="list-group-item">
-              Container Name Service:
-              <span class="badge border ms-1 text-uppercase"
-                    [ngClass]="userInfo.triton_cns_enabled ? 'border-success text-success' : 'danger-success text-danger'">
-                {{ userInfo.triton_cns_enabled ? 'enabled' : 'disabled' }}
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+        <div class="col-sm-6">
+          <fieldset>
+            <legend>
+              {{ 'account.myKeys' | translate }}
 
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h4>My SSH keys</h4>
+              <button class="btn btn-outline-info" container="body" (click)="addSshKey()">
+                {{ 'account.addKey' | translate }}
+              </button>
+            </legend>
 
-          <button class="btn btn-sm btn-outline-info" (click)="addSshKey()">Add SSH key</button>
+            <ol class="list-group list-group-flush">
+              <li class="list-group-item" *ngFor="let userKey of userKeys">
+                {{ userKey.name }}: <b class="text-uppercase">{{ userKey.fingerprint }}</b>
+              </li>
+            </ol>
+          </fieldset>
         </div>
-
-        <div class="card-body">
-          <ol class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let userKey of userKeys">
-              {{ userKey.name }}: <b class="text-uppercase">{{ userKey.fingerprint }}</b>
-            </li>
-          </ol>
-        </div>
-      </div>
     </div>
   </div>
+</div>
 </div>

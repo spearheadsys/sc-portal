@@ -32,18 +32,20 @@ export class Instance extends InstanceRequest
   imageDetails: CatalogImage;
   packageDetails: CatalogPackage;
   dns_names: string[];
-  dnsList: {};
+  dnsList: any;
   memory: number;
   type: string;
   state: string;
+  snapshots: any[];
 
   loading: boolean;
   working: boolean;
   shouldLoadInfo: boolean;
+  infoLoaded: boolean;
   shouldLoadNetworks: boolean;
-  shouldLoadSecurity: boolean;
+  networksLoaded: boolean;
   shouldLoadSnapshots: boolean;
-  shouldLoadFirewallRules: boolean;
+  snapshotsLoaded: boolean;
   volumesEnabled: boolean;
   metadataKeys: string[];
   tagKeys: string[];

@@ -39,7 +39,6 @@ import { faDocker } from '@fortawesome/free-brands-svg-icons';
 import { AutofocusDirective } from './directives/autofocus.directive';
 
 import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
-import { ImagesComponent } from './catalog/images/images.component';
 import { PackagesComponent } from './catalog/packages/packages.component';
 import { FileSizePipe } from './pipes/file-size.pipe';
 import { AutosizeModule } from 'ngx-autosize';
@@ -54,7 +53,6 @@ import { LazyLoadDirective } from './directives/lazy-load.directive';
     AutofocusDirective,
     //HasPermissionDirective,
     InlineEditorComponent,
-    ImagesComponent,
     PackagesComponent,
     FileSizePipe,
     AlphaOnlyDirective,
@@ -118,7 +116,6 @@ import { LazyLoadDirective } from './directives/lazy-load.directive';
     AutofocusDirective,
     TimeagoModule,
     NgxDatatableModule,
-    ImagesComponent,
     PackagesComponent,
     FileSizePipe,
     InlineEditorComponent,

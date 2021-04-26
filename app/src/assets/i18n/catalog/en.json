@@ -7,9 +7,9 @@
       "memory": "Memory",
       "disk": "Storage"
     },
-    "custom":
+    "images":
     {
-
+      "title": "Images"
     }
   }
 }

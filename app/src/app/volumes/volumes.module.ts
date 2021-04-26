@@ -34,7 +34,7 @@ import { VolumeEditorComponent } from './volume-editor/volume-editor.component';
       loader: {
         provide: TranslateLoader,
         //useClass: WebpackTranslateLoader
-        useFactory: () => new WebpackTranslateLoader('networking')
+        useFactory: () => new WebpackTranslateLoader('volumes')
       },
       compiler: {
         provide: TranslateCompiler,
