@@ -20,6 +20,8 @@ const LOGIN_PATH = '/api/login';
 const API_PATH = '/api'; // all calls here go to cloudapi
 const API_RE = new RegExp('^' + API_PATH + '/');
 const STATIC_RE = new RegExp('^/');
+const RATES_RE = new RegExp('^/(packages|images)\.json$');
+
 
 // Take any HTTP request that has a token, sign that request  with an
 // HTTP-Signature header, and pass it along to cloudapi. Return any response
@@ -189,6 +191,11 @@ function main() {
     server.del(API_RE,  proxy);
     server.post(API_RE, proxy);
     server.head(API_RE, proxy);
+
+    // where to serve the package and image rates data from
+    server.get(RATES_RE, mod_restify.plugins.serveStatic({
+        directory: 'rates'
+    }));
 
     // where to serve static content from
     let staticHandler = mod_restify.plugins.serveStatic({
