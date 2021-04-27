@@ -1,0 +1,62 @@
+.btn
+{
+  border-radius: 2rem;
+  line-height: 1.2;
+  font-family: "Mukta", sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+
+  &.btn-info, &.btn-outline-info, &.text-info
+  {
+    &:focus
+    {
+      box-shadow: 0 0 .75rem -.1rem #00e7ff, 0 0 0.25rem #00e7ff, 0 0 3rem -1.25rem #00e7ff inset;
+      /*border-color: #00e7ff;*/
+    }
+  }
+}
+
+.btn:not(.btn-lg):not(.btn-sm)
+{
+  font-size: 1.15rem;
+  padding: .375rem .5rem .3rem;
+}
+
+.btn-group-sm .btn:not(.btn-lg):not(.btn-sm)
+{
+  padding: 0 .25rem;
+
+  &:active, &:focus
+  {
+    box-shadow: none;
+  }
+}
+
+.btn.btn-lg
+{
+  font-size: 1.15rem;
+  padding-bottom: .35rem;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.btn-primary
+{
+  background: linear-gradient(135deg, #4488c7 0%, #006ee4 100%);
+  color: #FFF;
+  text-shadow: 0px 0px 5px rgba(3,51,103,.75);
+}
+
+.btn-success
+{
+  background: linear-gradient(135deg, #44bb53 0%,#169833 100%);
+  color: #FFF;
+  text-shadow: 0px 0px 5px #19752e;
+}
+
+.btn-info
+{
+  color: #000;
+  background: linear-gradient( 135deg, #1fd1f5 0%, #00c3ea 100%);
+  border-color: transparent;
+}

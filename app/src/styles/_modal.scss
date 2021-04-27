@@ -1,0 +1,58 @@
+.modal
+{
+  backdrop-filter: blur(6px);
+  z-index: 1040;
+}
+
+.modal-backdrop
+{
+  background-color: rgb(1, 10, 14);
+}
+
+.modal-content
+{
+  background: linear-gradient( 135deg, #00e7ff 0%, #00e7ff 100%);
+  box-shadow: 0rem 0rem 3rem -2rem #00e7ff;
+  border: none;
+  border-radius: .5rem;
+  overflow: hidden;
+
+  .content
+  {
+    height: calc(100% - 4px);
+    margin: 2px;
+    padding: 1rem;
+    background: linear-gradient( 135deg, #10182b 0%, #0d1321 100%);
+    color: #00dcff;
+    border-radius: 0.35rem;
+
+    h4
+    {
+      color: #3d5e8e;
+      font-family: "Varta", sans-serif;
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 992px)
+{
+  .modal-dialog.modal-xl
+  {
+    max-width: 762px;
+  }
+}
+
+.close
+{
+  position: absolute;
+  right: .25rem;
+  top: 0;
+  padding: .75rem 1rem;
+  font-weight: bold;
+  z-index: 1;
+  outline: none;
+  border: none;
+  background: none;
+  font-size: 2rem;
+  color: #3d5e8e;
+}
