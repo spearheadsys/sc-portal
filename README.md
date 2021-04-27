@@ -4,8 +4,13 @@ Be familiar with the steps in [Installation][] below, since it is needed to
 build the Angular app first.
 
 Once the Angular app is built, provision a small base-64-lts 20.4.0 VM,
-connected solely to the external network (aka public Internet). From within
-the VM, the following steps are needed:
+connected solely to the external network (aka public Internet). It should
+(although does not require) two JSON hash tables in the VM's internal\_metadata:
+sc:image\_subscription\_rates and sc:package\_rates; both map UUID strings to
+floats, with the image float representing a monthly subscription rate, and the
+package float representing the rate per hour.
+
+Once the VM is running, the following steps are needed from within the VM:
 
     pkgin in gmake
     mkdir -p /opt/spearhead/portal
@@ -96,6 +101,19 @@ login page: an HTTP 302, with a Location header.
 All calls will be passed through to cloudapi. For these calls to succeed,
 they MUST provide an X-Auth-Token header, containing the token returned from
 SSO.
+
+## GET /rates/packages.json
+
+Returns a JSON file mapping package UUIDs (a string) to the hourly rate
+(a float) that a customer will be charged for running a VM using that package.
+This is charged fractionally down to a minute granularity.
+
+## GET /rates/images.json
+
+Returns a JSON file mapping image UUIDs (a string) to the monthly rate
+(a float) that a customer will be charged for running a VM using that image.
+This is a flat monthly charge, regardless how long the VM exists for (even if
+only a few minutes).
 
 # Interaction cycle
 

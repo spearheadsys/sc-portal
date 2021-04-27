@@ -20,6 +20,8 @@ const LOGIN_PATH = '/api/login';
 const API_PATH = '/api'; // all calls here go to cloudapi
 const API_RE = new RegExp('^' + API_PATH + '/');
 const STATIC_RE = new RegExp('^/');
+const RATES_RE = new RegExp('^/(packages|images)\.json$');
+
 
 // Take any HTTP request that has a token, sign that request  with an
 // HTTP-Signature header, and pass it along to cloudapi. Return any response
@@ -190,11 +192,31 @@ function main() {
     server.post(API_RE, proxy);
     server.head(API_RE, proxy);
 
+    // where to serve the package and image rates data from
+    server.get(RATES_RE, mod_restify.plugins.serveStatic({
+        directory: 'rates'
+    }));
+
     // where to serve static content from
-    server.get(STATIC_RE, mod_restify.plugins.serveStatic({
+    let staticHandler = mod_restify.plugins.serveStatic({
         directory: 'static',
         default: 'index.html'
-    }));
+    });
+    server.get(STATIC_RE, function staticFunnel(req, res, next) {
+        staticHandler(req, res, function fileFound(err) {
+            // If we didn't find the requested static file, serve up the
+            // default (index.html) instead. This is useful when a user reloads
+            // some page in the SPA, since the path does not match anything the
+            // backend knows, but the SPA reloaded through index.html will know
+            // what to do with the original URL.
+            if (err && err.statusCode === 404) {
+                req.url = '/';
+                staticHandler(req, res, next);
+            } else {
+                next(err);
+            }
+        });
+    });
 
     // enable HTTP server
     server.listen(CONFIG.server.port, function listening() {
