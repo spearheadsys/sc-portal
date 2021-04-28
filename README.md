@@ -55,7 +55,13 @@ Then install the Angular compiler needed for the client-side app:
 
 ## Build the client-side app:
 
-    pushd app && npm run build && popd
+For development:
+
+    pushd app && ng build && popd
+
+For production (shakes tree and minifies to get smaller size):
+
+    pushd app && ng build --prod && popd
 
 ## Generate server certificates
 
