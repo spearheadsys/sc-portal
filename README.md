@@ -59,9 +59,14 @@ For development:
 
     pushd app && ng build && popd
 
-For production (shakes tree and minifies to get smaller size):
+For production (shakes tree, minifies and gzips to get smaller size):
 
-    pushd app && ng build --prod && popd
+    pushd app
+    ng build --prod
+    for f in $(find dist -type f -not -name '*.html' -not -name '*.png'); do
+      gzip --best "$f";
+    done
+    popd
 
 ## Generate server certificates
 
