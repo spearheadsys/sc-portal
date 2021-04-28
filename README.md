@@ -8,7 +8,21 @@ connected solely to the external network (aka public Internet). It should
 (although does not require) two JSON hash tables in the VM's internal\_metadata:
 sc:image\_subscription\_rates and sc:package\_rates; both map UUID strings to
 floats, with the image float representing a monthly subscription rate, and the
-package float representing the rate per hour.
+package float representing the rate per hour. A simplified example of a VM's
+metadata:
+
+    "internal_metadata_namespaces": ["sc"],
+    "internal_metadata": {
+        "sc:image_subscription_rates":
+            "{\"ca872441-09a3-4ceb-a843-6fa83ac6795d\": 70}",
+        "sc:package_rates":
+            "{\"64e9bcdd-1ba7-429f-9243-642891b81028\": 0.45}"
+    }
+
+Be aware that if the image and package JSON strings are malformed (not
+serialized correctly), this will not affect the server startup; errors will
+only show up in the client-side app when logged in, so make sure the JSON is
+serialized correctly.
 
 Once the VM is running, the following steps are needed from within the VM:
 
@@ -41,7 +55,18 @@ Then install the Angular compiler needed for the client-side app:
 
 ## Build the client-side app:
 
-    pushd app && npm run build && popd
+For development:
+
+    pushd app && ng build && popd
+
+For production (shakes tree, minifies and gzips to get smaller size):
+
+    pushd app
+    ng build --prod
+    for f in $(find dist -type f -not -name '*.html' -not -name '*.png'); do
+      gzip --best "$f";
+    done
+    popd
 
 ## Generate server certificates
 
@@ -102,13 +127,13 @@ All calls will be passed through to cloudapi. For these calls to succeed,
 they MUST provide an X-Auth-Token header, containing the token returned from
 SSO.
 
-## GET /rates/packages.json
+## GET /packages.json
 
 Returns a JSON file mapping package UUIDs (a string) to the hourly rate
 (a float) that a customer will be charged for running a VM using that package.
 This is charged fractionally down to a minute granularity.
 
-## GET /rates/images.json
+## GET /images.json
 
 Returns a JSON file mapping image UUIDs (a string) to the monthly rate
 (a float) that a customer will be charged for running a VM using that image.

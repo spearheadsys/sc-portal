@@ -200,7 +200,8 @@ function main() {
     // where to serve static content from
     let staticHandler = mod_restify.plugins.serveStatic({
         directory: 'static',
-        default: 'index.html'
+        default: 'index.html',
+        gzip: true
     });
     server.get(STATIC_RE, function staticFunnel(req, res, next) {
         staticHandler(req, res, function fileFound(err) {
