@@ -21,7 +21,7 @@
       </ul>
     </div>
 
-    <div class="form-check form-switch">
+    <div class="form-check form-switch mb-0">
       <input class="form-check-input mt-0" type="checkbox" id="fw{{ instance.id }}" [(ngModel)]="instance.firewall_enabled"
              (change)="toggleCloudFirewall($event, instance)">
       <label class="form-check-label" for="fw{{ instance.id }}">Toggle cloud firewall</label>

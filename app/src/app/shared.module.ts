@@ -32,7 +32,8 @@ import
   faTimes, faTrash, faUser, faUserTag, faTag, faUserLock, faLock, faPen, faCheckCircle, faPenNib, faPlus, faMinus, faAngleRight, faHandPointer,
   faArrowsAlt, faTags, faEllipsisV, faHatWizard, faUserCog, faCircle, faAngleLeft, faExternalLinkAlt, faCheck, faPowerOff, faBars, faSpinner,
   faStop, faPlay, faRedo, faMicrochip, faDesktop, faCopy, faSquare, faCheckSquare, faSave, faDatabase, faClone, faSearch, faHistory, faMask,
-  faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent
+  faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent,
+  faUndo
 } from '@fortawesome/free-solid-svg-icons';
 import { faDocker } from '@fortawesome/free-brands-svg-icons';
 
@@ -147,7 +148,8 @@ export class SharedModule
       faTimes, faTrash, faUser, faUserTag, faTag, faUserLock, faLock, faPen, faCheckCircle, faPenNib, faPlus, faMinus, faAngleRight, faHandPointer,
       faArrowsAlt, faTags, faEllipsisV, faHatWizard, faUserCog, faCircle, faAngleLeft, faExternalLinkAlt, faCheck, faPowerOff, faBars, faSpinner,
       faStop, faPlay, faRedo, faMicrochip, faDesktop, faCopy, faSquare, faCheckSquare, faSave, faDatabase, faClone, faSearch, faHistory, faMask,
-      faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent
+      faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent,
+      faUndo
     );
   }
 }

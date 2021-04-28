@@ -774,7 +774,7 @@ export class InstancesComponent implements OnInit, OnDestroy
           instance.working = false;
         });
 
-    instance.shouldLoadInfo = this.editorForm.get('showMachineDetails').value;
+    instance.shouldLoadInfo = true;
   }
 
   // ----------------------------------------------------------------------------------------------------------------

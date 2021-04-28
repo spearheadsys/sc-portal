@@ -116,7 +116,8 @@ body, div, virtual-scroller
     background: none;
     border-radius: 0;
     border: none;
-    font-family: "Varta", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
+    text-transform: uppercase;
     text-align: center;
     color: #0dcaf0;
     width: 100%;
@@ -138,6 +139,7 @@ body, div, virtual-scroller
   .nav-tabs
   {
     border: none;
+    flex-wrap: nowrap;
   }
 
   .tab-content
@@ -266,10 +268,11 @@ accordion
 .dropdown-menu, .menu-popover, .menu-dropdown
 {
   background: linear-gradient(135deg, #1fd1f5 0%, #00c3ea 100%);
-  font-family: "Varta", sans-serif;
-  font-size: 1.2rem;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 1.25rem;
   z-index: 1020;
-  max-height: 60vh;
+  max-height: 80vh;
+  max-width: 600px;
   overflow: auto;
 }
 
@@ -472,7 +475,7 @@ accordion
 {
   thead
   {
-    font-family: "Varta", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 1.2rem;
     color: #A3A4B8;
   }

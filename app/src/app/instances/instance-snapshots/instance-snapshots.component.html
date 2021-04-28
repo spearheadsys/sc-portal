@@ -33,7 +33,7 @@
          *ngIf="snapshot.state === 'created' && !snapshot.working">
       <button class="btn btn-link text-success" tooltip="Start machine from this snapshot" container="body" placement="top" [adaptivePosition]="false"
               (click)="restoreSnapshot(snapshot)">
-        <fa-icon icon="history" [fixedWidth]="true" size="sm"></fa-icon>
+        <fa-icon icon="undo" [fixedWidth]="true" size="sm"></fa-icon>
       </button>
 
       <button class="btn btn-link text-info" dropdownToggle

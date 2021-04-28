@@ -12,18 +12,18 @@
       <ng-container *ngIf="instances && instances.length">
         <div class="input-group input-group-pill me-lg-3 mb-3 mb-lg-0 w-lg-auto w-100">
           <input type="text" class="form-control" placeholder="Search..." formControlName="searchTerm"
-            appAlphaOnly="^[A-Za-z0-9_-]+$" tooltip="Search by name, tag, metadata, operating system or brand"
-            placement="top" container="body" [adaptivePosition]="false">
+                 appAlphaOnly="^[A-Za-z0-9_-]+$" tooltip="Search by name, tag, metadata, operating system or brand"
+                 placement="top" container="body" [adaptivePosition]="false">
           <button class="btn btn-outline-info" type="button" (click)="clearSearch()"
-            [disabled]="!editorForm.get('searchTerm').value" tooltip="Clear search" container="body" placement="top"
-            [adaptivePosition]="false">
+                  [disabled]="!editorForm.get('searchTerm').value" tooltip="Clear search" container="body" placement="top"
+                  [adaptivePosition]="false">
             <fa-icon icon="times" size="sm" [fixedWidth]="true"></fa-icon>
           </button>
         </div>
 
         <div class="btn-group me-lg-3 mb-3 mb-lg-0 w-lg-auto w-100">
           <button class="btn btn-outline-info dropdown-toggle" [disabled]="loadingIndicator" [popover]="filtersTemplate"
-            [outsideClick]="true" container="body" placement="bottom right" containerClass="menu-popover">
+                  [outsideClick]="true" container="body" placement="bottom right" containerClass="menu-popover">
             Showing {{ listItems.length }} / {{ instances.length }}
             <ng-container *ngIf="runningInstanceCount && stoppedInstanceCount">
               <span class="badge rounded-pill bg-success text-dark">{{ runningInstanceCount }} running</span>
@@ -45,31 +45,31 @@
           <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'name'"
-                (click)="setSortProperty('name')">
+                      (click)="setSortProperty('name')">
                 Name
               </button>
             </li>
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'os'"
-                (click)="setSortProperty('os')">
+                      (click)="setSortProperty('os')">
                 Operating system
               </button>
             </li>
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'brand'"
-                (click)="setSortProperty('brand')">
+                      (click)="setSortProperty('brand')">
                 Brand
               </button>
             </li>
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'image'"
-                (click)="setSortProperty('image')">
+                      (click)="setSortProperty('image')">
                 Image
               </button>
             </li>
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'state'"
-                (click)="setSortProperty('state')">
+                      (click)="setSortProperty('state')">
                 State
               </button>
             </li>
@@ -90,32 +90,32 @@
       </h2>
 
       <virtual-scroller #scroller [items]="listItems" bufferAmount="2" class="instances"
-        [parentScroll]="scroller.window.document.getElementById('scrollingBlock')" [scrollThrottlingTime]="250">
+                        [parentScroll]="scroller.window.document.getElementById('scrollingBlock')" [scrollThrottlingTime]="250">
         <div *ngFor="let instance of scroller.viewPortItems; trackBy: trackByFunction; let index = index"
-          [ngClass]="showMachineDetails ? 'col-12 full-details' : 'col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12'"
-          [class.col-lg-6]="editorForm.get('fullDetailsTwoColumns').value" lazyLoad [lazyLoadDelay]="lazyLoadDelay"
-          [container]="scroller.element.nativeElement.getElementsByClassName('scrollable-content')[0]"
-          (canLoad)="instance.loading = false" (unload)="instance.loading = true"
-          (load)="loadInstanceDetails(instance)">
+             [ngClass]="showMachineDetails ? 'col-12 full-details' : 'col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12'"
+             [class.col-lg-6]="showMachineDetails && editorForm.get('fullDetailsTwoColumns').value" lazyLoad [lazyLoadDelay]="lazyLoadDelay"
+             [container]="scroller.element.nativeElement.getElementsByClassName('scrollable-content')[0]"
+             (canLoad)="instance.loading = false" (unload)="instance.loading = true"
+             (load)="loadInstanceDetails(instance)">
           <fieldset class="card" [disabled]="instance.working">
             <div class="row g-0">
               <div class="card-info" [ngClass]="showMachineDetails ? 'col-lg-4' : 'col'">
                 <div>
                   <h5 class="card-title text-truncate" [tooltip]="instance.name" container="body" placement="top"
-                    [adaptivePosition]="false">
+                      [adaptivePosition]="false">
                     {{ instance.name }}
                   </h5>
 
                   <div *ngIf="!instance.loading && instance.imageDetails"
-                    class="text-truncate small text-info text-faded mb-1" [tooltip]="instance.imageDetails.description"
-                    container="body" placement="top" [adaptivePosition]="false">
+                       class="text-truncate small text-info text-faded mb-1" [tooltip]="instance.imageDetails.description"
+                       container="body" placement="top" [adaptivePosition]="false">
                     {{ instance.imageDetails.name }}, v{{ instance.imageDetails.version }}
                   </div>
 
                   <button *ngIf="!instance.loading"
-                    class="btn btn-outline-info w-100 d-flex justify-content-around align-items-center text-truncate"
-                    tooltip="Change specifications" container="body" placement="top" [adaptivePosition]="false"
-                    (click)="resizeMachine(instance)" [disabled]="instance.brand === 'kvm'">
+                          class="btn btn-outline-info w-100 d-flex justify-content-around align-items-center text-truncate"
+                          tooltip="Change specifications" container="body" placement="top" [adaptivePosition]="false"
+                          (click)="resizeMachine(instance)" [disabled]="instance.brand === 'kvm'">
 
                     <!--<span class="text-uppercase text-truncate">{{ instance.packageDetails.name }}</span>-->
                     <span class="px-1">
@@ -150,29 +150,30 @@
 
                   <div class="d-flex flex-nowrap justify-content-between align-items-center">
                     <a href="javascript:void(0)" class="badge text-uppercase"
-                      [class.bg-light]="instance.state !== 'running' && instance.state !== 'stopped'"
-                      [class.bg-danger]="instance.state === 'stopped'" [class.bg-success]="instance.state === 'running'"
-                      (click)="showMachineHistory(instance)" tooltip="{{ 'dashboard.listItem.history' | translate }}"
-                      container="body" placement="top" [adaptivePosition]="false">
+                       [class.bg-light]="instance.state !== 'running' && instance.state !== 'stopped'"
+                       [class.bg-danger]="instance.state === 'stopped'" [class.bg-success]="instance.state === 'running'"
+                       (click)="showMachineHistory(instance)" tooltip="{{ 'dashboard.listItem.history' | translate }}"
+                       container="body" placement="top" [adaptivePosition]="false">
+                      <fa-icon icon="history" [fixedWidth]="true"></fa-icon>
                       {{ instance.state }}
                     </a>
 
                     <div class="btn-group btn-group-sm" dropdown placement="bottom right" *ngIf="!instance.loading">
                       <button class="btn btn-link text-warning" (click)="restartMachine(instance)"
-                        *ngIf="instance.state === 'running'">
+                              *ngIf="instance.state === 'running'">
                         <fa-icon icon="power-off" [fixedWidth]="true" size="sm" tooltip="Restart this machine"
-                          container="body" placement="top" [adaptivePosition]="false"></fa-icon>
+                                 container="body" placement="top" [adaptivePosition]="false"></fa-icon>
                       </button>
 
                       <button class="btn btn-link text-success" (click)="startMachine(instance)"
-                        *ngIf="instance.state === 'stopped'">
+                              *ngIf="instance.state === 'stopped'">
                         <fa-icon icon="play" [fixedWidth]="true" size="sm" tooltip="Start this machine" container="body"
-                          placement="top" [adaptivePosition]="false"></fa-icon>
+                                 placement="top" [adaptivePosition]="false"></fa-icon>
                       </button>
 
                       <button class="btn btn-link text-info" [popover]="instanceContextMenu"
-                        [popoverContext]="{ instance: instance }" placement="bottom left" containerClass="menu-dropdown"
-                        [outsideClick]="true">
+                              [popoverContext]="{ instance: instance }" placement="bottom left" containerClass="menu-dropdown"
+                              [outsideClick]="true">
                         <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
                       </button>
                     </div>
@@ -184,49 +185,49 @@
                 <div class="card-header p-0 h-100">
                   <tabset class="dashboard-tabs" *ngIf="!instance.loading">
                     <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
-                      id="{{ instance.id }}-info">
+                         id="{{ instance.id }}-info">
                       <ng-template tabHeading>
                         <fa-icon icon="info-circle" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Info</span>
                       </ng-template>
                       <div class="card-body p-2 h-100">
                         <app-instance-info [instance]="instance" [loadInfo]="instance.shouldLoadInfo"
-                          (load)="setInstanceInfo(instance, $event)" (processing)="instance.working = true"
-                          (finishedProcessing)="instance.working = false">
+                                           (load)="setInstanceInfo(instance, $event)" (processing)="instance.working = true"
+                                           (finishedProcessing)="instance.working = false">
                         </app-instance-info>
                       </div>
                     </tab>
                     <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
-                      id="{{ instance.id }}-networks">
+                         id="{{ instance.id }}-networks">
                       <ng-template tabHeading>
                         <fa-icon icon="network-wired" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Network</span>
                       </ng-template>
                       <div class="card-body p-2 h-100">
                         <app-instance-networks [instance]="instance" [loadNetworks]="instance.shouldLoadNetworks"
-                          (load)="setInstanceNetworks(instance, $event)" (processing)="instance.working = true"
-                          (finishedProcessing)="instance.working = false"
-                          (instanceReboot)="watchInstanceState(instance)"
-                          (instanceStateUpdate)="updateInstance(instance, $event)">
+                                               (load)="setInstanceNetworks(instance, $event)" (processing)="instance.working = true"
+                                               (finishedProcessing)="instance.working = false"
+                                               (instanceReboot)="watchInstanceState(instance)"
+                                               (instanceStateUpdate)="updateInstance(instance, $event)">
                         </app-instance-networks>
                       </div>
                     </tab>
                     <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
-                      id="{{ instance.id }}-snapshots" *ngIf="instance.brand !== 'kvm'">
+                         id="{{ instance.id }}-snapshots" *ngIf="instance.brand !== 'kvm'">
                       <ng-template tabHeading>
                         <fa-icon icon="history" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Snapshots</span>
                       </ng-template>
                       <div class="card-body p-2 h-100">
                         <app-instance-snapshots [instance]="instance" [loadSnapshots]="instance.shouldLoadSnapshots"
-                          (load)="setInstanceSnapshots(instance, $event)" (processing)="instance.working = true"
-                          (finishedProcessing)="instance.working = false"
-                          (instanceStateUpdate)="updateInstance(instance, $event)">
+                                                (load)="setInstanceSnapshots(instance, $event)" (processing)="instance.working = true"
+                                                (finishedProcessing)="instance.working = false"
+                                                (instanceStateUpdate)="updateInstance(instance, $event)">
                         </app-instance-snapshots>
                       </div>
                     </tab>
                     <tab *ngIf="false" customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
-                      id="{{ instance.id }}-migrations">
+                         id="{{ instance.id }}-migrations">
                       <ng-template tabHeading>
                         <fa-icon icon="coins" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Migrations</span>
@@ -236,16 +237,15 @@
                       </div>
                     </tab>
                     <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
-                      id="{{ instance.id }}-volumes" *ngIf="instance.volumes && instance.volumes.length">
+                         id="{{ instance.id }}-volumes" *ngIf="instance.volumes && instance.volumes.length">
                       <ng-template tabHeading>
                         <fa-icon icon="database" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Volumes</span>
                       </ng-template>
                       <div class="card-body p-2 h-100">
                         <ul class="list-group list-group-flush list-info">
-                          <li
-                            class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
-                            *ngFor="let volume of instance.volumes">
+                          <li class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
+                              *ngFor="let volume of instance.volumes">
                             <div class="text-truncate">
                               <fa-icon icon="database" [fixedWidth]="true" size="sm"></fa-icon>
                               <span class="ms-1">
@@ -275,32 +275,35 @@
       <div class="dropdown-header">{{ 'dashboard.list.filterByState' | translate }}</div>
       <div class="btn-group w-100 mb-3" dropdown>
         <button class="btn btn-state-filter dropdown-toggle d-flex justify-content-between align-items-center"
-          dropdownToggle>
-          <span *ngIf="!editorForm.get(['filters', 'stateFilter']).value">{{ 'dashboard.list.anyState' | translate
-            }}</span>
-          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'running'">{{
-            'dashboard.listItem.stateRunning' | translate }}</span>
-          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'stopped'">{{
-            'dashboard.listItem.stateStopped' | translate }}</span>
+                dropdownToggle>
+          <span *ngIf="!editorForm.get(['filters', 'stateFilter']).value">
+            {{ 'dashboard.list.anyState' | translate }}
+          </span>
+          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'running'">
+            {{ 'dashboard.listItem.stateRunning' | translate }}
+          </span>
+          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'stopped'">
+            {{ 'dashboard.listItem.stateStopped' | translate }}
+          </span>
         </button>
         <ul *dropdownMenu class="dropdown-menu dropdown-menu-state-filter" role="menu">
           <li role="menuitem">
             <button class="dropdown-item" [class.active]="!editorForm.get(['filters', 'stateFilter']).value"
-              (click)="setStateFilter()">
+                    (click)="setStateFilter()">
               {{ 'dashboard.list.anyState' | translate }}
             </button>
           </li>
           <li role="menuitem">
             <button class="dropdown-item"
-              [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'running'"
-              (click)="setStateFilter('running')">
+                    [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'running'"
+                    (click)="setStateFilter('running')">
               {{ 'dashboard.listItem.stateRunning' | translate }}
             </button>
           </li>
           <li role="menuitem">
             <button class="dropdown-item"
-              [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'stopped'"
-              (click)="setStateFilter('stopped')">
+                    [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'stopped'"
+                    (click)="setStateFilter('stopped')">
               {{ 'dashboard.listItem.stateStopped' | translate }}
             </button>
           </li>
@@ -313,8 +316,9 @@
       <div class="dropdown-header">{{ 'dashboard.list.filterByDisk' | translate }}</div>
       <ngx-slider class="mb-3" formControlName="diskFilter" [options]="diskFilterOptions"></ngx-slider>
 
-      <button class="btn btn-outline-dark w-100 mt-3" (click)="clearFilters()">{{ 'dashboard.list.resetFilters' |
-        translate }}</button>
+      <button class="btn btn-outline-dark w-100 mt-3" (click)="clearFilters()">
+        {{ 'dashboard.list.resetFilters' | translate }}
+      </button>
     </ng-container>
 
     <div class="dropdown-divider"></div>
@@ -323,14 +327,14 @@
       <label class="form-check-label" for="showMachineDetails">
         {{ 'dashboard.list.showDetails' | translate }}
         <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1"
-          *ngIf="editorForm.get('showMachineDetails').disabled"></fa-icon>
+                 *ngIf="editorForm.get('showMachineDetails').disabled"></fa-icon>
       </label>
     </div>
 
     <div [collapse]="!editorForm.get('showMachineDetails').value" [isAnimated]="true">
       <div class="form-check form-switch">
         <input class="form-check-input mt-0" type="checkbox" id="fullDetailsTwoColumns"
-          formControlName="fullDetailsTwoColumns">
+               formControlName="fullDetailsTwoColumns">
         <label class="form-check-label" for="fullDetailsTwoColumns">
           {{ 'dashboard.list.dualColumns' | translate }}
         </label>
@@ -343,40 +347,46 @@
   <ul class="list-group list-group-flush" role="menu">
     <li role="menuitem">
       <button class="dropdown-item" (click)="renameMachine(instance)">
-        <fa-icon icon="pen" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="pen" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.rename' | translate }}
       </button>
     </li>
     <li role="menuitem">
       <button class="dropdown-item" (click)="showTagEditor(instance)">
-        <fa-icon icon="tags" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="tags" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.editTags' | translate }}
       </button>
     </li>
     <li role="menuitem">
       <button class="dropdown-item" (click)="showTagEditor(instance, true)">
-        <fa-icon icon="tags" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="tags" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.editMetadata' | translate }}
       </button>
     </li>
     <li class="dropdown-divider"></li>
     <li role="menuitem">
       <button class="dropdown-item" (click)="createMachine(instance)">
-        <fa-icon icon="clone" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="clone" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.clone' | translate }}
       </button>
     </li>
     <li role="menuitem">
       <button class="dropdown-item" (click)="createImageFromMachine(instance)">
-        <fa-icon icon="layer-group" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="layer-group" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.createImage' | translate }}
       </button>
     </li>
     <li class="dropdown-divider"></li>
     <ng-container *ngIf="instance.state === 'running'">
       <li role="menuitem">
+        <button class="dropdown-item" (click)="restartMachine(instance)">
+          <fa-icon icon="undo" [fixedWidth]="true" size="sm"></fa-icon>
+          {{ 'dashboard.listItem.restart' | translate }}
+        </button>
+      </li>
+      <li role="menuitem">
         <button class="dropdown-item" (click)="stopMachine(instance)">
-          <fa-icon icon="stop" [fixedWidth]="true"></fa-icon>
+          <fa-icon icon="stop" [fixedWidth]="true" size="sm"></fa-icon>
           {{ 'dashboard.listItem.stop' | translate }}
         </button>
       </li>
@@ -384,7 +394,7 @@
     </ng-container>
     <li role="menuitem">
       <button class="dropdown-item" (click)="deleteMachine(instance)">
-        <fa-icon icon="trash" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="trash" [fixedWidth]="true" size="sm"></fa-icon>
         {{ 'dashboard.listItem.delete' | translate }}
       </button>
     </li>

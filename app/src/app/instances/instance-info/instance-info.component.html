@@ -31,7 +31,7 @@
   </ng-container>
 
   <li class="dropdown-header">Deletion protection</li>
-  <li class="list-group-item ps-0 pb-0">
+  <li class="list-group-item ps-0 pb-0 mt-2 ms-2">
     <div class="form-check form-switch">
       <input class="form-check-input mt-0" type="checkbox" id="dp{{ instance.id }}" [(ngModel)]="instance.deletion_protection"
              (change)="toggleDeletionProtection($event, instance)">
