@@ -43,7 +43,7 @@ export class VolumesComponent implements OnInit, OnDestroy
     private readonly titleService: Title,
     private readonly translationService: TranslateService)
   {
-    translationService.get('volumes.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+    translationService.get('volumes.title').pipe(first()).subscribe(x => titleService.setTitle(`Spearhead - ${x}`));
 
     // Configure FuseJs
     this.fuseJsOptions = {

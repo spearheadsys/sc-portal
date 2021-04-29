@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
-import { delay, filter, map, repeatWhen, take, tap } from 'rxjs/operators';
+import { delay, filter, map, mergeMap, repeatWhen, take, tap } from 'rxjs/operators';
 import { CatalogPackage } from '../models/package';
 import { CatalogImage } from '../models/image';
 
@@ -38,7 +38,16 @@ export class CatalogService
   })
   getPackages(): Observable<CatalogPackage[]>
   {
-    return this.httpClient.get<CatalogPackage[]>(`/api/my/packages`);
+    return this.httpClient.get<CatalogPackage[]>(`/api/my/packages`)
+      .pipe(mergeMap(packages => 
+        {
+          return this.httpClient.get(`./assets/data/packages.json`).pipe(map(prices => 
+            {
+              packages.forEach(x => x.price = prices[x.id])
+
+              return packages;
+            }))
+        }));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -47,7 +56,16 @@ export class CatalogService
   })
   getPackage(packageId: string): Observable<CatalogPackage>
   {
-    return this.httpClient.get<CatalogPackage>(`/api/my/packages/${packageId}`);
+    return this.httpClient.get<CatalogPackage>(`/api/my/packages/${packageId}`)
+      .pipe(mergeMap(pkg => 
+        {
+          return this.httpClient.get(`./assets/data/packages.json`).pipe(map(prices => 
+            {
+              pkg.price = prices[pkg.id];
+
+              return pkg;
+            }))
+        }));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -56,7 +74,16 @@ export class CatalogService
   })
   getImages(allStates = false): Observable<CatalogImage[]>
   {
-    return this.httpClient.get<CatalogImage[]>(`/api/my/images?${allStates ? 'state=all' : ''}`);
+    return this.httpClient.get<CatalogImage[]>(`/api/my/images?${allStates ? 'state=all' : ''}`)
+      .pipe(mergeMap(images => 
+        {
+          return this.httpClient.get(`./assets/data/images.json`).pipe(map(prices => 
+            {
+              images.forEach(x => x.price = prices[x.id])
+
+              return images;
+            }))
+        }));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -65,7 +92,16 @@ export class CatalogService
   })
   getImage(id: string): Observable<CatalogImage>
   {
-    return this.httpClient.get<CatalogImage>(`/api/my/images/${id}`);
+    return this.httpClient.get<CatalogImage>(`/api/my/images/${id}`)
+      .pipe(mergeMap(image => 
+        {
+          return this.httpClient.get(`./assets/data/images.json`).pipe(map(prices => 
+            {
+              image.price = prices[image.id];
+
+              return image;
+            }))
+        }));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -141,7 +177,7 @@ export class CatalogService
   // ----------------------------------------------------------------------------------------------------------------
   cloneImage(imageId: string): Observable<any>
   {
-    // https://apidocs.joyent.com/cloudapi/#CloneImage
+    // https://apidocs.Spearhead.com/cloudapi/#CloneImage
     return this.httpClient.post<any>(`/api/my/images/${imageId}?action=clone`, {})
       .pipe(tap(() => imagesCacheBuster$.next()));
   }

@@ -21,9 +21,9 @@
         <div class="btn-group flex-grow-1 flex-grow-sm-0 w-sm-auto w-100" dropdown placement="bottom right">
           <button class="btn btn-outline-info dropdown-toggle" dropdownToggle>
             Sort by
-            <b *ngIf="editorForm.get('sortProperty').value === 'action'">action</b>
-            <b *ngIf="editorForm.get('sortProperty').value === 'enabled'">status</b>
-            <b *ngIf="editorForm.get('sortProperty').value === 'description'">description</b>
+            <span *ngIf="editorForm.get('sortProperty').value === 'action'">action</span>
+            <span *ngIf="editorForm.get('sortProperty').value === 'enabled'">status</span>
+            <span *ngIf="editorForm.get('sortProperty').value === 'description'">description</span>
           </button>
           <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
             <li role="menuitem">

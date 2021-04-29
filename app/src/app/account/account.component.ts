@@ -32,7 +32,7 @@ export class AccountComponent implements OnInit, OnDestroy
     private readonly titleService: Title,
     private readonly translationService: TranslateService)
   {
-    translationService.get('account.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+    translationService.get('account.title').pipe(first()).subscribe(x => titleService.setTitle(`Spearhead - ${x}`));
 
     //accountService.getUsers().subscribe(x => console.log(x));
 

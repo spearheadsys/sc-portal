@@ -35,7 +35,7 @@ export class MigrationsService
   // ----------------------------------------------------------------------------------------------------------------
   migrate(instanceId: string): Observable<any>
   {
-    // https://apidocs.joyent.com/cloudapi/#Migrate
+    // https://apidocs.Spearhead.com/cloudapi/#Migrate
     return this.httpClient.post(`/api/my/machines/${instanceId}/migrate`, { action: 'begin | sync | switch | automatic | pause | abort | watch', affinity: [] })
       .pipe(tap(() => cacheBuster$.next()));
   }
@@ -43,7 +43,7 @@ export class MigrationsService
   // ----------------------------------------------------------------------------------------------------------------
   getMigrationProgress(instanceId: string): Observable<any>
   {
-    // https://apidocs.joyent.com/cloudapi/#Migrate
+    // https://apidocs.Spearhead.com/cloudapi/#Migrate
     return this.httpClient.get(`/api/my/machines/${instanceId}/migrate?action=watch`);
   }
 

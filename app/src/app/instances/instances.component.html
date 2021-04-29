@@ -83,8 +83,8 @@
     </div>
   </div>
 
-  <div class="overflow-auto flex-grow-1 mt-3" id="scrollingBlock">
-    <div class="container py-2">
+  <div class="overflow-auto flex-grow-1 mt-3 d-flex flex-column" id="scrollingBlock">
+    <div class="container flex-grow-1 py-2">
       <h2 *ngIf="listItems && listItems.length === 0 && instances && instances.length > 0" class="text-uppercase">
         {{ 'dashboard.list.noResults' | translate }}
       </h2>
@@ -159,19 +159,13 @@
                     </a>
 
                     <div class="btn-group btn-group-sm" dropdown placement="bottom right" *ngIf="!instance.loading">
-                      <button class="btn btn-link text-warning" (click)="restartMachine(instance)"
-                              *ngIf="instance.state === 'running'">
-                        <fa-icon icon="power-off" [fixedWidth]="true" size="sm" tooltip="Restart this machine"
-                                 container="body" placement="top" [adaptivePosition]="false"></fa-icon>
-                      </button>
-
                       <button class="btn btn-link text-success" (click)="startMachine(instance)"
                               *ngIf="instance.state === 'stopped'">
-                        <fa-icon icon="play" [fixedWidth]="true" size="sm" tooltip="Start this machine" container="body"
+                        <fa-icon icon="power-off" [fixedWidth]="true" size="sm" tooltip="Start this machine" container="body"
                                  placement="top" [adaptivePosition]="false"></fa-icon>
                       </button>
 
-                      <button class="btn btn-link text-info" [popover]="instanceContextMenu"
+                      <button class="btn btn-link text-info" [popover]="instanceContextMenu" container="body"
                               [popoverContext]="{ instance: instance }" placement="bottom left" containerClass="menu-dropdown"
                               [outsideClick]="true">
                         <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>

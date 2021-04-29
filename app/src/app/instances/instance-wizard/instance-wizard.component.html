@@ -61,7 +61,10 @@
                         <span class="badge rounded-pill" [class.bg-success]="image.state === 'active'">&nbsp;</span>
                       </small>
                       <span class="d-block">
-                        <span class="h3">{{ image.name }}</span>
+                        <span class="h3">
+                          {{ image.name }} 
+                          <span class="price" *ngIf="image.price">{{ image.price | currency }}</span>
+                        </span>
                         <small class="text-faded pb-1 d-block">v<b>{{ image.version }}</b></small>
                       </span>
                       <span class="small">
@@ -248,7 +251,7 @@
               </div>
             </div>
 
-            <div class="px-4" *ngIf="currentStep === 4">
+            <div class="px-4 d-flex flex-column h-100" *ngIf="currentStep === 4">
               <!--<h5>Tell us which <b>data center</b> we should place this machine in</h5>
               <select class="form-select image-type-selector" aria-label="Choose data center" formControlName="dataCenter">
                 <option [value]="dataCenter" *ngFor="let dataCenter of dataCenters">{{ dataCenter | uppercase }}</option>
@@ -303,25 +306,32 @@
                 </div>
               </div>
 
-              <p class="mt-3 lead text-success">
-                You're about to create
-                <b *ngIf="editorForm.get('imageType').value == 1">an infrastructure container</b>
-                <b *ngIf="editorForm.get('imageType').value == 2">a virtual machine</b>
-                <!--<b *ngIf="editorForm.get('imageType').value == 3">a Docker container</b>-->,
+              <div class="my-3">
+                <h5>Get an <b>estimated montly cost</b> based on the machine's running time</h5>
+                
+                <div class="input-group input-group-cost">
+                  <input type="number" min="1" max="1000000" class="form-control text-center" formControlName="estimatedMinutesRan" 
+                  placeholder="Number of hours"
+                    tooltip="Number of hours this machine is running" />
+                  <span class="input-group-text" tooltip="Package hourly rate">
+                    hours
+                    <b class="px-1">× {{ editorForm.get('package').value.price | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline text-lowercase">(package hourly rate)</span>
+                  </span>
+                  <span class="input-group-text" *ngIf="editorForm.get('image').value.price" tooltip="Image monthly price">
+                    <b class="px-1">+ {{ editorForm.get('image').value.price | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline ps-1 text-lowercase">(Image monthly price)</span>
+                  </span>
+                  <span class="input-group-text" tooltip="Estimated cost per month">
+                    <b>= {{ estimatedCost | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline ps-1">(per month)</span>
+                  </span>
+                </div>
+              </div>
 
-                <b *ngIf="editorForm.get('package').value.description">{{ editorForm.get('package').value.description }}</b>
+              <span class="flex-grow-1"></span>
 
-                <span *ngIf="!editorForm.get('package').value.description">
-                  having
-                  <b>{{ editorForm.get('package').value.vcpus || 1 }} vCPUs</b>,
-                  <b>{{ editorForm.get('package').value.memory*1024*1024 | fileSize }} RAM</b> and
-                  <b>{{ editorForm.get('package').value.disk*1024*1024 | fileSize }} storage</b>
-                </span>,
-
-                named <b>{{ editorForm.get('name').value }}</b>,
-
-                based on the <b>{{ editorForm.get('image').value.description }}</b>
-              </p>
+              <p class="my-3 lead text-success" [innerHtml]="readyText"></p>
             </div>
 
           </div>

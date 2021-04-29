@@ -208,6 +208,20 @@ export class InstancesService
   {
     return this.httpClient.get(`/api/my/machines/${instanceId}/audit`);
   }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  @Cacheable()
+  getImagesRates(): Observable<any>
+  {
+    return this.httpClient.get(`./assets/data/images.json`);
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  @Cacheable()
+  getPackagesRates(): Observable<any>
+  {
+    return this.httpClient.get(`./assets/data/packages.json`);
+  }
 }
 
 export type InstanceCallbackFunction = ((instance: Instance) => void);

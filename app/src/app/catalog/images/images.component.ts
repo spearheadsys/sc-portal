@@ -42,7 +42,7 @@ export class ImagesComponent implements OnInit, OnDestroy
     private readonly titleService: Title,
     private readonly translationService: TranslateService)
   {
-    translationService.get('catalog.images.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+    translationService.get('catalog.images.title').pipe(first()).subscribe(x => titleService.setTitle(`Spearhead - ${x}`));
 
     // Configure FuseJs
     this.fuseJsOptions = {

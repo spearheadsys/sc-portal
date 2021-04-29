@@ -39,7 +39,7 @@ export class SecurityComponent implements OnInit, OnDestroy
     private readonly titleService: Title,
     private readonly translationService: TranslateService)
   {
-    translationService.get('security.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+    translationService.get('security.title').pipe(first()).subscribe(x => titleService.setTitle(`Spearhead - ${x}`));
 
     forkJoin({
       users: securityService.getUsers(),

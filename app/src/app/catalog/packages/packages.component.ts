@@ -137,7 +137,7 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
             p.visible = this.image.requirements.brand === p.brand;
 
           if (this.image.type === 'zone-dataset')
-            p.visible = ['joyent', 'joyent-minimal'].includes(p.brand);
+            p.visible = ['Spearhead', 'Spearhead-minimal'].includes(p.brand);
 
           if (this.image.type === 'lx-dataset')
             p.visible = p.brand === 'lx';

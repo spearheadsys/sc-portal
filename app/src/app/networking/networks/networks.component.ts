@@ -38,7 +38,7 @@ export class NetworksComponent implements OnInit, OnDestroy
     private readonly titleService: Title,
     private readonly translationService: TranslateService)
   {
-    translationService.get('networking.networks.title').pipe(first()).subscribe(x => titleService.setTitle(`Joyent - ${x}`));
+    translationService.get('networking.networks.title').pipe(first()).subscribe(x => titleService.setTitle(`Spearhead - ${x}`));
 
     this.getVlans();
 

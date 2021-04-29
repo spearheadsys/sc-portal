@@ -130,7 +130,7 @@ p
     float: none;
     width: 1.4em;
     max-width: 1rem;
-    margin-bottom: .25rem;
+    margin-bottom: .75rem;
     cursor: inherit;
     background-color: #0dc3e9;
     border-color: #0dc3e9;
@@ -213,6 +213,7 @@ p
       a
       {
         color: #0dc3e9;
+        margin-left: .25rem;
       }
     }
   }
@@ -334,6 +335,27 @@ p.lead b
     &:first-child
     {
       padding-left: 1rem;
+    }
+  }
+}
+
+.input-group-cost
+{
+  .form-control
+  {
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+  }
+
+  .input-group-text
+  {
+    background: transparent;
+    color: #3d5e8e;
+    border-color: #3d5e8e;
+
+    b
+    {
+      color: #ff9c07;
     }
   }
 }

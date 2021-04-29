@@ -17,4 +17,5 @@ export class CatalogPackage
   description: string;
   disks: any[];
   flexible_disk: boolean;
+  price: number;
 }

@@ -14,4 +14,5 @@ export class CatalogImage
   requirements: any;
   homepage: string;
   image_size: number;
+  price: number;
 }

@@ -12,6 +12,7 @@ import { NetworkingService } from '../../networking/helpers/networking.service';
 import { ToastrService } from 'ngx-toastr';
 import { VolumesService } from '../../volumes/helpers/volumes.service';
 import { AuthService } from '../../helpers/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-instance-wizard',
@@ -49,6 +50,8 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
   steps: any[];
   preselectedPackage: string;
   kvmRequired: boolean;
+  estimatedCost: number;
+  readyText: string;
 
   private destroy$ = new Subject();
   private userId: string;
@@ -63,7 +66,8 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
     private readonly catalogService: CatalogService,
     private readonly networkingService: NetworkingService,
     private readonly volumesService: VolumesService,
-    private readonly toastr: ToastrService)
+    private readonly toastr: ToastrService,
+    private readonly translateService: TranslateService)
   {
     // When the user navigates away from this route, hide the modal
     router.events
@@ -134,7 +138,8 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
           }),
         dataCenter: [],
         tags,
-        metadata
+        metadata,
+        estimatedMinutesRan: [24]
       });
 
     this.configureForm();
@@ -257,6 +262,8 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         this.kvmRequired = x?.requirements['brand'] === 'kvm' || x?.type === 'zvol' || false;
 
         this.loadingPackages = true;
+
+        this.computeEstimatedCost();
       });
 
     this.editorForm.get('package').valueChanges
@@ -269,7 +276,9 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         this.kvmRequired = this.editorForm.get('image').value?.requirements['brand'] === 'kvm' ||
           this.editorForm.get('image').value?.type === 'zvol' ||
           x?.brand === 'kvm' || false;
-      });
+
+          this.computeEstimatedCost();
+        });
 
     this.editorForm.get(['affinity', 'farFrom']).valueChanges.pipe(startWith(null))
       .pipe(takeUntil(this.destroy$))
@@ -278,7 +287,21 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
     this.editorForm.get(['affinity', 'closeTo']).valueChanges.pipe(startWith(null))
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.setAffinity.bind(this));
-  }
+
+      this.editorForm.get('estimatedMinutesRan').valueChanges
+       .pipe(takeUntil(this.destroy$))
+       .subscribe(this.computeEstimatedCost.bind(this))
+ }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  private computeEstimatedCost()
+  {
+    const estimatedMinutesRan = this.editorForm.get('estimatedMinutesRan').value || 1;
+    const imagePrice = this.editorForm.get('image').value?.price || 0;
+    const packagePrice = this.editorForm.get('package').value?.price || 0;
+
+    this.estimatedCost = imagePrice + packagePrice * estimatedMinutesRan;
+}
 
   // ----------------------------------------------------------------------------------------------------------------
   private atLeastOneSelectionValidator: ValidatorFn = (array: FormArray): ValidationErrors | null =>
@@ -373,6 +396,20 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
   nextStep()
   {
     this.currentStep = this.currentStep < this.steps.length ? this.currentStep + 1 : this.steps.length;
+
+    if (this.currentStep < this.steps.length) return;
+
+    this.readyText = this.translateService.instant('dashboard.wizard.ready', {
+      imageType: this.editorForm.get('imageType').value == 1 
+                  ? this.translateService.instant('dashboard.wizard.readyImageTypeContainer') 
+                  : this.translateService.instant('dashboard.wizard.readyImageTypeVm'),
+      packageDescription: this.editorForm.get('package').value.description || 
+                          `<b>${this.editorForm.get('package').value.vcpus || 1}</b> vCPUs, ` +
+                          `<b>${this.fileSizePipe.transform(this.editorForm.get('package').value.memory * 1024 * 1024)}</b> RAM, ` +
+                          `<b>${this.fileSizePipe.transform(this.editorForm.get('package').value.disk * 1024 * 1024)}</b> storage`,
+      machineName: this.editorForm.get('name').value,
+      imageDescription: this.editorForm.get('image').value.description
+    })
   }
 
   // ----------------------------------------------------------------------------------------------------------------
