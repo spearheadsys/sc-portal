@@ -192,11 +192,6 @@ function main() {
     server.post(API_RE, proxy);
     server.head(API_RE, proxy);
 
-    // where to serve the package and image rates data from
-    server.get(RATES_RE, mod_restify.plugins.serveStatic({
-        directory: 'rates'
-    }));
-
     // where to serve static content from
     let staticHandler = mod_restify.plugins.serveStatic({
         directory: 'static',
