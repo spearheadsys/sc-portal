@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { VolumesService } from '../../volumes/helpers/volumes.service';
 import { AuthService } from '../../helpers/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CatalogImageType } from '../../catalog/models/image';
 
 @Component({
   selector: 'app-instance-wizard',
@@ -171,7 +172,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         const imageList = [];
         const operatingSystems = {};
 
-        if (imageType === 1)
+        if (imageType === CatalogImageType.InfrastructureContainer)
         {
           for (const image of this.images)
             if (['lx-dataset', 'zone-dataset'].includes(image.type) && image.owner !== this.userId)
@@ -180,7 +181,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === 2)
+        else if (imageType === CatalogImageType.VirtualMachine)
         {
           for (const image of this.images)
             if (['zvol'].includes(image.type) && image.owner !== this.userId)
@@ -189,7 +190,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === 3)
+        else if (imageType === CatalogImageType.Custom)
         {
           for (const image of this.images)
             if (image.owner === this.userId)
@@ -221,7 +222,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
         const imageList = [];
         const operatingSystems = {};
 
-        if (imageType === 1)
+        if (imageType === CatalogImageType.InfrastructureContainer)
         {
           for (const image of this.images)
             if (['lx-dataset', 'zone-dataset'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
@@ -230,7 +231,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === 2)
+        else if (imageType === CatalogImageType.VirtualMachine)
         {
           for (const image of this.images)
             if (['zvol'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
@@ -239,7 +240,7 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === 3)
+        else if (imageType === CatalogImageType.Custom)
         {
           for (const image of this.images)
             if (image.owner === this.userId)
@@ -288,10 +289,10 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.setAffinity.bind(this));
 
-      this.editorForm.get('estimatedMinutesRan').valueChanges
-       .pipe(takeUntil(this.destroy$))
-       .subscribe(this.computeEstimatedCost.bind(this))
- }
+    this.editorForm.get('estimatedMinutesRan').valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(this.computeEstimatedCost.bind(this));
+  }
 
   // ----------------------------------------------------------------------------------------------------------------
   private computeEstimatedCost()

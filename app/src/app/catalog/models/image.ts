@@ -16,3 +16,11 @@ export class CatalogImage
   image_size: number;
   price: number;
 }
+
+export enum CatalogImageType
+{
+  InfrastructureContainer = 1,
+  VirtualMachine = 2,
+  Docker = 3,
+  Custom = 4
+}

@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FileSizePipe } from '../../pipes/file-size.pipe';
 import { CatalogService } from '../helpers/catalog.service';
 import { CatalogImage } from '../../catalog/models/image';
+import { CatalogImageType } from '../models/image';
 
 @Component({
   selector: 'app-packages',
@@ -120,9 +121,9 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
 
     // Setup the operating systems array-like object, sorted alphabetically
     this.packageGroups = Object.keys(this.packages)
-      .filter(x =>
+      .filter(packageGroup =>
       {
-        this.packages[x].forEach(p =>
+        this.packages[packageGroup].forEach(p =>
         {
           if (p.name === this.package)
             this._selectedPackage = p;
@@ -132,27 +133,42 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
             p.visible = true;
             return;
           }
+          else
+          {
+            p.visible = true;
+          }
 
           if (this.image.requirements.brand)
-            p.visible = this.image.requirements.brand === p.brand;
+            p.visible = p.visible && this.image.requirements.brand === p.brand;
 
           if (this.image.type === 'zone-dataset')
-            p.visible = ['Spearhead', 'Spearhead-minimal'].includes(p.brand);
+            p.visible = p.visible && ['Spearhead', 'Spearhead-minimal'].includes(p.brand);
 
           if (this.image.type === 'lx-dataset')
-            p.visible = p.brand === 'lx';
+            p.visible = p.visible && p.brand === 'lx';
 
           if (this.image.type === 'zvol')
-            p.visible = ['bhyve', 'kvm'].includes(p.brand);
+            p.visible = p.visible && ['bhyve', 'kvm'].includes(p.brand);
+
+          if (this.imageType === CatalogImageType.InfrastructureContainer)
+            p.visible = p.visible && packageGroup === 'infrastructure container';
+          else if (this.imageType === CatalogImageType.VirtualMachine)
+            p.visible = p.visible && packageGroup === 'virtual machine';
         });
 
         switch (this.imageType | 0)
         {
-          case 1:
-            return this.packages[x].length && (!x || ['cpu', 'disk', 'memory optimized', 'standard', 'triton'].includes(x));
+          case CatalogImageType.InfrastructureContainer:
+            return this.packages[packageGroup].filter(x => x.visible).length &&
+            (!packageGroup || ['cpu', 'disk', 'memory optimized', 'standard', 'triton'].includes(packageGroup));
 
-          case 2:
-            return this.packages[x].length && (!x || ['standard', 'triton', 'bhyve'].includes(x));
+          case CatalogImageType.VirtualMachine:
+            return this.packages[packageGroup].filter(x => x.visible).length &&
+              (!packageGroup || ['standard', 'triton', 'bhyve'].includes(packageGroup));
+
+          case CatalogImageType.Custom:
+            return this.packages[packageGroup].filter(x => x.visible).length &&
+              packageGroup !== 'infrastructure container' && packageGroup !== 'virtual machine';
 
           default:
             return false;
