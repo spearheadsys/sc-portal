@@ -98,6 +98,13 @@ export class VolumeEditorComponent implements OnInit
     const changes = this.editorForm.getRawValue();
     changes.networks = changes.networks.map(x => x.id);
 
+    // These tags can be referenced by affinity rules
+    changes.tags = changes.tags.reduce((a, b) =>
+    {
+      a[b.key] = b.value;
+      return a;
+    }, {});
+
     this.volumesService.addVolume(changes).subscribe(x =>
     {
       this.working = false;

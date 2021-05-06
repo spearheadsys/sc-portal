@@ -1,3 +1,5 @@
+@import "../../../styles/_variables.scss";
+
 :host
 {
   overflow: hidden;
@@ -19,7 +21,7 @@
   .rule
   {
     text-transform: uppercase;
-    color: #3d5e8e;
+    color: $table-header-color;
   }
 
   .highlight
@@ -50,7 +52,12 @@
     &:before
     {
       content: attr(text);
-      color: #3d5e8e;
+      color: $table-header-color;
     }
   }
+}
+
+.badge-discreet
+{
+  margin-bottom: .125rem;
 }

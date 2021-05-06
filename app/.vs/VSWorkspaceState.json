@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\instances",
+    "\\src\\app\\instances\\instance-info",
+    "\\src\\app\\instances\\instance-networks",
+    "\\src\\app\\instances\\instance-security",
+    "\\src\\app\\networking",
+    "\\src\\app\\networking\\helpers",
+    "\\src\\app\\networking\\virtual-network-editor"
+  ],
+  "SelectedNode": "\\src\\app\\networking\\networks\\networks.component.ts",
+  "PreviewInSolutionExplorer": false
+}

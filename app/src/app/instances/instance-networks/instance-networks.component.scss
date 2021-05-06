@@ -1,7 +1,9 @@
+@import "../../../styles/_variables.scss";
+
 .list-group-item
 {
   background: none;
-  color: #3d5e8e;
+  color: $table-header-color;
 
   .highlight
   {

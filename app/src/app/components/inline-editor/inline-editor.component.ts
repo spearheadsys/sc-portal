@@ -121,7 +121,7 @@ export class InlineEditorComponent implements OnInit, OnDestroy
   @HostListener('document:keydown.enter', ['$event'])
   returnPressed(event)
   {
-    if (event.currentTarget === this.elementRef.nativeElement && this.singleLine)
+    if (event.target === this.elementRef.nativeElement.querySelector('textarea') && this.singleLine)
     {
       event.preventDefault();
       event.stopPropagation();

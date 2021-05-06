@@ -152,7 +152,7 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
             return this.packages[x].length && (!x || ['cpu', 'disk', 'memory optimized', 'standard', 'triton'].includes(x));
 
           case 2:
-            return this.packages[x].length && (!x || ['standard', 'triton'].includes(x));
+            return this.packages[x].length && (!x || ['standard', 'triton', 'bhyve'].includes(x));
 
           default:
             return false;

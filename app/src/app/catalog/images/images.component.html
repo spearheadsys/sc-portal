@@ -82,7 +82,6 @@
                   <th>Type</th>
                   <th>Brand</th>
                   <th>Publish date</th>
-                  <th>Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -101,13 +100,10 @@
                     {{ image.type }}
                   </td>
                   <td class="text-uppercase">
-                    <span class="badge text-warning border border-warning" *ngIf="image.requirements">{{ image.requirements.brand }}</span>
+                    <span class="badge badge-discreet text-uppercase" *ngIf="image.requirements">{{ image.requirements.brand }}</span>
                   </td>
                   <td>
                     {{ image.published_at ? (image.published_at | timeago) : '' }}
-                  </td>
-                  <td>
-                    <span class="badge text-uppercase" [ngClass]="image.state === 'active' ? 'bg-success' : 'bg-warning text-dark'">{{ image.state }}</span>
                   </td>
                   <td class="text-end">
                     <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body" [isDisabled]="image.working">

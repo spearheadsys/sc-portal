@@ -78,7 +78,8 @@
         "deleting": "Removing the \"{machineName}\" machine...",
         "deleted": "The \"{machineName}\" machine has been removed",
         "deletingFailed": "Failed to delete the \"{machineName}\" machine",
-        "loadingFailed": "Failed to load additional details for the \"{machineName}\" machine"
+        "loadingFailed": "Failed to load additional details for the \"{machineName}\" machine",
+        "gone": "The machine \"{machineName}\" has been removed" 
       }
     },
     "infoTab":

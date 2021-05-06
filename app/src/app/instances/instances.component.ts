@@ -20,7 +20,7 @@ import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { FileSizePipe } from '../pipes/file-size.pipe';
 import { sortArray } from '../helpers/utils.service';
 import { VolumesService } from '../volumes/helpers/volumes.service';
-import { Title } from "@angular/platform-browser";
+import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -574,7 +574,6 @@ export class InstancesComponent implements OnInit, OnDestroy
         {
           instance.name = name;
 
-
           this.applyFiltersAndSort();
 
           this.toastr.info(`The "${instanceName}" machine has been renamed to "${instance.name}"`);
@@ -603,7 +602,7 @@ export class InstancesComponent implements OnInit, OnDestroy
 
     modalRef.content.save.pipe(first()).subscribe(x =>
     {
-      // TODO: Refresh list
+      instance[showMetadata ? 'metadata' : 'tags'] = x;
     });
   }
 
@@ -696,8 +695,9 @@ export class InstancesComponent implements OnInit, OnDestroy
         .subscribe(() =>
         {
           const index = this.instances.findIndex(i => i.id === instance.id);
-          if (index >= 0)
-            this.instances.splice(index, 1);
+          if (index < 0) return;
+
+          this.instances.splice(index, 1);
 
           this.computeFiltersOptions();
 
@@ -767,10 +767,28 @@ export class InstancesComponent implements OnInit, OnDestroy
           // Update the instance with what we got from the server
           const index = this.instances.findIndex(i => i.id === instance.id);
           if (index >= 0)
+          {
             this.instances.splice(index, 1, x);
+
+            this.computeFiltersOptions();
+          }
         }, err =>
         {
-          this.toastr.error(`Machine "${instance.name}" error: ${err.error.message}`);
+          if (err.status === 410)
+          {
+            const index = this.instances.findIndex(i => i.id === instance.id);
+            if (index >= 0)
+            {
+              this.instances.splice(index, 1);
+
+              this.computeFiltersOptions();
+
+              this.toastr.error(`The machine "${instance.name}" has been removed`);
+            }
+          }
+          else
+            this.toastr.error(`Machine "${instance.name}" error: ${err.error.message}`);
+
           instance.working = false;
         });
 

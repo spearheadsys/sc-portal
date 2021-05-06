@@ -66,9 +66,10 @@ export class VirtualNetworkEditorComponent implements OnInit
     const changes = this.editorForm.getRawValue();
 
     const vlan = new VirtualAreaNetworkRequest();
-    vlan.name = changes.name;
-    vlan.description = changes.description;
     vlan.vlan_id = changes.id;
+    vlan.name = changes.name;
+    if (changes.description)
+      vlan.description = changes.description;
 
     const observable = this.vlan
       ? this.networkingService.editFabricVirtualLocalAreaNetwork(this.vlan.vlan_id, vlan.name, vlan.description)

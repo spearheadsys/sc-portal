@@ -48,13 +48,12 @@
       <accordion [isAnimated]="false" [closeOthers]="false">
         <accordion-group *ngFor="let vlan of listItems" (isOpenChange)="getNetworks($event, vlan)">
           <div class="d-flex justify-content-between align-items-center sticky-top" accordion-heading
-               tooltip="Show or hide this VLAN's networks" placement="top" container="body">
+               tooltip="Show or hide this VLAN's networks" placement="top" [adaptivePosition]="false" container="body">
             <h4 class="mb-0">
               <span class="text-info me-2">{{ vlan.name }}</span>
-              <span class="vlan-id">
-                <fa-icon icon="fingerprint" [fixedWidth]="true" size="sm"></fa-icon>
-                <span>{{ vlan.vlan_id }}</span>
-              </span>
+              <small class="vlan-id text-faded">
+                Unique ID: <b>{{ vlan.vlan_id }}</b>
+              </small>
             </h4>
 
             <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="vlan.expanded ? 90 : 0" class="text-info"></fa-icon>
@@ -86,7 +85,7 @@
                 <tr *ngFor="let network of vlan.networks">
                   <td>
                     <div>
-                      <span class="badge border border-secondary text-secondary text-uppercase float-end">{{ network.fabric ? 'fabric' : 'global' }}</span>
+                      <span class="badge badge-discreet text-uppercase float-end">{{ network.fabric ? 'fabric' : 'global' }}</span>
                       <div class="network-name float-start">{{ network.name }}</div>
                     </div>
                   </td>
@@ -102,14 +101,15 @@
                     {{ network.gateway }}
                   </td>
                   <td>
-                    <div class="text-truncate resolvers" [tooltip]="network.resolvers | json" placement="top" container="body" [adaptivePosition]="false">
+                    <div class="text-truncate resolvers" [tooltip]="network.resolvers | json" placement="top"
+                         container="body" [adaptivePosition]="false">
                       <span *ngFor="let ip of network.resolvers" class="resolver">{{ ip }}</span>
                     </div>
                   </td>
                   <td class="text-end">
                     <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body">
-                      <button class="btn btn-link text-info" tooltip="Edit this network" container="body" placement="top" [adaptivePosition]="false"
-                              (click)="showNetworkEditor(vlan, network)">
+                      <button class="btn btn-link text-info" tooltip="Edit this network" container="body"
+                              placement="top" [adaptivePosition]="false" (click)="showNetworkEditor(vlan, network)">
                         <fa-icon icon="pen" [fixedWidth]="true" size="sm"></fa-icon>
                       </button>
 
@@ -133,7 +133,7 @@
           </div>
 
           <div class="card-footer px-2 d-flex justify-content-between align-items-center">
-            <button class="btn btn-outline-info" (click)="showNetworkEditor(vlan)">Configure a new network</button>
+            <button class="btn btn-outline-info" (click)="showNetworkEditor(vlan)">Create a new network</button>
 
             <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body">
               <button class="btn btn-link text-info" dropdownToggle

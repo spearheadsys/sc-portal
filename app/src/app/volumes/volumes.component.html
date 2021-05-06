@@ -56,6 +56,7 @@
               <th>Name</th>
               <th>Size</th>
               <th>Networks</th>
+              <th>Tags</th>
               <th></th>
             </tr>
           </thead>
@@ -68,9 +69,14 @@
                 {{ volume.size * 1024 * 1024 | fileSize}}
               </td>
               <td>
-                <ul class="list-inline">
+                <ul class="list-inline mb-0">
                   <li class="list-inline-item" *ngFor="let network of volume.networks">{{ networks[network] || network }}</li>
                 </ul>
+              </td>
+              <td>
+                <span class="badge badge-discreet" *ngFor="let tag of volume.tags | keyvalue">
+                  {{ tag.key }}:{{ tag.value }}
+                </span>
               </td>
               <td class="text-end">
                 <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body" [isDisabled]="volume.working"
@@ -94,8 +100,9 @@
                   </ul>
                 </div>
 
-                <fa-icon icon="lock" class="in-use text-danger" *ngIf="volume.refs && volume.refs.length"
-                         tooltip="In use by one or more machines" placement="top" [adaptivePosition]="false"></fa-icon>
+                <fa-icon icon="lock" class="in-use text-danger text-faded" *ngIf="volume.refs && volume.refs.length"
+                         tooltip="In use by one or more machines" container="body" placement="top" [adaptivePosition]="false">
+                </fa-icon>
               </td>
             </tr>
           </tbody>

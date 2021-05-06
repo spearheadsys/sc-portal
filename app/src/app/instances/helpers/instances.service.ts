@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { forkJoin, from, Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Instance } from '../models/instance';
-import { delay, filter, map, repeatWhen, take, tap } from 'rxjs/operators';
+import { concatMap, delay, filter, map, repeatWhen, take, tap } from 'rxjs/operators';
 import { InstanceRequest } from '../models/instance';
 import { Cacheable } from 'ts-cacheable';
 import { volumesCacheBuster$ } from '../../volumes/helpers/volumes.service';
@@ -180,27 +180,35 @@ export class InstancesService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  addMetadata(instanceId: string, metadata: any): Observable<any>
-  {
-    return this.httpClient.post(`/api/my/machines/${instanceId}/metadata`, metadata);
-  }
-
-  // ----------------------------------------------------------------------------------------------------------------
   replaceMetadata(instanceId: string, metadata: any): Observable<any>
   {
-    return this.httpClient.put(`/api/my/machines/${instanceId}/metadata`, metadata);
+    // First retrieve current metadata
+    return this.httpClient.get(`/api/my/machines/${instanceId}/metadata`)
+      .pipe(concatMap(existingMetadata =>
+      {
+        // Compute which metadata the user chose to remove
+        const obsoleteMetadata: Observable<any>[] = [];
+        for (const key of Object.keys(existingMetadata))
+          if (!metadata.hasOwnProperty(key) && key !== 'root_authorized_keys') // root_authorized_keys is readonly
+            obsoleteMetadata.push(this.httpClient.delete(`/api/my/machines/${instanceId}/metadata/${key}`));
+
+        // Any metadata keys passed in here are created if they do not exist, and overwritten if they do.
+        const metadataToUpsert = this.httpClient.post(`/api/my/machines/${instanceId}/metadata`, metadata);
+
+        if (obsoleteMetadata.length)
+        {
+          // In multiple concurrent requests delete the obsolete metadata, then upsert the remaining ones
+          return forkJoin(obsoleteMetadata).pipe(concatMap(() => metadataToUpsert.pipe(map(() => metadata))));
+        }
+        else
+          return metadataToUpsert;
+      }));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
   deleteAllMetadata(instanceId: string): Observable<any>
   {
     return this.httpClient.delete(`/api/my/machines/${instanceId}/metadata`);
-  }
-
-  // ----------------------------------------------------------------------------------------------------------------
-  deleteMetadata(instanceId: string, key: string): Observable<any>
-  {
-    return this.httpClient.delete(`/api/my/machines/${instanceId}/metadata/${key}`);
   }
 
   // ----------------------------------------------------------------------------------------------------------------

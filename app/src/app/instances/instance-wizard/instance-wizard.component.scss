@@ -1,3 +1,5 @@
+@import "../../../styles/_variables.scss";
+
 fieldset
 {
   height: 80vh;
@@ -15,7 +17,7 @@ h5, h6
 
 p
 {
-  color: #3d5e8e;
+  color: $table-header-color;
 }
 
 .steps
@@ -40,7 +42,7 @@ p
     background-color: transparent;
     border: none;
     font-size: 1.5rem;
-    color: #3d5e8e;
+    color: $table-header-color;
     padding-right: .5rem;
     font-family: "Bebas Neue", sans-serif;
     position: relative;
@@ -120,7 +122,7 @@ p
   display: flex;
   align-items: center;
   padding: 0;
-  margin: 0 0 0 2.5rem;
+  margin: 0 0 0 1rem;
   cursor: pointer;
   flex-grow: 1;
 
@@ -130,7 +132,7 @@ p
     float: none;
     width: 1.4em;
     max-width: 1rem;
-    margin-bottom: .75rem;
+    margin: .75rem .5rem .75rem 0;
     cursor: inherit;
     background-color: #0dc3e9;
     border-color: #0dc3e9;
@@ -350,12 +352,17 @@ p.lead b
   .input-group-text
   {
     background: transparent;
-    color: #3d5e8e;
-    border-color: #3d5e8e;
+    color: $table-header-color;
+    border-color: $table-header-color;
 
     b
     {
       color: #ff9c07;
     }
   }
+}
+
+.select-list
+{
+    height: 150px;
 }

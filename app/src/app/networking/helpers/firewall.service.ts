@@ -95,7 +95,7 @@ export class FirewallService
 
       return {
         type: parts[0],
-        config: x.substr(parts[0].length + 1)
+        config: x.substr(parts[0].length + 1).replace(/"/g, '').replace(/ = /g, ':')
       }
     });
 
@@ -107,7 +107,7 @@ export class FirewallService
     rule.fromArray = fromArray;
     rule.fromValue = from.join(',');
     rule.toArray = toArray;
-    rule.toValue = to.join(',');
+    rule.toValue = to.join(',').replace(/"/g, '').replace(/ = /g, ':');
     rule.action = ruleAction.trim();
     rule.protocol = protocolAndPortOrCode[0];
     rule.protocolConfig = protocolAndPortOrCode[2] + (protocolAndPortOrCode.length > 3 ? `:${protocolAndPortOrCode[4]}` : '');

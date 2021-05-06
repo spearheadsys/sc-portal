@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { InstancesService } from '../helpers/instances.service';
 import { ToastrService } from 'ngx-toastr';
+import { Instance } from '../models/instance';
 
 @Component({
   selector: 'app-instance-tag-editor',
@@ -15,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 export class InstanceTagEditorComponent implements OnInit
 {
   @Input()
-  instance: any;
+  instance: Instance;
 
   @Input()
   showMetadata: boolean;
@@ -48,14 +49,20 @@ export class InstanceTagEditorComponent implements OnInit
   private createForm()
   {
     const items = this.fb.array(this.showMetadata
-      ? Object.keys(this.instance.metadata).map(key => this.fb.group({ key, value: this.instance.metadata[key] }))
-      : Object.keys(this.instance.tags).map(key => this.fb.group({ key, value: this.instance.tags[key] }))
+      ? Object.keys(this.instance.metadata).map(key => this.fb.group({
+        key: [key, Validators.required],
+        value: [this.instance.metadata[key], Validators.required]
+      }))
+      : Object.keys(this.instance.tags).map(key => this.fb.group({
+        key: [key, Validators.required],
+        value: [this.instance.tags[key], Validators.required]
+      }))
     );
 
     this.editorForm = this.fb.group({
       items,
-      key: [null, Validators.required],
-      value: [null, Validators.required]
+      key: [null],
+      value: [null]
     });
   }
 
@@ -91,13 +98,14 @@ export class InstanceTagEditorComponent implements OnInit
   // ----------------------------------------------------------------------------------------------------------------
   close()
   {
-    this.save.next();
     this.modalRef.hide();
   }
 
   // ----------------------------------------------------------------------------------------------------------------
   saveChanges()
   {
+    this.working = true;
+
     const items = this.editorForm.getRawValue().items.reduce((map, item) =>
     {
       map[item.key] = item.value;
@@ -110,17 +118,21 @@ export class InstanceTagEditorComponent implements OnInit
 
     observable.subscribe(response =>
     {
+      this.working = false;
       this.save.next(response);
       this.modalRef.hide();
     }, err =>
     {
       this.toastr.error(err.error.message);
+      this.working = false;
     });
   }
 
   // ----------------------------------------------------------------------------------------------------------------
   ngOnInit(): void
   {
+    //this.instancesService.getTags(this.instance.id).subscribe();
+
     this.createForm();
   }
 }

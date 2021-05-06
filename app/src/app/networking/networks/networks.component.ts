@@ -194,23 +194,13 @@ export class NetworksComponent implements OnInit, OnDestroy
 
     modalRef.content.save.pipe(first()).subscribe(x =>
     {
-      const observable = vlan
-        ? this.networkingService.editFabricVirtualLocalAreaNetwork(x.vlan_id, x.name, x.description)
-        : this.networkingService.addFabricVirtualLocalAreaNetwork(x);
-
-      observable.subscribe(response =>
+      if (vlan)
       {
-        if (vlan)
-        {
-          vlan.name = x.name;
-          vlan.description = x.description;
-        }
-        else
-          this.vlans.push(response);
-      }, err =>
-      {
-        this.toastr.error(err.error.message);
-      });
+        vlan.name = x.name;
+        vlan.description = x.description;
+      }
+      else
+        this.vlans.push(x);
     });
   }
 

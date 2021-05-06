@@ -1,3 +1,5 @@
+@import "../../../styles/_variables.scss";
+
 :host 
 {
   flex-grow: 1;
@@ -6,7 +8,7 @@
 
 .vlan-id
 {
-  color: #3d5e8e;
+  color: $table-header-color;
 }
 
 .network-name

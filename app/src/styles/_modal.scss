@@ -1,3 +1,5 @@
+@import "_variables.scss";
+
 .modal
 {
   backdrop-filter: blur(6px);
@@ -28,7 +30,7 @@
 
     h4
     {
-      color: #3d5e8e;
+      color: $table-header-color;
       font-family: "Bebas Neue", sans-serif;
     }
   }
@@ -54,5 +56,5 @@
   border: none;
   background: none;
   font-size: 2rem;
-  color: #3d5e8e;
+  color: $table-header-color;
 }

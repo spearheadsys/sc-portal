@@ -25,7 +25,10 @@
                   <span class="price" *ngIf="pkg.price">{{ pkg.price | currency }}/h</span>
                   <!--<small *ngIf="pkg.brand">{{ pkg.brand }}</small>-->
                 </span>
-                <small class="text-faded pb-1 d-block">v<b>{{ pkg.version }}</b></small>
+                <small class="text-faded pb-1 d-block">
+                  v<b>{{ pkg.version }}</b>
+                  <small class="badge badge-discreet ms-2" *ngIf="pkg.flexible_disk">Flexible Disk</small>
+                </small>
                 <small class="mb-0 pe-3 text-faded" *ngIf="pkg.description">{{ pkg.description }}</small>
               </span>
             </span>

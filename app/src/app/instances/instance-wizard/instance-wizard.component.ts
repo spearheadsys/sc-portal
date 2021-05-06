@@ -353,6 +353,16 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
     //instance.brand = changes.package.brand;
     instance.networks = changes.networks.filter(x => x.selected).map(x => x.id);
     instance.firewall_enabled = !!changes.cloudFirewall;
+    instance.tags = changes.tags.reduce((a, b) =>
+    {
+      a[`tag.${b.key}`] = b.value;
+      return a;
+    }, {});
+    instance.metadata = changes.metadata.reduce((a, b) =>
+    {
+      a[`metadata.${b.key}`] = b.value;
+      return a;
+    }, {});
 
     if (!this.kvmRequired)
       instance.volumes = changes.volumes

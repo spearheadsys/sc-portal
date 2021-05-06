@@ -19,7 +19,7 @@
                  [appAutofocus]="focus" [appAutofocusDelay]="focus === 1 ? 600 : 0" />
           <input *ngIf="!showMetadata" class="form-control" type="text" formControlName="value" placeholder="Value" />
           <textarea *ngIf="showMetadata" class="form-control" rows="2" formControlName="value" placeholder="Value"></textarea>
-          <button class="btn btn-outline-info" (click)="addTag()" [disabled]="editorForm.invalid">
+          <button class="btn btn-outline-info" (click)="addTag()" [disabled]="!editorForm.get('key').value || !editorForm.get('value').value">
             <span *ngIf="showMetadata">Add metadata</span>
             <span *ngIf="!showMetadata">Add tag</span>
           </button>
@@ -35,7 +35,7 @@
             </div>
 
             <div>
-              <button class="btn btn-link text-danger" (click)="deleteTag(index)"
+              <button class="btn btn-link text-danger" (click)="deleteTag(index)" *ngIf="item.get('key').value !== 'root_authorized_keys'"
                       [tooltip]="showMetadata ? 'Remove this metadata' : 'Remove this tag'" container="body" placement="top" [adaptivePosition]="false">
                 <fa-icon icon="times" [fixedWidth]="true" size="sm"></fa-icon>
               </button>
@@ -47,7 +47,10 @@
       <div class="d-flex justify-content-end align-items-center mt-5">
         <button class="btn btn-link text-info me-3" (click)="close()">Close without saving</button>
 
-        <button class="btn btn-info" (click)="saveChanges()">Save changes</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">
+          <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+          Save changes
+        </button>
       </div>
     </div>
   </fieldset>

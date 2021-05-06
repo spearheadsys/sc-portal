@@ -1,3 +1,5 @@
+@import "../../../styles/_variables.scss";
+
 .list-group-item
 {
   background: none;
@@ -10,7 +12,7 @@
     &:after
     {
       content: '.';
-      color: #3d5e8e;
+      color: $table-header-color;
     }
   }
 
@@ -34,6 +36,6 @@
 .dropdown-header
 {
   opacity: 1;
-  color: #3d5e8e;
+  color: $table-header-color;
   padding: .5rem 0 0;
 }

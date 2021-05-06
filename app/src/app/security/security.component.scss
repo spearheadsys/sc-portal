@@ -1,3 +1,5 @@
+@import "../../styles/_variables.scss";
+
 :host
 {
   overflow: hidden;
@@ -51,7 +53,7 @@ legend
 {
   font-family: 'Bebas Neue', sans-serif;
   line-height: 1.2;
-  color: #3d5e8e;
+  color: $table-header-color;
   padding: .75rem .5rem .75rem 1rem;
   position: relative;
   background-color: rgba(16,21,39, .5);

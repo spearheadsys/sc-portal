@@ -12,8 +12,8 @@ export class InstanceRequest
   package: string;
   image: string;
   networks: Network[];
-  tags: { key: string; value: string };
-  metadata: { key: string; value: string };
+  tags: { key: string; value: string }[];
+  metadata: { key: string; value: string }[];
   affinity: any[]; // Optional
   brand: string;
   firewall_enabled: boolean;
