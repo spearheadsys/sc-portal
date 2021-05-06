@@ -1,0 +1,32 @@
+<div class="d-flex flex-column h-100">
+  <div class="container text-center mt-1">
+
+    <div class="spinner-border text-center text-info text-faded" role="status" *ngIf="loadingIndicator">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div class="overflow-auto flex-grow-1 my-3">
+    <div class="container my-2">
+
+      <accordion [closeOthers]="true">
+        <accordion-group *ngFor="let helpTopic of helpTopics" (isOpenChange)="getHelpTopicContent($event, helpTopic)">
+          <div class="d-flex justify-content-between align-items-center sticky-top" accordion-heading>
+            <h4 class="mb-0 text-info">{{ helpTopic.title }}</h4>
+
+            <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="helpTopic.expanded ? 90 : 0" class="text-info"></fa-icon>
+          </div>
+
+          <div class="p-3">
+            <div class="spinner-border text-center text-info text-faded" role="status" *ngIf="helpTopic.loading">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+
+            <article [innerHtml]="helpTopic.content"></article>
+          </div>
+        </accordion-group>
+      </accordion>
+
+    </div>
+  </div>
+</div>

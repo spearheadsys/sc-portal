@@ -72,6 +72,18 @@ const appRoutes: Routes = [
     }
   },
   {
+    path: 'help',
+    loadChildren: () => import('./help/help.module').then(x => x.HelpModule),
+    canActivate: [AuthGuardService],
+    canLoad: [AuthGuardService],
+    data:
+    {
+      title: 'help.title',
+      subTitle: 'help.subTitle',
+      icon: 'question-circle'
+    }
+  },
+  {
     path: 'unauthorized',
     component: UnauthorizedComponent
   },
