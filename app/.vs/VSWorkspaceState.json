@@ -3,14 +3,14 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\instances",
-    "\\src\\app\\instances\\instance-info",
-    "\\src\\app\\instances\\instance-networks",
-    "\\src\\app\\instances\\instance-security",
-    "\\src\\app\\networking",
-    "\\src\\app\\networking\\helpers",
-    "\\src\\app\\networking\\virtual-network-editor"
+    "\\src\\app\\components\\nav-menu",
+    "\\src\\app\\help",
+    "\\src\\app\\help\\help",
+    "\\src\\app\\networking\\networks",
+    "\\src\\app\\volumes",
+    "\\src\\assets",
+    "\\src\\assets\\help"
   ],
-  "SelectedNode": "\\src\\app\\networking\\networks\\networks.component.ts",
+  "SelectedNode": "\\src\\assets\\help\\readme.md",
   "PreviewInSolutionExplorer": false
 }
