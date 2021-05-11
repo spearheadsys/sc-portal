@@ -30,7 +30,7 @@ import { AuthInterceptorService } from './helpers/auth-interceptor.service';
   ],
   imports: [
     BrowserAnimationsModule,
-    BrowserModule.withServerTransition({ appId: 'manta-portal' }),
+    BrowserModule.withServerTransition({ appId: 'spearhead-portal' }),
     HttpClientModule,
     AppRoutingModule,
     SharedModule,

@@ -4,7 +4,7 @@
     "menu":
     {
       "dashboard": "Dashboard",
-      "fileManager": "File Manager",
+      "instances": "Machines",
       "volumes": "Volumes",
       "images": "Images",
       "networks": "Networks",
@@ -28,14 +28,14 @@
       "subTitle": ""
     }
   },
-  "fileManager":
+  "dashboard":
   {
-    "title": "File Manager",
-    "subTitle": "Manage your files"
+    "title": "Dashboard",
+    "subTitle": ""
   },
   "instances":
   {
-    "title": "Dashboard",
+    "title": "Machines",
     "subTitle": ""
   },
   "networks":

@@ -9,22 +9,10 @@ const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'dashboard',
+    redirectTo: 'machines',
   },
   {
-    path: 'file-manager',
-    loadChildren: () => import('./file-manager/file-manager.module').then(x => x.FileManagerModule),
-    canActivate: [AuthGuardService],
-    canLoad: [AuthGuardService],
-    data:
-    {
-      title: 'fileManager.title',
-      subTitle: 'fileManager.subTitle',
-      icon: 'folder'
-    }
-  },
-  {
-    path: 'dashboard',
+    path: 'machines',
     loadChildren: () => import('./instances/instances.module').then(x => x.InstancesModule),
     canActivate: [AuthGuardService],
     canLoad: [AuthGuardService],
