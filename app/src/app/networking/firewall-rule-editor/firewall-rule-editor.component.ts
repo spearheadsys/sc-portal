@@ -56,7 +56,8 @@ export class FirewallRuleEditorComponent implements OnInit, OnDestroy
         this.editorForm.get(['ruleSettings', 'key']).setValue(null);
         this.editorForm.get(['ruleSettings', 'value']).setValue(null);
 
-        this.editorForm.get('ruleSettings').clearValidators();
+        this.editorForm.get(['ruleSettings', 'key']).clearValidators();
+        this.editorForm.get(['ruleSettings', 'value']).clearValidators();
 
         setTimeout(() =>
         {
@@ -98,6 +99,9 @@ export class FirewallRuleEditorComponent implements OnInit, OnDestroy
           {
             this.keyRegex = '^.+$';
           }
+
+          this.editorForm.get(['ruleSettings', 'key']).updateValueAndValidity();
+          this.editorForm.get(['ruleSettings', 'value']).updateValueAndValidity();
         }, 0);
       });
   }
