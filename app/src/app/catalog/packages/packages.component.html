@@ -22,7 +22,7 @@
               <span class="d-block">
                 <span class="h3 text-uppercase">
                   {{ pkg.name }}
-                  <span class="price" *ngIf="pkg.price">{{ pkg.price | currency }}/h</span>
+                  <span class="price" *ngIf="pkg.price">{{ pkg.price | currency: 'USD': 'symbol': '1.0-2' }}/h</span>
                   <!--<small *ngIf="pkg.brand">{{ pkg.brand }}</small>-->
                 </span>
                 <small class="text-faded pb-1 d-block">

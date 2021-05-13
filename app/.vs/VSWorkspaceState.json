@@ -3,14 +3,14 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\components\\nav-menu",
-    "\\src\\app\\help",
-    "\\src\\app\\help\\help",
-    "\\src\\app\\networking\\networks",
-    "\\src\\app\\volumes",
+    "\\src\\app\\catalog\\packages",
+    "\\src\\app\\instances",
+    "\\src\\app\\networking\\firewall-rule-editor",
+    "\\src\\app\\security\\helpers",
     "\\src\\assets",
-    "\\src\\assets\\help"
+    "\\src\\assets\\i18n",
+    "\\src\\assets\\i18n\\networking"
   ],
-  "SelectedNode": "\\src\\assets\\help\\readme.md",
+  "SelectedNode": "\\src\\app\\instances\\instances.component.html",
   "PreviewInSolutionExplorer": false
 }

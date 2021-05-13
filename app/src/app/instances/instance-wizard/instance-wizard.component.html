@@ -63,13 +63,13 @@
                       <span class="d-block">
                         <span class="h3">
                           {{ image.name }} 
-                          <span class="price" *ngIf="image.price">{{ image.price | currency }}</span>
+                          <span class="price" *ngIf="image.price">{{ image.price | currency: 'USD': 'symbol': '1.0-2' }}/month</span>
                         </span>
                         <small class="text-faded pb-1 d-block">v<b>{{ image.version }}</b></small>
                       </span>
                       <span class="small">
                         <span class="text-faded align-middle">{{ image.description }}</span>
-                        <a [href]="image.homepage" class="small" target="_blank">
+                        <a *ngIf="image.homepage" [href]="image.homepage" class="small" target="_blank">
                           more
                           <fa-icon icon="external-link-alt" size="sm"></fa-icon>
                         </a>
