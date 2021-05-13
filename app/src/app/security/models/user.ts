@@ -13,6 +13,7 @@ export class UserRequest
   city: string;
   state: string;
   country: string;
+  password: string;
 }
 
 export class UserResponse extends UserRequest

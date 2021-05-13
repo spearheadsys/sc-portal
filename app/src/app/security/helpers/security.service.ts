@@ -34,14 +34,14 @@ export class SecurityService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  addUser(user: UserRequest): Observable<UserResponse>
+  addUser(user): Observable<UserResponse>
   {
     return this.httpClient.post<UserResponse>(`/api/my/users`, user)
       .pipe(tap(() => usersCacheBuster$.next()));
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  editUser(userId: string, user: UserRequest): Observable<UserResponse>
+  editUser(userId: string, user): Observable<UserResponse>
   {
     return this.httpClient.post<UserResponse>(`/api/my/users/${userId}`, user)
       .pipe(tap(() => usersCacheBuster$.next()));

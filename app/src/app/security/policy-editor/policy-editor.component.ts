@@ -93,7 +93,7 @@ export class PolicyEditorComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   close()
   {
-    removeEventListener('document:keydown.escape', this.returnPressed);
+    removeEventListener('document:keydown.enter', this.returnPressed);
 
     this.modalRef.hide();
   }
@@ -153,6 +153,6 @@ export class PolicyEditorComponent implements OnInit, OnDestroy
   // --------------------------------------------------------------------------------------------------
   ngOnDestroy()
   {
-    removeEventListener('document:keydown.escape', this.returnPressed);
+    removeEventListener('document:keydown.enter', this.returnPressed);
   }
 }

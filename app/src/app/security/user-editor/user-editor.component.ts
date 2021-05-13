@@ -73,7 +73,7 @@ export class UserEditorComponent implements OnInit
   // --------------------------------------------------------------------------------------------------
   private passwordsValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null =>
   {
-    if (!this.changePassword)
+    if (!this.changePassword && !!this.user)
       return null;
 
     const password = group.get('password').value;
@@ -89,7 +89,7 @@ export class UserEditorComponent implements OnInit
 
     const passwordCheck = group.get('passwordCheck').value;
 
-    if (passwordCheck && password !== passwordCheck)
+    if (!passwordCheck || password !== passwordCheck)
       return { 'passwordMismatch': true };
 
     return null;
@@ -104,6 +104,8 @@ export class UserEditorComponent implements OnInit
   // ----------------------------------------------------------------------------------------------------------------
   saveChanges()
   {
+    this.working = true;
+
     let observable: Observable<UserResponse>;
 
     const changes = this.editorForm.getRawValue();
@@ -114,20 +116,18 @@ export class UserEditorComponent implements OnInit
     }
     else
     {
-      const user = new UserRequest();
-      user.login = changes.username;
-      user.email = changes.email;
-      user.companyName = changes.companyName;
-      user.firstName = changes.firstName;
-      user.lastName = changes.lastName;
-      user.address = changes.address;
-      user.postalCode = changes.postalCode;
-      user.city = changes.city;
-      user.state = changes.state;
-      user.country = changes.country;
-      user.phone = changes.phone;
+      const user = {
+        login: changes.username,
+        email: changes.email,
+        firstName: changes.firstName,
+        lastName: changes.lastName,
+        phone: changes.phone,
+        password: changes.password
+      };
 
-      observable = this.securityService.editUser(this.user.id, user);
+      observable = this.user
+        ? this.securityService.editUser(this.user.id, user)
+        : this.securityService.addUser(user);
     }
 
     observable.subscribe(x =>
@@ -135,7 +135,12 @@ export class UserEditorComponent implements OnInit
       this.save.next(x as User);
 
       this.close();
-    }, err => this.toastr.error(err.error.message));
+    }, err =>
+    {
+      this.toastr.error(err.error.message);
+
+      this.working = false;
+    });
   }
 
   // ----------------------------------------------------------------------------------------------------------------
