@@ -168,6 +168,40 @@ export class SecurityComponent implements OnInit, OnDestroy
   }
 
   // ----------------------------------------------------------------------------------------------------------------
+  deleteUser(user: User)
+  {
+    const modalConfig = {
+      ignoreBackdropClick: true,
+      keyboard: false,
+      animated: true,
+      initialState: {
+        prompt: `Are you sure you wish to permanently delete the "${user.login}" user?`,
+        confirmButtonText: 'Yes, delete this user',
+        declineButtonText: 'No, keep it',
+        confirmByDefault: false
+      }
+    };
+
+    const modalRef = this.modalService.show(ConfirmationDialogComponent, modalConfig);
+    modalRef.content.confirm.pipe(
+      first(),
+      switchMap(() => this.securityService.removeUser(user))
+    )
+      .subscribe(() =>
+      {
+        const index = this.users.findIndex(p => p.id === user.id);
+        if (index >= 0)
+          this.users.splice(index, 1);
+
+        this.toastr.info(`The "${user.login}" user has been succesfuly removed`);
+      }, err =>
+      {
+        const errorDetails = err.error?.message ? `(${err.error.message})` : '';
+        this.toastr.error(`Faild to remove the "${user.login}" role (${errorDetails})`);
+      });
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
   showRoleEditor(role?: Role)
   {
     const modalConfig = {

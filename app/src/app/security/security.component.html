@@ -207,7 +207,7 @@
                       </li>
                       <li class="dropdown-divider"></li>
                       <li role="menuitem">
-                        <button class="dropdown-item">
+                        <button class="dropdown-item" (click)="deleteUser(user)">
                           <fa-icon [fixedWidth]="true" icon="trash"></fa-icon>
                           {{ 'security.deleteUser' | translate }}
                         </button>
