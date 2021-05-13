@@ -38,3 +38,9 @@ h5
     }
   }
 }
+
+.input-group > .dropdown-toggle
+{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}

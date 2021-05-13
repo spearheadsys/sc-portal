@@ -34,12 +34,27 @@
             <span *ngIf="editorForm.get('protocol').value === 'ICMP'">Type and code</span>
           </h5>
 
-          <input type="text" class="form-control" id="protocolConfig" formControlName="protocolConfig"
-                 [appAutofocus]="!editorForm.get('protocolConfig').value && editorForm.get('protocol').value" [appAutofocusDelay]="250"
-                 [placeholder]="editorForm.get('protocol').value === 'icmp' ? 'Type:Code [0:255]' : 'Port [1-9999]'"
-                 [appAlphaOnly]="editorForm.get('protocol').value === 'icmp' ? '^[0-9:]+$' : '^[0-9]+$'">
+          <div class="input-group mb-3" dropdown placement="bottom right">
+            <button class="btn btn-outline-info dropdown-toggle" type="button" dropdownToggle>
+              <span *ngIf="editorForm.get('protocolConfig').value === 'all'">All ports</span>
+              <span *ngIf="editorForm.get('protocolConfig').value !== 'all'">Specific port</span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+              <li>
+                <button class="dropdown-item" (click)="setProtocolConfig()">Specific port</button>
+              </li>
+              <li>
+                <button class="dropdown-item" (click)="setProtocolConfig('all')">All ports</button>
+              </li>
+            </ul>
+            <input type="text" class="form-control text-capitalize" id="protocolConfig" formControlName="protocolConfig"
+                   [appAutofocus]="!editorForm.get('protocolConfig').value && editorForm.get('protocol').value" [appAutofocusDelay]="250"
+                   [placeholder]="editorForm.get('protocol').value === 'icmp' ? 'Type:Code [0:255]' : 'Port [1-9999]'"
+                   [appAlphaOnly]="editorForm.get('protocol').value === 'icmp' ? '^[0-9:]+$' : '^[0-9]+$'">
+          </div>
         </div>
-
+      </div>
+      <div class="row g-4">
         <div class="col-sm-6">
           <h5>From</h5>
           <div class="row">

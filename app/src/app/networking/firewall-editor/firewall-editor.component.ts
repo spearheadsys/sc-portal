@@ -83,7 +83,10 @@ export class FirewallEditorComponent implements OnInit, OnDestroy
       {
         action: [this.firewallRule?.action.toUpperCase(), [Validators.required]],
         protocol: [this.firewallRule?.protocol.toLowerCase(), [Validators.required]],
-        protocolConfig: [this.firewallRule?.protocolConfig, [Validators.required]],
+        protocolConfig: [
+          { value: this.firewallRule?.protocolConfig, disabled: this.firewallRule?.protocolConfig === 'all' },
+          [Validators.required]
+        ],
         from,
         to,
         description: [this.firewallRule?.description || '']
@@ -157,6 +160,17 @@ export class FirewallEditorComponent implements OnInit, OnDestroy
 
           this.working = false;
         });
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  setProtocolConfig(value?: string)
+  {
+    this.editorForm.get('protocolConfig').setValue(value);
+
+    if (value === 'all')
+      this.editorForm.get('protocolConfig').disable();
+    else
+      this.editorForm.get('protocolConfig').enable();
   }
 
   // ----------------------------------------------------------------------------------------------------------------
