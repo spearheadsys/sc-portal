@@ -202,6 +202,8 @@ export class NetworksComponent implements OnInit, OnDestroy
       }
       else
         this.vlans.push(x);
+
+      this.applyFiltersAndSort();
     });
   }
 

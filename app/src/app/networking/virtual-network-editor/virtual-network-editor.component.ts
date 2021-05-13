@@ -78,8 +78,8 @@ export class VirtualNetworkEditorComponent implements OnInit
     observable.subscribe(x =>
     {
       const message = this.vlan
-        ? `The "${changes.name}" virtual network has been succesfully updated`
-        : `The "${changes.name}" virtual network has been succesfully created`;
+        ? `The "${changes.name}" virtual network has been successfully updated`
+        : `The "${changes.name}" virtual network has been successfully created`;
       this.toastr.info(message);
 
       this.working = false;
