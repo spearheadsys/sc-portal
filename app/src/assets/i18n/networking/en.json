@@ -3,7 +3,11 @@
   {
     "networks":
     {
-      "title": "Networks"
+      "title": "Networks",
+      "list":
+      {
+        "noResults": "No network matches the specified filters" 
+      }
     },
     "firewall":
     {

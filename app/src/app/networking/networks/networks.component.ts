@@ -51,7 +51,8 @@ export class NetworksComponent implements OnInit, OnDestroy
       threshold: .3, // Lower value means a more exact search
       keys: [
         { name: 'name', weight: .9 },
-        { name: 'networks.name', weight: .7 }
+        { name: 'description', weight: .7 },
+        //{ name: 'networks.name', weight: .7 }
       ]
     };
 
