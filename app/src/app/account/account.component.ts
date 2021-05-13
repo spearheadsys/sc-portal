@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SshKeyEditorComponent } from './ssh-key-editor/ssh-key-editor.component';
 import { Title } from "@angular/platform-browser";
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from '../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-account',
@@ -70,6 +71,42 @@ export class AccountComponent implements OnInit, OnDestroy
     };
 
     const modalRef = this.modalService.show(SshKeyEditorComponent, modalConfig);
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  deleteSshKey(keyName: string)
+  {
+    const modalConfig = {
+      ignoreBackdropClick: true,
+      keyboard: false,
+      animated: true,
+      initialState: {
+        prompt: `Are you sure you wish to permanently delete the "${keyName}" key?`,
+        confirmButtonText: 'Yes, delete it',
+        declineButtonText: 'No, keep it',
+        confirmByDefault: false
+      }
+    };
+
+    const modalRef = this.modalService.show(ConfirmationDialogComponent, modalConfig);
+
+    modalRef.content.confirm.pipe(first()).subscribe(() =>
+    {
+      this.accountService.deleteKey(keyName)
+        .subscribe(() =>
+        {
+          const index = this.userKeys.findIndex(x => x.name === keyName);
+          if (index >= 0)
+          {
+            this.userKeys.splice(index, 1);
+            this.toastr.info(`The "${keyName}" key has been deleted`);
+          }
+        }, err =>
+        {
+          const errorDetails = err.error?.message ? `(${err.error.message})` : '';
+          this.toastr.error(`Failed to remove the "${keyName}" key ${errorDetails}`);
+        });
+    });
   }
 
   // ----------------------------------------------------------------------------------------------------------------

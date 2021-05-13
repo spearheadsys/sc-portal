@@ -29,7 +29,7 @@
               <li class="list-group-item">
                 Container Name Service:
                 <span class="badge border ms-1 text-uppercase"
-                  [ngClass]="userInfo.triton_cns_enabled ? 'border-success text-success' : 'danger-success text-danger'">
+                      [ngClass]="userInfo.triton_cns_enabled ? 'border-success text-success' : 'danger-success text-danger'">
                   {{ userInfo.triton_cns_enabled ? 'enabled' : 'disabled' }}
                 </span>
               </li>
@@ -48,13 +48,18 @@
             </legend>
 
             <ol class="list-group list-group-flush">
-              <li class="list-group-item" *ngFor="let userKey of userKeys">
-                {{ userKey.name }}: <b class="text-uppercase">{{ userKey.fingerprint }}</b>
+              <li class="list-group-item pt-0 d-flex justify-content-between align-items-center" *ngFor="let userKey of userKeys">
+                <span>{{ userKey.name }}: <b class="text-uppercase">{{ userKey.fingerprint }}</b></span>
+
+                <button class="btn btn-sm btn-link text-danger" tooltip="{{ 'account.removeKey' | translate }}"
+                        (click)="deleteSshKey(userKey.name)">
+                  <fa-icon icon="trash"></fa-icon>
+                </button>
               </li>
             </ol>
           </fieldset>
         </div>
+      </div>
     </div>
   </div>
-</div>
 </div>

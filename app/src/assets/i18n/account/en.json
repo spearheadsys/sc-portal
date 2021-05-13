@@ -5,6 +5,7 @@
     "myProfile": "My profile",
     "updateProfile": "Update profile",
     "myKeys": "My keys",
-    "addKey": "Add key"
+    "addKey": "Add key",
+    "removeKey": "Delete this key" 
   }
 }
