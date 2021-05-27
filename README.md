@@ -79,8 +79,8 @@ For production (shakes tree, minifies and gzips to get smaller size):
 
 ## Configuration
 
-Ensure the config file in config/ matches your details. If running in
-production, name the config file config/prod.json.
+Ensure the config file in cfg/ matches your details. If running in
+production, name the config file cfg/prod.json.
 
 Relevant configuration attributes:
 
@@ -100,13 +100,13 @@ The SSH key used must be the correct format, e.g. generated with:
 
 ## Running the server
 
-    node bin/server.js config/prod.json
+    node bin/server.js cfg/prod.json
 
 The server generates a lot of JSON data about every request. This is easier
 for a human to handle if they have bunyan installed ("npm install -g bunyan"),
 and instead:
 
-    node bin/server.js config/prod.json | bunyan
+    node bin/server.js cfg/prod.json | bunyan
 
 # Endpoints
 
