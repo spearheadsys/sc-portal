@@ -15,8 +15,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './user-editor.component.html',
   styleUrls: ['./user-editor.component.scss']
 })
-export class UserEditorComponent implements OnInit
-{
+export class UserEditorComponent implements OnInit {
   @Input()
   user: User;
 
@@ -35,8 +34,7 @@ export class UserEditorComponent implements OnInit
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly securityService: SecurityService,
-    private readonly toastr: ToastrService)
-  {    // When the user navigates away from this route, hide the modal
+    private readonly toastr: ToastrService) {    // When the user navigates away from this route, hide the modal
     router.events
       .pipe(
         takeUntil(this.destroy$),
@@ -46,8 +44,7 @@ export class UserEditorComponent implements OnInit
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  private createForm()
-  {
+  private createForm() {
     this.editorForm = this.fb.group(
       {
         id: [this.user?.id],
@@ -71,8 +68,7 @@ export class UserEditorComponent implements OnInit
   }
 
   // --------------------------------------------------------------------------------------------------
-  private passwordsValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null =>
-  {
+  private passwordsValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
     if (!this.changePassword && !!this.user)
       return null;
 
@@ -96,47 +92,47 @@ export class UserEditorComponent implements OnInit
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  close()
-  {
+  close() {
     this.modalRef.hide();
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  saveChanges()
-  {
+  saveChanges() {
     this.working = true;
 
     let observable: Observable<UserResponse>;
 
     const changes = this.editorForm.getRawValue();
 
-    if (this.changePassword)
-    {
+    if (this.changePassword) {
       observable = this.securityService.changeUserPassword(this.user.id, changes.password, changes.passwordConfirmation);
     }
-    else
-    {
-      const user = {
+    else {
+      const user: any = {
         login: changes.username,
         email: changes.email,
-        firstName: changes.firstName,
-        lastName: changes.lastName,
-        phone: changes.phone,
-        password: changes.password
+        password: changes.password.password
       };
+
+      if (changes.firstName)
+        user.firstName = changes.firstName;
+
+      if (changes.lastName)
+        user.lastName = changes.lastName;
+
+      if (changes.phone)
+        user.phone = changes.phone;
 
       observable = this.user
         ? this.securityService.editUser(this.user.id, user)
         : this.securityService.addUser(user);
     }
 
-    observable.subscribe(x =>
-    {
+    observable.subscribe(x => {
       this.save.next(x as User);
 
       this.close();
-    }, err =>
-    {
+    }, err => {
       this.toastr.error(err.error.message);
 
       this.working = false;
@@ -144,8 +140,7 @@ export class UserEditorComponent implements OnInit
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
     if (!this.user)
       this.changePassword = false;
 
