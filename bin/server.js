@@ -20,7 +20,6 @@ const LOGIN_PATH = '/api/login';
 const API_PATH = '/api'; // all calls here go to cloudapi
 const API_RE = new RegExp('^' + API_PATH + '/');
 const STATIC_RE = new RegExp('^/');
-const RATES_RE = new RegExp('^/(packages|images)\.json$');
 
 
 // Take any HTTP request that has a token, sign that request  with an
@@ -126,6 +125,72 @@ function silentLogger() {
 }
 
 
+// Logging function similar to restify's auditLogger, but generates much less
+// verbose output.
+function standardLogger() {
+    var log = mod_bunyan.createLogger({
+        name: 'proxy'
+    }).child({
+        serializers: {
+            err: mod_bunyan.stdSerializers.err,
+            res: function auditResponseSerializer(res) {
+                if (!res) {
+                    return (false);
+                }
+
+                return ({
+                    statusCode: res.statusCode
+                });
+            },
+            req: function auditRequestSerializer(req) {
+                if (!req) {
+                    return (false);
+                }
+
+                var timers = {};
+                (req.timers || []).forEach(function (time) {
+                    var t = time.time;
+                    var _t = Math.floor((1000000 * t[0]) + (t[1] / 1000));
+                    timers[time.name] = _t;
+                });
+
+                return ({
+                    method: req.method,
+                    url: req.url,
+                    httpVersion: req.httpVersion,
+                    timers: timers,
+                    //headers: req.headers
+                });
+            }
+        }
+    });
+
+    function audit(req, res, route, err) {
+        var latency = res.get('Response-Time');
+
+        if (typeof (latency) !== 'number') {
+            latency = Date.now() - req._time;
+        }
+
+        var obj = {
+            remoteAddress: req.connection.remoteAddress,
+            remotePort: req.connection.remotePort,
+            req_id: req.getId(),
+            req: req,
+            res: res,
+            err: err,
+            latency: latency,
+        };
+
+        log.info(obj, 'handled: %d', res.statusCode);
+
+        return (true);
+    }
+
+    return (audit);
+}
+
+
 // Start up HTTP server and pool of cloudapi clients.
 //
 // Read from config file, establish crypto singer needed for requests to
@@ -178,9 +243,7 @@ function main() {
     server.use(mod_restify.bodyReader());
 
     // log requests
-    server.on('after', mod_restify.auditLogger({
-        log: mod_bunyan.createLogger({ name: 'proxy' })
-    }));
+    server.on('after', standardLogger());
 
     // login path is /api/login
     server.get(LOGIN_PATH,  login);
