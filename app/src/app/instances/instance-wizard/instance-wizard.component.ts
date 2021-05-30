@@ -347,23 +347,19 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
 
     const changes = this.editorForm.getRawValue();
 
-    const instance = new Instance();
+    const instance: any = {};
     instance.name = changes.name;
     instance.image = changes.image.id;
     instance.package = changes.package.id;
     //instance.brand = changes.package.brand;
     instance.networks = changes.networks.filter(x => x.selected).map(x => x.id);
     instance.firewall_enabled = !!changes.cloudFirewall;
-    instance.tags = changes.tags.reduce((a, b) =>
-    {
-      a[`tag.${b.key}`] = b.value;
-      return a;
-    }, {});
-    instance.metadata = changes.metadata.reduce((a, b) =>
-    {
-      a[`metadata.${b.key}`] = b.value;
-      return a;
-    }, {});
+
+    for (const tag of changes.tags)
+      instance[`tag.${tag.key}`] = tag.value;
+
+    for (const metadata of changes.metadata)
+      instance[`metadata.${metadata.key}`] = metadata.value;
 
     if (!this.kvmRequired)
       instance.volumes = changes.volumes
@@ -375,8 +371,6 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
           mode: volume.ro ? 'ro' : 'rw',
           mountpoint: volume.mountpoint
         }));
-
-    console.log(changes, instance);
 
     this.instancesService.add(instance)
       .subscribe(x =>
