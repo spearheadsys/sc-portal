@@ -157,12 +157,13 @@ export class SecurityComponent implements OnInit, OnDestroy
         this.toastr.info(`The details have been updated for user "${user.login}"`);
 
         user = Object.assign(user, x);
+
+        user.working = false;
       }
       else
       {
+        x.roles = [];
         this.users.push(x);
-
-        user.working = false;
       }
     });
   }
