@@ -40,7 +40,11 @@ export class SnapshotsService
     // Keep polling the snapshot until it reaches the expected state
     return this.httpClient.get<Snapshot>(`/api/my/machines/${instance.id}/snapshots/${encodeURIComponent(snapshot.name)}`)
       .pipe(
-        tap(x => snapshot.state = x.state),
+        tap(x => 
+        {
+          if (x.state !== 'deleted')
+            snapshot.state = x.state;
+        }),
         repeatWhen(x =>
         {
           let retries = 0;
