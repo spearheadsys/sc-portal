@@ -372,6 +372,8 @@ export class InstanceWizardComponent implements OnInit, OnDestroy
           mountpoint: volume.mountpoint
         }));
 
+    console.log(this.editorForm.get('affinity'));
+
     this.instancesService.add(instance)
       .subscribe(x =>
       {
