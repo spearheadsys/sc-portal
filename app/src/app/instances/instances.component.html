@@ -276,7 +276,7 @@
   <fieldset class="filters">
     <ng-container formGroupName="filters">
       <div class="dropdown-header">{{ 'dashboard.list.filterByState' | translate }}</div>
-      <div class="btn-group w-100 mb-3" dropdown>
+      <div class="btn-group w-100" dropdown>
         <button class="btn btn-state-filter dropdown-toggle d-flex justify-content-between align-items-center"
                 dropdownToggle>
           <span *ngIf="!editorForm.get(['filters', 'stateFilter']).value">
@@ -313,13 +313,18 @@
         </ul>
       </div>
 
-      <div class="dropdown-header">{{ 'dashboard.list.filterByMemory' | translate }}</div>
-      <ngx-slider class="mb-4" formControlName="memoryFilter" [options]="memoryFilterOptions"></ngx-slider>
+      <ng-container *ngIf="memoryFilterOptions.stepsArray.length > 1">
+        <div class="dropdown-header">{{ 'dashboard.list.filterByMemory' | translate }}</div>
+        <ngx-slider class="mb-4" formControlName="memoryFilter" [options]="memoryFilterOptions"></ngx-slider>
+      </ng-container>
 
-      <div class="dropdown-header">{{ 'dashboard.list.filterByDisk' | translate }}</div>
-      <ngx-slider class="mb-3" formControlName="diskFilter" [options]="diskFilterOptions"></ngx-slider>
+      <ng-container *ngIf="diskFilterOptions.stepsArray.length > 1">
+        <div class="dropdown-header">{{ 'dashboard.list.filterByDisk' | translate }}</div>
+        <ngx-slider class="mb-3" formControlName="diskFilter" [options]="diskFilterOptions"></ngx-slider>
+      </ng-container>
 
-      <button class="btn btn-outline-dark w-100 mt-3" (click)="clearFilters()">
+      <button *ngIf="memoryFilterOptions.stepsArray.length > 1 && diskFilterOptions.stepsArray.length > 1" 
+        class="btn btn-outline-dark w-100 mt-3" (click)="clearFilters()">
         {{ 'dashboard.list.resetFilters' | translate }}
       </button>
     </ng-container>

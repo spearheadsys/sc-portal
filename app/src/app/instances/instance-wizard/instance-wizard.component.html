@@ -142,7 +142,8 @@
 
               <!-- Volumes and disks -->
               <div class="mt-3 d-flex flex-column">
-                <button class="btn btn-outline-info text-start mb-2" (click)="showVolumes = !showVolumes">
+                <button class="btn text-start mb-2" [class.btn-outline-info]="!showVolumes" [class.btn-info]="showVolumes" 
+                (click)="showVolumes = !showVolumes">
                   Volumes
                   <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="showVolumes ? 90 : 0" class="float-end"></fa-icon>
                 </button>
@@ -192,60 +193,37 @@
 
               <!-- Affinity settings -->
               <div class="mt-3 d-flex flex-column" *ngIf="instances && instances.length">
-                <button class="btn btn-outline-info text-start w-100 mb-2" (click)="showAffinity = !showAffinity">
-                  Affinity
+                <button class="btn text-start w-100 mb-2" [class.btn-outline-info]="!showAffinity" [class.btn-info]="showAffinity"
+                  (click)="showAffinity = !showAffinity">
+                  Affinity rules
                   <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="showAffinity ? 90 : 0" class="float-end"></fa-icon>
                 </button>
 
                 <div [collapse]="!showAffinity">
                   <div class="row">
-                    <div class="col-sm-6" formGroupName="affinity">
-                      <h5>Place close to</h5>
-
-                      <div class="select-list" tabindex="0">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" id="closeTo" [value]="null" formControlName="closeTo">
-                          <label class="form-check-label" for="closeTo">
-                            (no preference)
-                          </label>
-                        </div>
-
-                        <div class="form-check" *ngFor="let instance of instances">
-                          <input class="form-check-input" type="radio" id="closeTo-{{ instance.id }}" [value]="instance.id" formControlName="closeTo">
-                          <label class="form-check-label" for="closeTo-{{ instance.id }}">
-                            {{ instance.name }}
-                          </label>
-                        </div>
-                      </div>
+                    <div class="col-sm-4">
+                      <select class="form-select" name="operator">
+                        <option></option>
+                        <option value="==">Must be close to instances</option>
+                        <option value="==~">Should be close to instances</option>
+                        <option value="!=">Must be far from instances</option>
+                        <option value="!=~">Should be far from instances</option>
+                      </select>
                     </div>
-
-                    <div class="col-sm-6" formGroupName="affinity">
-                      <h5>Place far from</h5>
-
-                      <div class="select-list" tabindex="0">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" id="farFrom" [value]="null" formControlName="farFrom">
-                          <label class="form-check-label" for="farFrom">
-                            (no preference)
-                          </label>
-                        </div>
-
-                        <div class="form-check" *ngFor="let instance of instances">
-                          <input class="form-check-input" type="radio" id="farFrom-{{ instance.id }}" [value]="instance.id" formControlName="farFrom">
-                          <label class="form-check-label" for="farFrom-{{ instance.id }}">
-                            {{ instance.name }}
-                          </label>
-                        </div>
-                      </div>
+                    <div class="col-sm-3">
+                      <select class="form-select" name="target">
+                        <option></option>
+                        <option value="instance">Named like</option>
+                        <option value="tagName">Tagged with</option>
+                      </select>
                     </div>
-
-                    <div class="col-sm" formGroupName="affinity">
-                      <div class="form-check ms-0">
-                        <input class="form-check-input" type="checkbox" id="strict" formControlName="strict">
-                        <label class="form-check-label" for="strict">
-                          Provision only when the affinity criteria are met
-                        </label>
-                      </div>
+                    <div class="col-sm-4">
+                      <input type="text" class="form-control" placeholder="Value">
+                    </div>
+                    <div class="col-sm-1">
+                      <button class="btn btn-outline-info">
+                        <fa-icon icon="plus"></fa-icon>
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -109,6 +109,11 @@
 .filters
 {
   width: 240px;
+
+  .btn-group + *
+  {
+    margin-top: 1rem;
+  }
 }
 
 .form-check-label
