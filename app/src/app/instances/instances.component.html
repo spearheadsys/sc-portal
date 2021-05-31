@@ -101,10 +101,19 @@
             <div class="row g-0">
               <div class="card-info" [ngClass]="showMachineDetails ? 'col-lg-4' : 'col'">
                 <div>
-                  <h5 class="card-title text-truncate" [tooltip]="instance.name" container="body" placement="top left"
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title text-truncate" [tooltip]="instance.name" container="body" placement="top left"
                       [adaptivePosition]="false">
-                    {{ instance.name }}
-                  </h5>
+                      {{ instance.name }}
+                    </h5>
+
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-link text-info" tooltip="Toggle instances details" container="body"
+                        placement="top" [adaptivePosition]="false" (click)="toggleMachineDetails()">
+                        <fa-icon icon="expand-alt" [fixedWidth]="true" size="sm"></fa-icon>
+                      </button>
+                    </div>
+                  </div>
 
                   <div *ngIf="!instance.loading && instance.imageDetails"
                        class="text-truncate small text-info text-faded mb-1" [tooltip]="instance.imageDetails.description"

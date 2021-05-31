@@ -860,6 +860,13 @@ export class InstancesComponent implements OnInit, OnDestroy
   }
 
   // ----------------------------------------------------------------------------------------------------------------
+  toggleMachineDetails()
+  {
+    this.showMachineDetails = !this.showMachineDetails;
+    this.editorForm.get('showMachineDetails').setValue(this.showMachineDetails);
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
   private fillInInstanceDetails(instance: Instance)
   {
     const imageDetails = this.images.find(i => i.id === instance.image);

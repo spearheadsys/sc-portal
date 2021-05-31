@@ -23,6 +23,16 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { ClipboardModule } from 'ngx-clipboard';
+import { AutofocusDirective } from './directives/autofocus.directive';
+import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
+import { PackagesComponent } from './catalog/packages/packages.component';
+import { FileSizePipe } from './pipes/file-size.pipe';
+import { AutosizeModule } from 'ngx-autosize';
+import { AlphaOnlyDirective } from './directives/alpha-only.directive';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
+import { CustomImageEditorComponent } from './catalog/custom-image-editor/custom-image-editor.component';
+import { LazyLoadDirective } from './directives/lazy-load.directive';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -33,21 +43,9 @@ import
   faArrowsAlt, faTags, faEllipsisV, faHatWizard, faUserCog, faCircle, faAngleLeft, faExternalLinkAlt, faCheck, faPowerOff, faBars, faSpinner,
   faStop, faPlay, faRedo, faMicrochip, faDesktop, faCopy, faSquare, faCheckSquare, faSave, faDatabase, faClone, faSearch, faHistory, faMask,
   faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent,
-  faUndo, faQuestionCircle
+  faUndo, faQuestionCircle, faExpandAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { faDocker } from '@fortawesome/free-brands-svg-icons';
-
-import { AutofocusDirective } from './directives/autofocus.directive';
-
-import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
-import { PackagesComponent } from './catalog/packages/packages.component';
-import { FileSizePipe } from './pipes/file-size.pipe';
-import { AutosizeModule } from 'ngx-autosize';
-import { AlphaOnlyDirective } from './directives/alpha-only.directive';
-import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
-import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
-import { CustomImageEditorComponent } from './catalog/custom-image-editor/custom-image-editor.component';
-import { LazyLoadDirective } from './directives/lazy-load.directive';
 
 @NgModule({
   declarations: [
@@ -149,7 +147,7 @@ export class SharedModule
       faArrowsAlt, faTags, faEllipsisV, faHatWizard, faUserCog, faCircle, faAngleLeft, faExternalLinkAlt, faCheck, faPowerOff, faBars, faSpinner,
       faStop, faPlay, faRedo, faMicrochip, faDesktop, faCopy, faSquare, faCheckSquare, faSave, faDatabase, faClone, faSearch, faHistory, faMask,
       faCloud, faCloudUploadAlt, faEye, faFingerprint, faLink, faClipboard, faCoins, faArrowRight, faEllipsisH, faStar, faCommentAlt, faOutdent,
-      faUndo, faQuestionCircle
+      faUndo, faQuestionCircle, faExpandAlt
     );
   }
 }
