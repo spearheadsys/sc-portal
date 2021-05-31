@@ -37,9 +37,9 @@ export class AccountService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  addKey(name: string, key: string, fingerprint: string): Observable<UserKey>
+  addKey(name: string, key: string): Observable<UserKey>
   {
-    return this.httpClient.post<UserKey>(`/api/my/keys`, { name, key, fingerprint });
+    return this.httpClient.post<UserKey>(`/api/my/keys`, { name, key });
   }
 
   // ----------------------------------------------------------------------------------------------------------------

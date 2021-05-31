@@ -40,8 +40,7 @@ export class SshKeyEditorComponent implements OnInit, OnDestroy
     this.editorForm = this.fb.group(
       {
         name: [null, Validators.required],
-        key: [null, Validators.required],
-        fingerprint: [null, Validators.required]
+        key: [null, Validators.required]
       });
   }
 
@@ -56,7 +55,7 @@ export class SshKeyEditorComponent implements OnInit, OnDestroy
   {
     const sshKey = this.editorForm.getRawValue();
 
-    this.accountService.addKey(sshKey.name, sshKey.key, sshKey.fingerprint)
+    this.accountService.addKey(sshKey.name, sshKey.key)
       .subscribe(response =>
       {
         this.save.next(response);

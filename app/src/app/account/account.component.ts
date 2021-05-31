@@ -71,6 +71,8 @@ export class AccountComponent implements OnInit, OnDestroy
     };
 
     const modalRef = this.modalService.show(SshKeyEditorComponent, modalConfig);
+
+    modalRef.content.save.pipe(first()).subscribe(sshKey => this.userKeys.push(sshKey));
   }
 
   // ----------------------------------------------------------------------------------------------------------------

@@ -10,11 +10,10 @@
       <div class="mt-3">
         <input type="text" class="form-control" formControlName="name" placeholder="Name" [appAutofocus]="true" [appAutofocusDelay]="600">
         <textarea rows="4" class="form-control" formControlName="key" placeholder="SSH key"></textarea>
-        <input type="text" class="form-control" formControlName="fingerprint" placeholder="Fingerprint">
       </div>
 
       <div class="d-flex justify-content-end align-items-center mt-5">
-        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">Save changes</button>
+        <button class="btn btn-info" (click)="saveChanges()" [disabled]="editorForm.invalid">Add key</button>
       </div>
     </div>
   </fieldset>
