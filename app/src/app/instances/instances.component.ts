@@ -14,7 +14,7 @@ import { ConfirmationDialogComponent } from '../components/confirmation-dialog/c
 import { InstanceHistoryComponent } from './instance-history/instance-history.component';
 import { CustomImageEditorComponent } from '../catalog/custom-image-editor/custom-image-editor.component';
 import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { FileSizePipe } from '../pipes/file-size.pipe';
@@ -660,6 +660,8 @@ export class InstancesComponent implements OnInit, OnDestroy
     {
       if (!x) return;
 
+      x.working = true;
+
       this.fillInInstanceDetails(x);
 
       this.instances.push(x);
@@ -757,6 +759,9 @@ export class InstancesComponent implements OnInit, OnDestroy
       {
         instance.state = x.state;
 
+        // This allows us to trigger later on when the state changes to a something stable
+        instance.shouldLoadInfo = false;
+
         this.computeFiltersOptions(true);
       })
         .pipe(takeUntil(this.destroy$))
@@ -765,13 +770,11 @@ export class InstancesComponent implements OnInit, OnDestroy
           instance.working = false;
 
           // Update the instance with what we got from the server
-          const index = this.instances.findIndex(i => i.id === instance.id);
-          if (index >= 0)
-          {
-            this.instances.splice(index, 1, x);
+          Object.assign(instance, x);
 
-            this.computeFiltersOptions();
-          }
+          instance.shouldLoadInfo = this.editorForm.get('showMachineDetails').value;
+
+          this.computeFiltersOptions();
         }, err =>
         {
           if (err.status === 410)
@@ -792,7 +795,7 @@ export class InstancesComponent implements OnInit, OnDestroy
           instance.working = false;
         });
 
-    instance.shouldLoadInfo = true;
+    instance.shouldLoadInfo = this.editorForm.get('showMachineDetails').value;
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -818,6 +821,7 @@ export class InstancesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   updateInstance(instance: Instance, updates: Instance)
   {
+    instance.refreshInfo = instance.state !== updates.state;
     instance.state = updates.state;
   }
 
@@ -840,12 +844,19 @@ export class InstancesComponent implements OnInit, OnDestroy
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  setInstanceSnapshot(instance: Instance, snapshots)
+  setInstanceSnapshots(instance: Instance, snapshots)
   {
     // Update the instance as a result of the snapshots panel's "load" event. We do this because the intances are (un)loaded
     // from the viewport as the user scrolls through the page, to optimize memory consumption.
     instance.snapshots = snapshots;
     instance.snapshotsLoaded = true;
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  refreshInstanceDnsList(instance: Instance)
+  {
+    instance.working = false;
+    instance.refreshInfo = true;
   }
 
   // ----------------------------------------------------------------------------------------------------------------

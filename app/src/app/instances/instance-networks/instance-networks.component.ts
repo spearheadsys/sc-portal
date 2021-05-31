@@ -39,13 +39,14 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
   instanceStateUpdate = new EventEmitter();
 
   loading: boolean;
-  nics: Nic[];
+  nics: Nic[] = [];
   publicNetworks: Network[] = [];
   fabricNetworks: Network[] = [];
   finishedLoading: boolean;
 
   private destroy$ = new Subject();
   private onChanges$ = new ReplaySubject();
+  private networks: Network[];
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly networkingService: NetworkingService,
@@ -71,17 +72,19 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  private getNetworks()
+  private getNetworks(force = false)
   {
-    if (this.finishedLoading) return;
-
-    this.loading = true;
+    if ((this.finishedLoading || this.instance.state === 'provisioning') && !force) return;
 
     const observables = this.nics.map(x => this.networkingService.getNetwork(x.network));
+
+    this.loading = observables.length > 0;
 
     forkJoin(observables)
       .subscribe(networks =>
       {
+        this.networks = networks;
+
         for (const nic of this.nics)
         {
           nic.networkDetails = networks.find(x => x.id === nic.network);
@@ -147,7 +150,7 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
             {
               // Keep polling the newly created NIC until it reaches its "running"/"stopped" state
               return this.networkingService
-                .getNicUntilExpectedState(this.instance, response.nic, ['running', 'stopped'], n => this.nics[0].state = n.state)
+                .getNicUntilAvailable(this.instance, response.nic, network.name, n => this.nics[0].state = n.state)
                 .pipe(
                   takeUntil(this.destroy$),
                   map(y => ({ network: response.network, nic: y }))
@@ -224,8 +227,8 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
               // If the machine is currently running, keep polling until it finishes restarting
               return this.instance.state === 'running'
                 ? this.instancesService
-                  .getInstanceUntilExpectedState(this.instance, ['running'], x => this.instanceStateUpdate.emit(x))
-                  .pipe(takeUntil(this.destroy$))
+                  .getInstanceUntilNicRemoved(this.instance, nic.networkName, x => this.instanceStateUpdate.emit(x))
+                  .pipe(delay(1000), takeUntil(this.destroy$))
                 : of(nic);
             })
           );
@@ -285,15 +288,17 @@ export class InstanceNetworksComponent implements OnInit, OnDestroy, OnChanges
   // ----------------------------------------------------------------------------------------------------------------
   ngOnInit(): void
   {
-    this.nics = this.instance?.nics || [];
-
-    if (this.instance.networksLoaded)
+    if (!this.instance.nics?.length || this.instance.networksLoaded)
       this.finishedLoading = true;
 
     this.onChanges$.pipe(takeUntil(this.destroy$)).subscribe(() =>
     {
       if (!this.finishedLoading && this.loadNetworks && !this.instance?.networksLoaded)
+      {
+        this.nics = this.instance?.nics || [];
+
         this.getNetworks();
+      }
     });
   }
 

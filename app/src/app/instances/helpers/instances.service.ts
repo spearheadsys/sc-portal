@@ -62,6 +62,40 @@ export class InstancesService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
+  getInstanceUntilNicRemoved(instance: any, networkName: string, callbackFn?: InstanceCallbackFunction, maxRetries = 30): Observable<Instance>
+  {
+    networkName = networkName.toLocaleLowerCase();
+
+    // Keep polling the instance until it reaches the expected state
+    return this.httpClient.get<Instance>(`/api/my/machines/${instance.id}`)
+          .pipe(
+            tap(instance => callbackFn && callbackFn(instance)),
+            repeatWhen(x =>
+            {
+              let retries = 0;
+    
+              return x.pipe(
+                delay(3000),
+                map(() =>
+                {
+                  if (retries++ === maxRetries)
+                    throw { error: `Failed to retrieve the current status for machine "${instance.name}"` };
+                })
+              );
+            }),
+            filter(x => x.state === 'running' && !x.dns_names.some(d => d.toLocaleLowerCase().indexOf(networkName) >= 0)),
+            take(1), //  needed to stop the repeatWhen loop
+            map(x => 
+            {             
+              if (callbackFn)
+                callbackFn(x);
+
+              return instance;
+            })
+          );
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
   add(instance: InstanceRequest): Observable<Instance>
   {
     return this.httpClient.post<Instance>(`/api/my/machines`, instance)
@@ -229,6 +263,12 @@ export class InstancesService
   getPackagesRates(): Observable<any>
   {
     return this.httpClient.get(`./assets/data/packages.json`);
+  }
+
+  // ----------------------------------------------------------------------------------------------------------------
+  clearCache()
+  {
+    instancesCacheBuster$.next();
   }
 }
 

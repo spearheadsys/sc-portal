@@ -108,7 +108,7 @@
 
                   <div *ngIf="!instance.loading && instance.imageDetails"
                        class="text-truncate small text-info text-faded mb-1" [tooltip]="instance.imageDetails.description"
-                       container="body" placement="top" [adaptivePosition]="false">
+                       container="body" placement="top left" [adaptivePosition]="false">
                     {{ instance.imageDetails.name }}, v{{ instance.imageDetails.version }}
                   </div>
 
@@ -149,14 +149,14 @@
                   </div>
 
                   <div class="d-flex flex-nowrap justify-content-between align-items-center">
-                    <a href="javascript:void(0)" class="badge text-uppercase"
+                    <button class="badge text-uppercase" [disabled]="instance.state !== 'running' && instance.state !== 'stopped'"
                        [class.bg-light]="instance.state !== 'running' && instance.state !== 'stopped'"
                        [class.bg-danger]="instance.state === 'stopped'" [class.bg-success]="instance.state === 'running'"
                        (click)="showMachineHistory(instance)" tooltip="{{ 'dashboard.listItem.history' | translate }}"
                        container="body" placement="top" [adaptivePosition]="false">
                       <fa-icon icon="history" [fixedWidth]="true"></fa-icon>
                       {{ instance.state }}
-                    </a>
+                    </button>
 
                     <div class="btn-group btn-group-sm" dropdown placement="bottom right" *ngIf="!instance.loading">
                       <button class="btn btn-link text-success" (click)="startMachine(instance)"
@@ -178,20 +178,20 @@
               <div class="col mt-sm-0 mt-3 no-overflow-sm" *ngIf="showMachineDetails">
                 <div class="card-header p-0 h-100">
                   <tabset class="dashboard-tabs" *ngIf="!instance.loading">
-                    <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
+                    <tab customClass="dashboard-tab" [disabled]="instance.working" (selectTab)="tabChanged($event, instance)"
                          id="{{ instance.id }}-info">
                       <ng-template tabHeading>
                         <fa-icon icon="info-circle" class="d-sm-none"></fa-icon>
                         <span class="d-none d-sm-inline-block ms-1">Info</span>
                       </ng-template>
                       <div class="card-body p-2 h-100">
-                        <app-instance-info [instance]="instance" [loadInfo]="instance.shouldLoadInfo"
+                        <app-instance-info [instance]="instance" [loadInfo]="instance.shouldLoadInfo" [refresh]="instance.refreshInfo"
                                            (load)="setInstanceInfo(instance, $event)" (processing)="instance.working = true"
                                            (finishedProcessing)="instance.working = false">
                         </app-instance-info>
                       </div>
                     </tab>
-                    <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
+                    <tab customClass="dashboard-tab" [disabled]="instance.working" (selectTab)="tabChanged($event, instance)"
                          id="{{ instance.id }}-networks">
                       <ng-template tabHeading>
                         <fa-icon icon="network-wired" class="d-sm-none"></fa-icon>
@@ -200,13 +200,13 @@
                       <div class="card-body p-2 h-100">
                         <app-instance-networks [instance]="instance" [loadNetworks]="instance.shouldLoadNetworks"
                                                (load)="setInstanceNetworks(instance, $event)" (processing)="instance.working = true"
-                                               (finishedProcessing)="instance.working = false"
+                                               (finishedProcessing)="refreshInstanceDnsList(instance)"
                                                (instanceReboot)="watchInstanceState(instance)"
                                                (instanceStateUpdate)="updateInstance(instance, $event)">
                         </app-instance-networks>
                       </div>
                     </tab>
-                    <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
+                    <tab customClass="dashboard-tab" [disabled]="instance.working" (selectTab)="tabChanged($event, instance)"
                          id="{{ instance.id }}-snapshots" *ngIf="instance.brand !== 'kvm'">
                       <ng-template tabHeading>
                         <fa-icon icon="history" class="d-sm-none"></fa-icon>
@@ -220,7 +220,7 @@
                         </app-instance-snapshots>
                       </div>
                     </tab>
-                    <tab *ngIf="false" customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
+                    <tab *ngIf="false" customClass="dashboard-tab" [disabled]="instance.working" (selectTab)="tabChanged($event, instance)"
                          id="{{ instance.id }}-migrations">
                       <ng-template tabHeading>
                         <fa-icon icon="coins" class="d-sm-none"></fa-icon>
@@ -230,7 +230,7 @@
                         <button class="btn btn-outline-info w-100">Move to another node</button>
                       </div>
                     </tab>
-                    <tab customClass="dashboard-tab" (selectTab)="tabChanged($event, instance)"
+                    <tab customClass="dashboard-tab" [disabled]="instance.working" (selectTab)="tabChanged($event, instance)"
                          id="{{ instance.id }}-volumes" *ngIf="instance.volumes && instance.volumes.length">
                       <ng-template tabHeading>
                         <fa-icon icon="database" class="d-sm-none"></fa-icon>

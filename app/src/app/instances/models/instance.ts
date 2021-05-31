@@ -42,8 +42,10 @@ export class Instance extends InstanceRequest
   working: boolean;
   shouldLoadInfo: boolean;
   infoLoaded: boolean;
+  refreshInfo: boolean;
   shouldLoadNetworks: boolean;
   networksLoaded: boolean;
+  refreshNetworks: boolean;
   shouldLoadSnapshots: boolean;
   snapshotsLoaded: boolean;
   volumesEnabled: boolean;

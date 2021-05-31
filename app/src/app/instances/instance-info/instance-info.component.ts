@@ -20,6 +20,9 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
   @Input()
   loadInfo: boolean;
 
+  @Input()
+  refresh: boolean;
+
   @Output()
   processing = new EventEmitter();
 
@@ -30,7 +33,8 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
   load = new EventEmitter();
 
   loading: boolean;
-  
+  dnsCount: number;
+
   private finishedLoading: boolean;
   private destroy$ = new Subject();
   private onChanges$ = new ReplaySubject();
@@ -70,9 +74,12 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
   // ----------------------------------------------------------------------------------------------------------------
   private getInfo()
   {
-    if (this.finishedLoading) return;
+    if (this.finishedLoading || this.instance.state === 'provisioning') return;
 
     this.loading = true;
+
+    if (this.refresh)
+      this.instancesService.clearCache();
 
     this.instancesService.getById(this.instance.id)
       .subscribe(x =>
@@ -80,6 +87,8 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
         const dnsList = {};
         for (const dns of x.dns_names.sort((a, b) => b.localeCompare(a)))
           dnsList[dns] = this.getParsedDns(dns);
+
+        this.dnsCount = Object.keys(dnsList).length;
 
         this.instance.dnsList = dnsList;
 
@@ -112,7 +121,13 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
   {
     this.onChanges$.pipe(takeUntil(this.destroy$)).subscribe(() =>
     {
-      if (!this.finishedLoading && this.loadInfo && !this.instance?.infoLoaded)
+      if (this.refresh)
+      {
+        this.finishedLoading = false;
+        this.loadInfo = true;
+      }
+
+      if (!this.finishedLoading && this.loadInfo && !this.instance?.infoLoaded || this.refresh)
         this.getInfo();
     });
   }
@@ -123,7 +138,6 @@ export class InstanceInfoComponent implements OnInit, OnDestroy, OnChanges
     // Since we can't control if ngOnChanges is executed before ngOnInit, we need this trick
     this.onChanges$.next(changes);
   }
-
 
   // ----------------------------------------------------------------------------------------------------------------
   ngOnDestroy()

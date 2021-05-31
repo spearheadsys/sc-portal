@@ -172,24 +172,27 @@ body, div, virtual-scroller
   .dropdown-item
   {
     padding: .5rem 1rem;
+  }
+}
 
-    &:focus, &:hover
-    {
-      color: #1e2125;
-      background-color: rgba(255,255,255,.75);
-    }
+.dropdown-item
+{
+  &:focus, &:hover
+  {
+    color: #1e2125;
+    background-color: rgba(255,255,255,.75);
+  }
 
-    &.active, &:active
-    {
-      color: #0dcaf0;
-      background-color: #101a30;
-    }
+  &.active, &:active
+  {
+    color: #0dcaf0;
+    background-color: #101a30;
+  }
 
-    .ng-fa-icon
-    {
-      font-size: 1rem;
-      vertical-align: middle;
-    }
+  .ng-fa-icon
+  {
+    font-size: 1rem;
+    vertical-align: middle;
   }
 }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { delay, filter, first, flatMap, map, mergeMapTo, repeatWhen, switchMap, switchMapTo, take, takeUntil, tap } from 'rxjs/operators';
+import { concatMap, delay, filter, first, flatMap, map, mergeMapTo, repeatWhen, switchMap, switchMapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { concat, empty, of, range, throwError, zip } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';
 import { Network } from '../models/network';
@@ -10,6 +10,8 @@ import { VirtualAreaNetwork } from '../models/vlan';
 import { VirtualAreaNetworkRequest } from '../models/vlan';
 import { EditNetworkRequest } from '../models/network';
 import { AddNetworkRequest } from '../models/network';
+import { Instance } from 'src/app/instances/models/instance';
+import { InstanceCallbackFunction } from 'src/app/instances/helpers/instances.service';
 
 const networksCacheBuster$ = new Subject<void>();
 
@@ -145,12 +147,22 @@ export class NetworkingService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  getNicUntilExpectedState(instance: any, nic: Nic, expectedStates: string[], callbackFn?: NicCallbackFunction, maxRetries = 30): Observable<Nic>
+  getNicUntilAvailable(instance: any, nic: Nic, networkName: string, callbackFn?: NicCallbackFunction, maxRetries = 30): Observable<Nic>
   {
-    // Keep polling the snapshot until it reaches the expected state
+    networkName = networkName.toLocaleLowerCase();
+
+    // Keep polling the instance until it reaches the expected state
     return this.getNic(instance.id, nic.mac)
       .pipe(
-        tap(x => callbackFn && callbackFn(x)),
+        tap(x => 
+        {
+          // We create our own state while the instance reboots
+          if (x.state === 'running')
+            x.state = 'starting';
+
+          if (callbackFn)
+            callbackFn(x);
+        }),
         repeatWhen(x =>
         {
           let retries = 0;
@@ -164,8 +176,46 @@ export class NetworkingService
             })
           );
         }),
-        filter(x => expectedStates.includes(x.state)),
-        take(1) //  needed to stop the repeatWhen loop
+        filter(x => x.state === 'running' || x.state === 'starting'),
+        take(1), //  needed to stop the repeatWhen loop
+        concatMap(nic => 
+          this.httpClient.get<Instance>(`/api/my/machines/${instance.id}`)
+          .pipe(
+            tap(() => 
+            {
+              // We create our own state while the instance reboots
+              nic.state = 'starting';
+
+              if (callbackFn)
+                callbackFn(nic);
+            }),
+            repeatWhen(x =>
+            {
+              let retries = 0;
+    
+              return x.pipe(
+                delay(3000),
+                map(() =>
+                {
+                  if (retries++ === maxRetries)
+                    throw { error: { message: `Failed to retrieve the current status for network interface "${nic.mac}"` } };
+                })
+              );
+            }),
+            filter(x => x.state === 'running' && x.dns_names.some(d => d.toLocaleLowerCase().indexOf(networkName) >= 0)),
+            take(1), //  needed to stop the repeatWhen loop
+            map(() => 
+            {
+              // We manually set the state as "running" now that the instance has rebooted
+              nic.state = 'running';
+
+              if (callbackFn)
+                callbackFn(nic);
+
+              return nic;
+            })
+          )
+        )
       );
   }
 

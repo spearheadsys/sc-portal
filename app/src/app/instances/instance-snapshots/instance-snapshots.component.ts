@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { CatalogService } from '../../catalog/helpers/catalog.service';
 import { InstancesService } from '../helpers/instances.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -27,7 +26,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
   processing = new EventEmitter();
 
   @Output()
-  processingFinished = new EventEmitter();
+  finishedProcessing = new EventEmitter();
 
   @Output()
   load = new EventEmitter();
@@ -51,7 +50,6 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly instancesService: InstancesService,
     private readonly snapshotsService: SnapshotsService,
-    private readonly catalogService: CatalogService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService)
   {
@@ -97,7 +95,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
         if (index >= 0)
           this.snapshots[index] = x;
 
-        this.processingFinished.emit();
+        this.finishedProcessing.emit();
         this.toastr.info(`A new snapshot "${snapshotName}" has been created for machine "${this.instance.name}"`);
       },
         err =>
@@ -108,7 +106,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
           if (index >= 0)
             this.snapshots.splice(index, 1);
 
-          this.processingFinished.emit();
+          this.finishedProcessing.emit();
           this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
         });
   }
@@ -133,11 +131,15 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
               switchMap(() => this.instancesService.getInstanceUntilExpectedState(this.instance, ['stopped'], x => this.instanceStateUpdate.emit(x))
                 .pipe(takeUntil(this.destroy$))
               )
-            ).subscribe(() => this.startMachineFromSnapshot(snapshot),
+            ).subscribe(() => 
+            {
+              snapshot.working = false;
+              this.startMachineFromSnapshot(snapshot);
+            },
               err =>
               {
                 snapshot.working = false;
-                this.processingFinished.emit();
+                this.finishedProcessing.emit();
 
                 this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
               });
@@ -184,14 +186,14 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
       {
         snapshot.working = false;
 
-        this.processingFinished.emit();
+        this.finishedProcessing.emit();
 
         this.toastr.info(`The machine "${this.instance.name}" has been started from the "${snapshot.name}" snapshot`);
       }, err =>
       {
         snapshot.working = false;
 
-        this.processingFinished.emit();
+        this.finishedProcessing.emit();
 
         this.toastr.error(`Machine "${this.instance.name}" error: ${err.error.message}`);
       });
@@ -225,12 +227,12 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
           if (index >= 0)
             this.snapshots.splice(index, 1);
 
-          this.processingFinished.emit();
+          this.finishedProcessing.emit();
 
           this.toastr.info(`The "${snapshot.name}" snapshot has been deleted`);
         }, err =>
         {
-          this.processingFinished.emit();
+          this.finishedProcessing.emit();
 
           this.toastr.error(`The "${snapshot.name}" snapshot couldn't be deleted: ${err.error.message}`);
         });
@@ -240,7 +242,7 @@ export class InstanceSnapshotsComponent implements OnInit, OnDestroy, OnChanges
   // ----------------------------------------------------------------------------------------------------------------
   private getSnapshots()
   {
-    if (this.snapshotsLoaded) return
+    if (this.snapshotsLoaded || this.instance.state === 'provisioning') return
 
     this.loadingSnapshots = true;
 
