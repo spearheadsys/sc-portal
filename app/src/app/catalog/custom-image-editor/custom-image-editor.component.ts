@@ -53,7 +53,17 @@ export class CustomImageEditorComponent implements OnInit
   // ----------------------------------------------------------------------------------------------------------------
   saveChanges()
   {
-    this.save.next(this.editorForm.getRawValue());
+    const changes = this.editorForm.getRawValue();
+
+    const image: any = {
+      name: changes.name,
+      version: changes.version
+    };
+
+    if (changes.description)
+      image.description = changes.description;
+
+    this.save.next(image);
     this.modalRef.hide();
   }
 

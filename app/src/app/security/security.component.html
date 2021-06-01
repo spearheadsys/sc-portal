@@ -91,9 +91,9 @@
                 [cdkDropListEnterPredicate]="rolesEnterPredicate" (cdkDropListDropped)="drop($event)" cdkDrag
                 [cdkDragData]="role" cdkDragBoundary="#securitySettings">
                 <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="role.collapsed ? 0 : 90"
-                      class="px-2 py-1 float-start" [ngClass]="role.policies.length ? 'text-secondary' : 'text-muted'"
+                  <div class="d-flex align-items-center">
+                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="role.collapsed || !role.policies.length ? 0 : 90"
+                      class="px-2 py-1 float-start toggler" [ngClass]="role.policies.length ? 'text-secondary' : 'text-muted'"
                       (click)="role.policies.length && role.collapsed = !role.collapsed"
                       tooltip="{{ 'security.togglePolicies' | translate }}" container="body" placement="top"
                       [adaptivePosition]="false"></fa-icon>
@@ -136,18 +136,16 @@
 
                 <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
 
-                <div [collapse]="role.collapsed" [isAnimated]="true">
+                <div [collapse]="role.collapsed || !role.policies.length" [isAnimated]="true">
                   <ul class="list-group list-group-flush pl-5 mt-2">
-                    <li class="list-group-item pl-1 pr-0" *ngFor="let policy of role.policies">
+                    <li class="list-group-item pl-1 pr-0 d-flex align-items-center" *ngFor="let policy of role.policies">
                       <fa-icon [fixedWidth]="true" icon="key" size="sm"></fa-icon>
-                      {{ policy.name }}
-                      <div class="btn-group btn-group-sm float-end">
-                        <button class="btn text-danger" tooltip="{{ 'security.removeRolePolicy' | translate }}"
-                          container="body" placement="top" [adaptivePosition]="false"
-                          (click)="removePolicyFromRole(policy, role)">
-                          <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
-                        </button>
-                      </div>
+                      <span class="flex-grow-1">{{ policy.name }}</span>
+                      <button class="btn btn-sm btn-link text-danger" tooltip="{{ 'security.removeRolePolicy' | translate }}"
+                        container="body" placement="top" [adaptivePosition]="false"
+                        (click)="removePolicyFromRole(policy, role)">
+                        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                      </button>
                     </li>
                   </ul>
                 </div>
@@ -178,14 +176,16 @@
                 cdkDropList [cdkDropListData]="user" cdkDropListSortingDisabled sortingDisabled
                 [cdkDropListEnterPredicate]="usersEnterPredicate" (cdkDropListDropped)="drop($event)">
                 <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="user.collapsed ? 0 : 90" class="px-2 py-1"
+                  <div class="d-flex align-items-center">
+                    <fa-icon [fixedWidth]="true" icon="angle-right" [rotate]="user.collapsed || !user.roles.length ? 0 : 90" class="px-2 py-1 toggler"
                       [ngClass]="user.roles.length ? 'text-secondary' : 'text-muted'"
                       (click)="user.roles.length && user.collapsed = !user.collapsed"
                       tooltip="{{ 'security.toggleRoles' | translate }}" container="body" placement="top"
                       [adaptivePosition]="false"></fa-icon>
 
-                    {{ user.login }} <sup *ngIf="user.roles?.length">({{ user.roles.length }})</sup>
+                    <span>
+                      {{ user.login }} <sup *ngIf="user.roles?.length">({{ user.roles.length }})</sup>
+                    </span>
                   </div>
 
                   <div class="btn-group btn-group-sm float-end" dropdown>
@@ -223,17 +223,15 @@
 
                 <div *cdkDragPlaceholder>{{ 'security.dropHere' | translate }}</div>
 
-                <div [collapse]="user.collapsed" [isAnimated]="true">
+                <div [collapse]="user.collapsed || !user.roles.length" [isAnimated]="true">
                   <ul class="list-group list-group-flush pl-5 mt-2">
-                    <li class="list-group-item pl-1 pr-0" *ngFor="let role of user.roles">
+                    <li class="list-group-item pl-1 pr-0 d-flex align-items-center" *ngFor="let role of user.roles">
                       <fa-icon [fixedWidth]="true" icon="tag" size="sm"></fa-icon>
-                      {{ role.name }}
-                      <div class="btn-group btn-group-sm float-end">
-                        <button class="btn text-danger" tooltip="{{ 'security.removeUserRole' | translate }}"
-                          container="body" (click)="removeRoleFromUser(role, user)">
-                          <fa-icon [fixedWidth]="true" icon="trash" size="sm"></fa-icon>
-                        </button>
-                      </div>
+                      <span class="flex-grow-1">{{ role.name }}</span>
+                      <button class="btn btn-sm btn-link text-danger" tooltip="{{ 'security.removeUserRole' | translate }}"
+                        container="body" (click)="removeRoleFromUser(role, user)">
+                        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                      </button>
                     </li>
                   </ul>
                 </div>

@@ -105,7 +105,7 @@ export class CatalogService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  getImageUntilExpectedState(image: CatalogImage, expectedStates: string[], maxRetries = 10): Observable<CatalogImage>
+  getImageUntilExpectedState(image: CatalogImage, expectedStates: string[], maxRetries = 30): Observable<CatalogImage>
   {
     // Keep polling the image until it reaches the expected state
     return this.httpClient.get<CatalogImage>(`/api/my/images/${image.id}`)
