@@ -62,7 +62,8 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
     this.catalogService.getPackages()
       .subscribe(response => 
         {
-          this._packages = response;
+          this._packages = response.filter(pkg => pkg.group === PackageGroupsEnum.Vm || 
+            pkg.group === PackageGroupsEnum.Infra);
 
           this.setPackagesByImageType();
 

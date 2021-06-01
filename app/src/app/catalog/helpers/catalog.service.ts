@@ -46,23 +46,18 @@ export class CatalogService
         {
           return this.httpClient.get(`./assets/data/packages.json`).pipe(map(prices => 
             {
-              let filteredPackages: CatalogPackage[] = [];
+              packages.forEach(pkg =>
+              {
+                pkg.price = prices[pkg.id];
 
-              for (let pkg of packages)
-                if (pkg.group === PackageGroupsEnum.Vm || pkg.group === PackageGroupsEnum.Infra)
-                {
-                  pkg.price = prices[pkg.id];
-
-                  let size = this.fileSizePipe.transform(pkg.memory * 1024 * 1024);
-                  [pkg.memorySize, pkg.memorySizeLabel] = size.split(' ');
-        
-                  size = this.fileSizePipe.transform(pkg.disk * 1024 * 1024);
-                  [pkg.diskSize, pkg.diskSizeLabel] = size.split(' ');
+                let size = this.fileSizePipe.transform(pkg.memory * 1024 * 1024);
+                [pkg.memorySize, pkg.memorySizeLabel] = size.split(' ');
       
-                  filteredPackages.push(pkg);
-                }
+                size = this.fileSizePipe.transform(pkg.disk * 1024 * 1024);
+                [pkg.diskSize, pkg.diskSizeLabel] = size.split(' ');
+              });
 
-              return filteredPackages;
+              return packages;
             }))
         }));
   }
