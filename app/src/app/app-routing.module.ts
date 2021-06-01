@@ -13,7 +13,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'machines',
-    loadChildren: () => import('./instances/instances.module').then(x => x.InstancesModule),
+    loadChildren: () => import('./machines/machines.module').then(x => x.MachinesModule),
     canActivate: [AuthGuardService],
     canLoad: [AuthGuardService],
   },

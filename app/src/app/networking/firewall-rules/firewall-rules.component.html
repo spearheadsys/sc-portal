@@ -82,15 +82,15 @@
                 From
                 <span *ngFor="let from of fw.fromArray" class="inline-list-item highlight" text="OR">
                   {{ from.type }}
-                  <b *ngIf="from.config">{{ instances[from.config] || from.config }}</b>
+                  <b *ngIf="from.config">{{ machines[from.config] || from.config }}</b>
                 </span>
 
                 <span>
                   To
                   <span *ngFor="let to of fw.toArray" class="inline-list-item highlight" text="OR">
                     {{ to.type }}
-                    <span *ngIf="to.type === 'tag'" class="badge badge-discreet">{{ instances[to.config] || to.config }}</span>
-                    <b *ngIf="to.type !== 'tag'">{{ instances[to.config] || to.config }}</b>
+                    <span *ngIf="to.type === 'tag'" class="badge badge-discreet">{{ machines[to.config] || to.config }}</span>
+                    <b *ngIf="to.type !== 'tag'">{{ machines[to.config] || to.config }}</b>
                   </span>
                 </span>
               </td>

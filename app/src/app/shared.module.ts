@@ -33,6 +33,7 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { CustomImageEditorComponent } from './catalog/custom-image-editor/custom-image-editor.component';
 import { LazyLoadDirective } from './directives/lazy-load.directive';
+import { AffinityRuleEditorComponent } from './components/affinity-rule-editor/affinity-rule-editor.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -59,6 +60,7 @@ import { faDocker } from '@fortawesome/free-brands-svg-icons';
     PromptDialogComponent,
     CustomImageEditorComponent,
     LazyLoadDirective,
+    AffinityRuleEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -127,6 +129,7 @@ import { faDocker } from '@fortawesome/free-brands-svg-icons';
     VirtualScrollerModule,
     NgxSliderModule,
     ClipboardModule,
+    AffinityRuleEditorComponent
     //HasPermissionDirective
   ],
   providers: [

@@ -8,7 +8,7 @@ import { FirewallRule } from '../models/firewall-rule';
 import { FirewallRuleRequest } from '../models/firewall-rule';
 import { FirewallService } from '../helpers/firewall.service';
 import { ToastrService } from 'ngx-toastr';
-import { InstancesService } from '../../instances/helpers/instances.service';
+import { MachinesService } from '../../machines/helpers/machines.service';
 
 @Component({
   selector: 'app-firewall-editor',
@@ -28,7 +28,7 @@ export class FirewallEditorComponent implements OnInit, OnDestroy
   canAddFromRule: boolean;
   canAddToRule: boolean;
   protocolConfigRegex: string;
-  instances = {};
+  machines = {};
 
   private destroy$ = new Subject();
 
@@ -37,7 +37,7 @@ export class FirewallEditorComponent implements OnInit, OnDestroy
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly toastr: ToastrService,
-    private readonly instancesService: InstancesService,
+    private readonly machinesService: MachinesService,
     private readonly firewallService: FirewallService)
   { // When the user navigates away from this route, hide the modal
     router.events
@@ -47,10 +47,10 @@ export class FirewallEditorComponent implements OnInit, OnDestroy
       )
       .subscribe(() => this.modalRef.hide());
 
-    this.instancesService.get()
+    this.machinesService.get()
       .subscribe(x =>
       {
-        this.instances = x.reduce((a, b) =>
+        this.machines = x.reduce((a, b) =>
         {
           a[b.id] = b.name;
           return a;

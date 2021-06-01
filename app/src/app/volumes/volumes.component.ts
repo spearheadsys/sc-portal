@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Volume } from './models/volume';
 import { VolumesService } from './helpers/volumes.service';
-import { InstancesService } from '../instances/helpers/instances.service';
+import { MachinesService } from '../machines/helpers/machines.service';
 import { ConfirmationDialogComponent } from '../components/confirmation-dialog/confirmation-dialog.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -28,7 +28,7 @@ export class VolumesComponent implements OnInit, OnDestroy
   networks = {};
   loadingIndicator = true;
   editorForm: FormGroup;
-  instances = {};
+  machines = {};
 
   private destroy$ = new Subject();
   private readonly fuseJsOptions: {};
@@ -36,7 +36,7 @@ export class VolumesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly volumesService: VolumesService,
     private readonly networkingService: NetworkingService,
-    private readonly instancesService: InstancesService,
+    private readonly machinesService: MachinesService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
     private readonly fb: FormBuilder,
@@ -60,10 +60,10 @@ export class VolumesComponent implements OnInit, OnDestroy
 
     this.createForm();
 
-    this.instancesService.get()
+    this.machinesService.get()
       .subscribe(x =>
       {
-        this.instances = x.reduce((a, b) =>
+        this.machines = x.reduce((a, b) =>
         {
           a[b.id] = b.name;
           return a;

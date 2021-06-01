@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
-import { Instance } from '../../instances/models/instance';
-import { InstancesService } from '../../instances/helpers/instances.service';
+import { Machine } from '../../machines/models/machine';
+import { MachinesService } from '../../machines/helpers/machines.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class FirewallRuleEditorComponent implements OnInit, OnDestroy
   @Output()
   saved = new EventEmitter();
 
-  instances: Instance[];
+  machines: Machine[];
   editorVisible: boolean;
   editorForm: FormGroup;
   keyRegex = '^[A-Za-z0-9-_]+$';
@@ -29,9 +29,9 @@ export class FirewallRuleEditorComponent implements OnInit, OnDestroy
   // --------------------------------------------------------------------------------------------------
   constructor(private readonly elementRef: ElementRef,
     private readonly fb: FormBuilder,
-    private readonly instancesService: InstancesService)
+    private readonly machinesService: MachinesService)
   {
-    this.instancesService.get().subscribe(x => this.instances = x);
+    this.machinesService.get().subscribe(x => this.machines = x);
   }
 
   // ----------------------------------------------------------------------------------------------------------------

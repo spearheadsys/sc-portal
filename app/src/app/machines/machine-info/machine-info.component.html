@@ -1,0 +1,41 @@
+<ul class="list-group list-group-flush list-info">
+  <li class="dropdown-header">Machine identifier</li>
+  <li class="list-group-item text-uppercase ps-0">
+    <b>{{ machine.id }}</b>
+  </li>
+
+  <ng-container *ngIf="dnsCount">
+    <li class="dropdown-header">DNS list</li>
+    <li class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
+        *ngFor="let keyValue of machine.dnsList | keyvalue; let index = index">
+      <div class="text-truncate text-info text-faded" [tooltip]="keyValue.key" container="body" placement="top" [adaptivePosition]="false">
+        <!--<span class="ms-1" [ngClass]="keyValue.value[0] === machine.id || keyValue.value[0] === machine.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
+          {{ keyValue.value[0] }}
+        </span>
+
+        <span *ngIf="keyValue.value[1]" [ngClass]="keyValue.value[1] === machine.id || keyValue.value[1] === machine.name.toLowerCase() ? 'highlight' : 'text-info text-faded'">
+          {{ keyValue.value[1] }}
+        </span>
+
+        {{ keyValue.value[2] }}-->
+        {{ keyValue.key }}
+      </div>
+
+      <div class="btn-group btn-group-sm" *ngxClipboardIfSupported
+           tooltip="Copy link to clipboard" container="body" placement="top" [adaptivePosition]="false">
+        <button class="btn btn-link py-0 text-info" ngxClipboard [cbContent]="keyValue.key" (cbOnSuccess)="dnsCopied($event)">
+          <fa-icon icon="clipboard" [fixedWidth]="true" size="sm"></fa-icon>
+        </button>
+      </div>
+    </li>
+  </ng-container>
+
+  <li class="dropdown-header">Deletion protection</li>
+  <li class="list-group-item ps-0 pb-0 mt-2 ms-2">
+    <div class="form-check form-switch">
+      <input class="form-check-input mt-0" type="checkbox" id="dp{{ machine.id }}" [(ngModel)]="machine.deletion_protection"
+             (change)="toggleDeletionProtection($event, machine)">
+      <label class="form-check-label" for="dp{{ machine.id }}">Prevent this machine from being deleted</label>
+    </div>
+  </li>
+</ul>

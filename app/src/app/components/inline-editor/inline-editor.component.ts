@@ -102,9 +102,8 @@ export class InlineEditorComponent implements OnInit, OnDestroy
     else
       this.saved.emit(this.editorForm.get('key').value);
 
-    this.editorForm.get('key').setValue(null);
-    this.editorForm.get('value').setValue(null);
-  }
+      this.resetForm();
+    }
 
   // --------------------------------------------------------------------------------------------------
   cancelChanges()
@@ -113,6 +112,12 @@ export class InlineEditorComponent implements OnInit, OnDestroy
 
     this.removeEventListeners();
 
+    this.resetForm();
+  }
+
+  // --------------------------------------------------------------------------------------------------
+  private resetForm()
+  {
     this.editorForm.get('key').setValue(null);
     this.editorForm.get('value').setValue(null);
   }

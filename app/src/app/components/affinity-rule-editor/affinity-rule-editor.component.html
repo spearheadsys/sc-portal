@@ -1,0 +1,43 @@
+<button class="btn btn-link text-info" (click)="showEditor()" [collapse]="editorVisible" [disabled]="disabled">Add affinity rule</button>
+
+<div [collapse]="!editorVisible" [formGroup]="editorForm">
+    <div class="row gx-1 my-1 align-items-center">
+      <div class="col-sm-2">
+        <select class="form-select" name="strict" formControlName="strict" [appAutofocus]="editorVisible">
+          <option hidden disabled selected value></option>
+          <option value="=">{{ 'affinityRuleEditor.strict' | translate }}</option>
+          <option value="=~">{{ 'affinityRuleEditor.optional' | translate }}</option>
+        </select>
+    </div>
+      <div class="col-sm-2">
+        <select class="form-select" name="operator" formControlName="operator" [appAutofocus]="editorForm.get('strict').value">
+          <option hidden disabled selected value></option>
+          <option value="=">{{ 'affinityRuleEditor.closeTo' | translate }}</option>
+          <option value="!">{{ 'affinityRuleEditor.farFrom' | translate }}</option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-select" name="target" formControlName="target" [appAutofocus]="editorForm.get('operator').value">
+        <option hidden disabled selected value></option>
+        <option value="machine">{{ 'affinityRuleEditor.namedLike' | translate }}</option>
+        <option value="tagName">{{ 'affinityRuleEditor.taggedWith' | translate }}</option>
+      </select>
+    </div>
+    <div *ngIf="editorForm.get('target').value === 'tagName'" class="col-sm">
+        <input type="text" class="form-control" formControlName="tagName" placeholder="Tag name" [appAutofocus]="editorForm.get('target').value" />
+    </div>
+    <div class="col-sm">
+        <input type="text" class="form-control" formControlName="value" placeholder="Value" [appAutofocus]="editorForm.get('target').value"
+               [tooltip]="(editorForm.get('target').value === 'machine' ? 'affinityRuleEditor.valueHint' : 'affinityRuleEditor.tagHint') | translate"
+               placement="top" container="body" [adaptivePosition]="false" />
+    </div>
+    <div class="col-sm-1 d-flex flex-nowrap justify-content-between align-items-start">
+      <button class="btn px-1 text-success" (click)="saveChanges()" [disabled]="editorForm.invalid">
+        <fa-icon [fixedWidth]="true" icon="check"></fa-icon>
+      </button>
+      <button class="btn px-1 text-danger" (click)="cancelChanges()">
+        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+      </button>
+    </div>
+    </div>
+  </div>

@@ -31,9 +31,9 @@ export class FirewallService
   @Cacheable({
     cacheBusterObserver: cacheBuster$
   })
-  getInstanceFirewallRules(instanceId: string): Observable<FirewallRuleResponse[]>
+  getMachineFirewallRules(machineId: string): Observable<FirewallRuleResponse[]>
   {
-    return this.httpClient.get<FirewallRuleResponse[]>(`/api/my/machines/${instanceId}/fwrules`);
+    return this.httpClient.get<FirewallRuleResponse[]>(`/api/my/machines/${machineId}/fwrules`);
   }
 
   // ----------------------------------------------------------------------------------------------------------------

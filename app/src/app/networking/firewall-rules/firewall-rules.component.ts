@@ -8,7 +8,7 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FirewallRule } from '../models/firewall-rule';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
-import { InstancesService } from '../../instances/helpers/instances.service';
+import { MachinesService } from '../../machines/helpers/machines.service';
 import { FirewallService } from '../helpers/firewall.service';
 import { sortArray } from '../../helpers/utils.service';
 import { Title } from "@angular/platform-browser";
@@ -25,14 +25,14 @@ export class FirewallRulesComponent implements OnInit, OnDestroy
   listItems: FirewallRule[];
   loadingIndicator = true;
   editorForm: FormGroup;
-  instances = {};
+  machines = {};
 
   private readonly fuseJsOptions: {};
   private destroy$ = new Subject();
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly firewallService: FirewallService,
-    private readonly instancesService: InstancesService,
+    private readonly machinesService: MachinesService,
     private readonly modalService: BsModalService,
     private readonly toastr: ToastrService,
     private readonly fb: FormBuilder,
@@ -53,10 +53,10 @@ export class FirewallRulesComponent implements OnInit, OnDestroy
       ]
     };
 
-    this.instancesService.get()
+    this.machinesService.get()
       .subscribe(x =>
       {
-        this.instances = x.reduce((a, b) =>
+        this.machines = x.reduce((a, b) =>
         {
           a[b.id] = b.name;
           return a;

@@ -129,12 +129,12 @@ export class CatalogService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  createImage(instanceId: string, name: string, version: string,
+  createImage(machineId: string, name: string, version: string,
     description?: string, homepage?: string, eula?: string, acl?: string, tags?: string): Observable<CatalogImage>
   {
     return this.httpClient.post<any>(`/api/my/images`,
       {
-        machine: instanceId,
+        machine: machineId,
         name,
         version,
         description,

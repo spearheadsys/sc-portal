@@ -4,7 +4,7 @@
     "menu":
     {
       "dashboard": "Dashboard",
-      "instances": "Machines",
+      "machines": "Machines",
       "volumes": "Volumes",
       "images": "Images",
       "networks": "Networks",
@@ -33,7 +33,7 @@
     "title": "Dashboard",
     "subTitle": ""
   },
-  "instances":
+  "machines":
   {
     "title": "Machines",
     "subTitle": ""

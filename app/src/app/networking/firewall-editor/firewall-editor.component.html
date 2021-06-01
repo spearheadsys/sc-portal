@@ -64,7 +64,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="rule">
                       {{ control.value.type }}
-                      <b *ngIf="control.value.config">{{ instances[control.value.config] || control.value.config }}</b>
+                      <b *ngIf="control.value.config">{{ machines[control.value.config] || control.value.config }}</b>
                     </div>
 
                     <button class="btn btn-sm text-danger p-0" (click)="removeFromRule(index)"
@@ -89,7 +89,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="rule">
                       {{ control.value.type }}
-                      <b *ngIf="control.value.config">{{ instances[control.value.config] || control.value.config }}</b>
+                      <b *ngIf="control.value.config">{{ machines[control.value.config] || control.value.config }}</b>
                     </div>
 
                     <button class="btn btn-sm text-danger p-0" (click)="removeToRule(index)"

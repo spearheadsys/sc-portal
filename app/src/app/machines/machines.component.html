@@ -1,0 +1,410 @@
+<div class="d-flex flex-column h-100" [formGroup]="editorForm">
+  <div class="container text-center mt-1">
+    <div class="btn-toolbar pt-2">
+      <div class="btn-group mb-3 mb-lg-0 w-lg-auto w-100">
+        <button class="btn btn-lg btn-info" (click)="createMachine()" [disabled]="loadingIndicator">
+          Create a new machine
+        </button>
+      </div>
+
+      <span class="d-none d-lg-block flex-grow-1"></span>
+
+      <ng-container *ngIf="machines && machines.length">
+        <div class="input-group input-group-pill me-lg-3 mb-3 mb-lg-0 w-lg-auto w-100">
+          <input type="text" class="form-control" placeholder="Search..." formControlName="searchTerm"
+                 appAlphaOnly="^[A-Za-z0-9_-]+$" tooltip="Search by name, tag, metadata, operating system or brand"
+                 placement="top" container="body" [adaptivePosition]="false">
+          <button class="btn btn-outline-info" type="button" (click)="clearSearch()"
+                  [disabled]="!editorForm.get('searchTerm').value" tooltip="Clear search" container="body" placement="top"
+                  [adaptivePosition]="false">
+            <fa-icon icon="times" size="sm" [fixedWidth]="true"></fa-icon>
+          </button>
+        </div>
+
+        <div class="btn-group me-lg-3 mb-3 mb-lg-0 w-lg-auto w-100">
+          <button class="btn btn-outline-info dropdown-toggle" [disabled]="loadingIndicator" [popover]="filtersTemplate"
+                  [outsideClick]="true" container="body" placement="bottom right" containerClass="menu-popover">
+            Showing {{ listItems.length }} / {{ machines.length }}
+            <ng-container *ngIf="runningMachineCount && stoppedMachineCount">
+              <span class="badge rounded-pill bg-success text-dark">{{ runningMachineCount }} running</span>
+              <span class="badge rounded-pill bg-danger text-dark ms-1">{{ stoppedMachineCount }} stopped</span>
+            </ng-container>
+            <ng-container *ngIf="runningMachineCount && !stoppedMachineCount">
+              <span class="badge rounded-pill bg-success text-dark">{{ runningMachineCount }} running</span>
+            </ng-container>
+            <ng-container *ngIf="!runningMachineCount && stoppedMachineCount">
+              <span class="badge rounded-pill bg-danger text-dark">{{ stoppedMachineCount }} stopped</span>
+            </ng-container>
+          </button>
+        </div>
+
+        <div class="btn-group w-lg-auto w-100" dropdown placement="bottom right">
+          <button class="btn btn-outline-info dropdown-toggle" dropdownToggle>
+            Sort by <b>{{ editorForm.get('sortProperty').value }}</b>
+          </button>
+          <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'name'"
+                      (click)="setSortProperty('name')">
+                Name
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'os'"
+                      (click)="setSortProperty('os')">
+                Operating system
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'brand'"
+                      (click)="setSortProperty('brand')">
+                Brand
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'image'"
+                      (click)="setSortProperty('image')">
+                Image
+              </button>
+            </li>
+            <li role="menuitem">
+              <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'state'"
+                      (click)="setSortProperty('state')">
+                State
+              </button>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="spinner-border text-center text-info text-faded" role="status" *ngIf="loadingIndicator">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div class="overflow-auto flex-grow-1 mt-3 d-flex flex-column" id="scrollingBlock">
+    <div class="container flex-grow-1 py-2">
+      <h2 *ngIf="listItems && listItems.length === 0 && machines && machines.length > 0" class="text-uppercase">
+        {{ 'machines.list.noResults' | translate }}
+      </h2>
+
+      <virtual-scroller #scroller [items]="listItems" bufferAmount="2" class="machines"
+                        [parentScroll]="scroller.window.document.getElementById('scrollingBlock')" [scrollThrottlingTime]="250">
+        <div *ngFor="let machine of scroller.viewPortItems; trackBy: trackByFunction; let index = index"
+             [ngClass]="showMachineDetails ? 'col-12 full-details' : 'col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12'"
+             [class.col-lg-6]="showMachineDetails && editorForm.get('fullDetailsTwoColumns').value" lazyLoad [lazyLoadDelay]="lazyLoadDelay"
+             [container]="scroller.element.nativeElement.getElementsByClassName('scrollable-content')[0]"
+             (canLoad)="machine.loading = false" (unload)="machine.loading = true"
+             (load)="loadMachineDetails(machine)">
+          <fieldset class="card" [disabled]="machine.working">
+            <div class="row g-0">
+              <div class="card-info" [ngClass]="showMachineDetails ? 'col-lg-4' : 'col'">
+                <div>
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title text-truncate" [tooltip]="machine.name" container="body" placement="top left"
+                      [adaptivePosition]="false">
+                      {{ machine.name }}
+                    </h5>
+
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-link text-info" tooltip="Toggle machines details" container="body"
+                        placement="top" [adaptivePosition]="false" (click)="toggleMachineDetails()">
+                        <fa-icon icon="expand-alt" [fixedWidth]="true" size="sm"></fa-icon>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="!machine.loading && machine.imageDetails"
+                       class="text-truncate small text-info text-faded mb-1" [tooltip]="machine.imageDetails.description"
+                       container="body" placement="top left" [adaptivePosition]="false">
+                    {{ machine.imageDetails.name }}, v{{ machine.imageDetails.version }}
+                  </div>
+
+                  <button *ngIf="!machine.loading"
+                          class="btn btn-outline-info w-100 d-flex justify-content-around align-items-center text-truncate"
+                          tooltip="Change specifications" container="body" placement="top" [adaptivePosition]="false"
+                          (click)="resizeMachine(machine)" [disabled]="machine.brand === 'kvm'">
+
+                    <!--<span class="text-uppercase text-truncate">{{ machine.packageDetails.name }}</span>-->
+                    <span class="px-1">
+                      <fa-icon icon="microchip"></fa-icon>
+                      {{ machine.memory * 1024 * 1024 | fileSize }}
+                    </span>
+                    <span>
+                      <fa-icon icon="server"></fa-icon>
+
+                      {{ machine.disk * 1024 * 1024 | fileSize }}
+                    </span>
+                  </button>
+                </div>
+
+                <div class="text-center" *ngIf="machine.working">
+                  <div class="spinner-border spinner-border-sm text-info text-faded" role="status">
+                    <span class="visually-hidden">Working...</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="small text-truncate my-2">
+                    <ng-container *ngIf="machine.type === 'smartmachine'">
+                      <fa-icon icon="server" size="sm" class="me-1"></fa-icon>
+                      <span class="machine-brand" innerHtml="{{ 'machines.listItem.infrastructureContainer' | translate: { brand: machine.brand } }}"></span>
+                    </ng-container>
+                    <ng-container *ngIf="machine.type === 'virtualmachine'">
+                      <fa-icon icon="desktop" size="sm" class="me-1"></fa-icon>
+                      <span class="machine-brand" innerHtml="{{ 'machines.listItem.virtualMachine' | translate: { brand: machine.brand } }}"></span>
+                    </ng-container>
+                  </div>
+
+                  <div class="d-flex flex-nowrap justify-content-between align-items-center">
+                    <button class="badge text-uppercase" [disabled]="machine.state !== 'running' && machine.state !== 'stopped'"
+                       [class.bg-light]="machine.state !== 'running' && machine.state !== 'stopped'"
+                       [class.bg-danger]="machine.state === 'stopped'" [class.bg-success]="machine.state === 'running'"
+                       (click)="showMachineHistory(machine)" tooltip="{{ 'machines.listItem.history' | translate }}"
+                       container="body" placement="top" [adaptivePosition]="false">
+                      <fa-icon icon="history" [fixedWidth]="true"></fa-icon>
+                      {{ machine.state }}
+                    </button>
+
+                    <div class="btn-group btn-group-sm" dropdown placement="bottom right" *ngIf="!machine.loading">
+                      <button class="btn btn-link text-success" (click)="startMachine(machine)"
+                              *ngIf="machine.state === 'stopped'">
+                        <fa-icon icon="power-off" [fixedWidth]="true" size="sm" tooltip="Start this machine" container="body"
+                                 placement="top" [adaptivePosition]="false"></fa-icon>
+                      </button>
+
+                      <button class="btn btn-link text-info" [popover]="machineContextMenu" container="body"
+                              [popoverContext]="{ machine: machine }" placement="bottom left" containerClass="menu-dropdown"
+                              [outsideClick]="true">
+                        <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col mt-sm-0 mt-3 no-overflow-sm" *ngIf="showMachineDetails">
+                <div class="card-header p-0 h-100">
+                  <tabset class="dashboard-tabs" *ngIf="!machine.loading">
+                    <tab customClass="dashboard-tab" [disabled]="machine.working" (selectTab)="tabChanged($event, machine)"
+                         id="{{ machine.id }}-info">
+                      <ng-template tabHeading>
+                        <fa-icon icon="info-circle" class="d-sm-none"></fa-icon>
+                        <span class="d-none d-sm-inline-block ms-1">Info</span>
+                      </ng-template>
+                      <div class="card-body p-2 h-100">
+                        <app-machine-info [machine]="machine" [loadInfo]="machine.shouldLoadInfo" [refresh]="machine.refreshInfo"
+                                           (load)="setMachineInfo(machine, $event)" (processing)="machine.working = true"
+                                           (finishedProcessing)="machine.working = false">
+                        </app-machine-info>
+                      </div>
+                    </tab>
+                    <tab customClass="dashboard-tab" [disabled]="machine.working" (selectTab)="tabChanged($event, machine)"
+                         id="{{ machine.id }}-networks">
+                      <ng-template tabHeading>
+                        <fa-icon icon="network-wired" class="d-sm-none"></fa-icon>
+                        <span class="d-none d-sm-inline-block ms-1">Network</span>
+                      </ng-template>
+                      <div class="card-body p-2 h-100">
+                        <app-machine-networks [machine]="machine" [loadNetworks]="machine.shouldLoadNetworks"
+                                               (load)="setMachineNetworks(machine, $event)" (processing)="machine.working = true"
+                                               (finishedProcessing)="refreshMachineDnsList(machine)"
+                                               (machineReboot)="watchMachineState(machine)"
+                                               (machineStateUpdate)="updateMachine(machine, $event)">
+                        </app-machine-networks>
+                      </div>
+                    </tab>
+                    <tab customClass="dashboard-tab" [disabled]="machine.working" (selectTab)="tabChanged($event, machine)"
+                         id="{{ machine.id }}-snapshots" *ngIf="machine.brand !== 'kvm'">
+                      <ng-template tabHeading>
+                        <fa-icon icon="history" class="d-sm-none"></fa-icon>
+                        <span class="d-none d-sm-inline-block ms-1">Snapshots</span>
+                      </ng-template>
+                      <div class="card-body p-2 h-100">
+                        <app-machine-snapshots [machine]="machine" [loadSnapshots]="machine.shouldLoadSnapshots"
+                                                (load)="setMachineSnapshots(machine, $event)" (processing)="machine.working = true"
+                                                (finishedProcessing)="machine.working = false"
+                                                (machineStateUpdate)="updateMachine(machine, $event)">
+                        </app-machine-snapshots>
+                      </div>
+                    </tab>
+                    <tab *ngIf="false" customClass="dashboard-tab" [disabled]="machine.working" (selectTab)="tabChanged($event, machine)"
+                         id="{{ machine.id }}-migrations">
+                      <ng-template tabHeading>
+                        <fa-icon icon="coins" class="d-sm-none"></fa-icon>
+                        <span class="d-none d-sm-inline-block ms-1">Migrations</span>
+                      </ng-template>
+                      <div class="card-body p-2 h-100">
+                        <button class="btn btn-outline-info w-100">Move to another node</button>
+                      </div>
+                    </tab>
+                    <tab customClass="dashboard-tab" [disabled]="machine.working" (selectTab)="tabChanged($event, machine)"
+                         id="{{ machine.id }}-volumes" *ngIf="machine.volumes && machine.volumes.length">
+                      <ng-template tabHeading>
+                        <fa-icon icon="database" class="d-sm-none"></fa-icon>
+                        <span class="d-none d-sm-inline-block ms-1">Volumes</span>
+                      </ng-template>
+                      <div class="card-body p-2 h-100">
+                        <ul class="list-group list-group-flush list-info">
+                          <li class="list-group-item text-uppercase px-0 dns d-flex justify-content-between align-items-center"
+                              *ngFor="let volume of machine.volumes">
+                            <div class="text-truncate">
+                              <fa-icon icon="database" [fixedWidth]="true" size="sm"></fa-icon>
+                              <span class="ms-1">
+                                {{ volume.name }}
+                              </span>
+
+                              {{ volume.size * 1024 * 1024 | fileSize }}
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </tab>
+                  </tabset>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </virtual-scroller>
+    </div>
+  </div>
+</div>
+
+<ng-template #filtersTemplate [formGroup]="editorForm">
+  <fieldset class="filters">
+    <ng-container formGroupName="filters">
+      <div class="dropdown-header">{{ 'machines.list.filterByState' | translate }}</div>
+      <div class="btn-group w-100" dropdown>
+        <button class="btn btn-state-filter dropdown-toggle d-flex justify-content-between align-items-center"
+                dropdownToggle>
+          <span *ngIf="!editorForm.get(['filters', 'stateFilter']).value">
+            {{ 'machines.list.anyState' | translate }}
+          </span>
+          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'running'">
+            {{ 'machines.listItem.stateRunning' | translate }}
+          </span>
+          <span *ngIf="editorForm.get(['filters', 'stateFilter']).value === 'stopped'">
+            {{ 'machines.listItem.stateStopped' | translate }}
+          </span>
+        </button>
+        <ul *dropdownMenu class="dropdown-menu dropdown-menu-state-filter" role="menu">
+          <li role="menuitem">
+            <button class="dropdown-item" [class.active]="!editorForm.get(['filters', 'stateFilter']).value"
+                    (click)="setStateFilter()">
+              {{ 'machines.list.anyState' | translate }}
+            </button>
+          </li>
+          <li role="menuitem">
+            <button class="dropdown-item"
+                    [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'running'"
+                    (click)="setStateFilter('running')">
+              {{ 'machines.listItem.stateRunning' | translate }}
+            </button>
+          </li>
+          <li role="menuitem">
+            <button class="dropdown-item"
+                    [class.active]="editorForm.get(['filters', 'stateFilter']).value === 'stopped'"
+                    (click)="setStateFilter('stopped')">
+              {{ 'machines.listItem.stateStopped' | translate }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <ng-container *ngIf="memoryFilterOptions.stepsArray.length > 1">
+        <div class="dropdown-header">{{ 'machines.list.filterByMemory' | translate }}</div>
+        <ngx-slider class="mb-4" formControlName="memoryFilter" [options]="memoryFilterOptions"></ngx-slider>
+      </ng-container>
+
+      <ng-container *ngIf="diskFilterOptions.stepsArray.length > 1">
+        <div class="dropdown-header">{{ 'machines.list.filterByDisk' | translate }}</div>
+        <ngx-slider class="mb-3" formControlName="diskFilter" [options]="diskFilterOptions"></ngx-slider>
+      </ng-container>
+
+      <button *ngIf="memoryFilterOptions.stepsArray.length > 1 && diskFilterOptions.stepsArray.length > 1" 
+        class="btn btn-outline-dark w-100 mt-3" (click)="clearFilters()">
+        {{ 'machines.list.resetFilters' | translate }}
+      </button>
+    </ng-container>
+
+    <div class="dropdown-divider"></div>
+    <div class="form-check form-switch">
+      <input class="form-check-input mt-0" type="checkbox" id="showMachineDetails" formControlName="showMachineDetails">
+      <label class="form-check-label" for="showMachineDetails">
+        {{ 'machines.list.showDetails' | translate }}
+        <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1"
+                 *ngIf="editorForm.get('showMachineDetails').disabled"></fa-icon>
+      </label>
+    </div>
+
+    <div [collapse]="!editorForm.get('showMachineDetails').value" [isAnimated]="true">
+      <div class="form-check form-switch">
+        <input class="form-check-input mt-0" type="checkbox" id="fullDetailsTwoColumns"
+               formControlName="fullDetailsTwoColumns">
+        <label class="form-check-label" for="fullDetailsTwoColumns">
+          {{ 'machines.list.dualColumns' | translate }}
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</ng-template>
+
+<ng-template #machineContextMenu let-machine="machine">
+  <ul class="list-group list-group-flush" role="menu">
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="renameMachine(machine)">
+        <fa-icon icon="pen" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.rename' | translate }}
+      </button>
+    </li>
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="showTagEditor(machine)">
+        <fa-icon icon="tags" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.editTags' | translate }}
+      </button>
+    </li>
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="showTagEditor(machine, true)">
+        <fa-icon icon="tags" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.editMetadata' | translate }}
+      </button>
+    </li>
+    <li class="dropdown-divider"></li>
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="createMachine(machine)">
+        <fa-icon icon="clone" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.clone' | translate }}
+      </button>
+    </li>
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="createImageFromMachine(machine)">
+        <fa-icon icon="layer-group" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.createImage' | translate }}
+      </button>
+    </li>
+    <li class="dropdown-divider"></li>
+    <ng-container *ngIf="machine.state === 'running'">
+      <li role="menuitem">
+        <button class="dropdown-item" (click)="restartMachine(machine)">
+          <fa-icon icon="undo" [fixedWidth]="true" size="sm"></fa-icon>
+          {{ 'machines.listItem.restart' | translate }}
+        </button>
+      </li>
+      <li role="menuitem">
+        <button class="dropdown-item" (click)="stopMachine(machine)">
+          <fa-icon icon="stop" [fixedWidth]="true" size="sm"></fa-icon>
+          {{ 'machines.listItem.stop' | translate }}
+        </button>
+      </li>
+      <li class="dropdown-divider"></li>
+    </ng-container>
+    <li role="menuitem">
+      <button class="dropdown-item" (click)="deleteMachine(machine)">
+        <fa-icon icon="trash" [fixedWidth]="true" size="sm"></fa-icon>
+        {{ 'machines.listItem.delete' | translate }}
+      </button>
+    </li>
+  </ul>
+</ng-template>

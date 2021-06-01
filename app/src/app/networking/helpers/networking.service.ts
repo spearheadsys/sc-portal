@@ -5,13 +5,13 @@ import { concatMap, delay, filter, first, flatMap, map, mergeMapTo, repeatWhen, 
 import { concat, empty, of, range, throwError, zip } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';
 import { Network } from '../models/network';
-import { Nic } from '../../instances/models/nic';
+import { Nic } from '../../machines/models/nic';
 import { VirtualAreaNetwork } from '../models/vlan';
 import { VirtualAreaNetworkRequest } from '../models/vlan';
 import { EditNetworkRequest } from '../models/network';
 import { AddNetworkRequest } from '../models/network';
-import { Instance } from 'src/app/instances/models/instance';
-import { InstanceCallbackFunction } from 'src/app/instances/helpers/instances.service';
+import { Machine } from 'src/app/machines/models/machine';
+import { MachineCallbackFunction } from 'src/app/machines/helpers/machines.service';
 
 const networksCacheBuster$ = new Subject<void>();
 
@@ -135,28 +135,28 @@ export class NetworkingService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  getNics(instanceId: string): Observable<Nic[]>
+  getNics(machineId: string): Observable<Nic[]>
   {
-    return this.httpClient.get<Nic[]>(`/api/my/machines/${instanceId}/nics`);
+    return this.httpClient.get<Nic[]>(`/api/my/machines/${machineId}/nics`);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  getNic(instanceId: string, macAddress: string): Observable<Nic>
+  getNic(machineId: string, macAddress: string): Observable<Nic>
   {
-    return this.httpClient.get<Nic>(`/api/my/machines/${instanceId}/nics/${macAddress.replace(/:/g, '')}`);
+    return this.httpClient.get<Nic>(`/api/my/machines/${machineId}/nics/${macAddress.replace(/:/g, '')}`);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  getNicUntilAvailable(instance: any, nic: Nic, networkName: string, callbackFn?: NicCallbackFunction, maxRetries = 30): Observable<Nic>
+  getNicUntilAvailable(machine: any, nic: Nic, networkName: string, callbackFn?: NicCallbackFunction, maxRetries = 30): Observable<Nic>
   {
     networkName = networkName.toLocaleLowerCase();
 
-    // Keep polling the instance until it reaches the expected state
-    return this.getNic(instance.id, nic.mac)
+    // Keep polling the machine until it reaches the expected state
+    return this.getNic(machine.id, nic.mac)
       .pipe(
         tap(x => 
         {
-          // We create our own state while the instance reboots
+          // We create our own state while the machine reboots
           if (x.state === 'running')
             x.state = 'starting';
 
@@ -179,11 +179,11 @@ export class NetworkingService
         filter(x => x.state === 'running' || x.state === 'starting'),
         take(1), //  needed to stop the repeatWhen loop
         concatMap(nic => 
-          this.httpClient.get<Instance>(`/api/my/machines/${instance.id}`)
+          this.httpClient.get<Machine>(`/api/my/machines/${machine.id}`)
           .pipe(
             tap(() => 
             {
-              // We create our own state while the instance reboots
+              // We create our own state while the machine reboots
               nic.state = 'starting';
 
               if (callbackFn)
@@ -206,7 +206,7 @@ export class NetworkingService
             take(1), //  needed to stop the repeatWhen loop
             map(() => 
             {
-              // We manually set the state as "running" now that the instance has rebooted
+              // We manually set the state as "running" now that the machine has rebooted
               nic.state = 'running';
 
               if (callbackFn)
@@ -220,15 +220,15 @@ export class NetworkingService
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  addNic(instanceId: string, networkId: string): Observable<Nic>
+  addNic(machineId: string, networkId: string): Observable<Nic>
   {
-    return this.httpClient.post<Nic>(`/api/my/machines/${instanceId}/nics`, { network: networkId });
+    return this.httpClient.post<Nic>(`/api/my/machines/${machineId}/nics`, { network: networkId });
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  deleteNic(instanceId: string, macAddress: string): Observable<any>
+  deleteNic(machineId: string, macAddress: string): Observable<any>
   {
-    return this.httpClient.delete(`/api/my/machines/${instanceId}/nics/${macAddress.replace(/:/g, '')}`);
+    return this.httpClient.delete(`/api/my/machines/${machineId}/nics/${macAddress.replace(/:/g, '')}`);
   }
 }
 

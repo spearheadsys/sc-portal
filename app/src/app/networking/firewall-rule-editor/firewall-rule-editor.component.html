@@ -27,7 +27,7 @@
 
       <div class="col-sm" *ngIf="editorForm.get('type').value === 'vm'">
         <select class="form-select" formControlName="key" [appAutofocus]="editorForm.get('type').value" [appAutofocusDelay]="250">
-          <option *ngFor="let instance of instances" [value]="instance.id">{{ instance.name }}</option>
+          <option *ngFor="let machine of machines" [value]="machine.id">{{ machine.name }}</option>
         </select>
       </div>
     </ng-container>

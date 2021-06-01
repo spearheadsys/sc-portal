@@ -39,9 +39,9 @@ export class VolumesService
   //@Cacheable({
   //  cacheBusterObserver: volumesCacheBuster$
   //})
-  //getInstanceVolumes(instanceId: string): Observable<VolumeResponse[]>
+  //getMachineVolumes(machineId: string): Observable<VolumeResponse[]>
   //{
-  //  return this.httpClient.get<VolumeResponse[]>(`/api/my/machines/${instanceId}/volumes`);
+  //  return this.httpClient.get<VolumeResponse[]>(`/api/my/machines/${machineId}/volumes`);
   //}
 
   // ----------------------------------------------------------------------------------------------------------------

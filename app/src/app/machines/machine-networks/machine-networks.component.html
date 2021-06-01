@@ -1,0 +1,86 @@
+<ul class="list-group list-group-flush list-info">
+  <li class="mb-2 d-flex flex-wrap justify-content-around align-items-center">
+    <div class="flex-grow-1 me-sm-5" dropdown placement="bottom left" container="body" [isDisabled]="loading">
+      <button class="btn btn-outline-info dropdown-toggle w-100" dropdownToggle>
+        <fa-icon icon="network-wired" [fixedWidth]="true" size="sm"></fa-icon>
+        Connect to a network
+      </button>
+      <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu">
+        <li class="dropdown-header">Public networks</li>
+        <li role="menuitem" *ngFor="let network of publicNetworks">
+          <button class="dropdown-item" (click)="addNic(network)">
+            Connect machine to <b>{{ network.name }}</b>
+          </button>
+        </li>
+        <li class="dropdown-header">Fabric networks</li>
+        <li role="menuitem" *ngFor="let network of fabricNetworks">
+          <button class="dropdown-item" (click)="addNic(network)">
+            Connect machine to <b>{{ network.name }}</b>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-check form-switch mb-0">
+      <input class="form-check-input mt-0" type="checkbox" id="fw{{ machine.id }}" [(ngModel)]="machine.firewall_enabled"
+             (change)="toggleCloudFirewall($event, machine)">
+      <label class="form-check-label" for="fw{{ machine.id }}">Toggle cloud firewall</label>
+    </div>
+  </li>
+
+  <li *ngIf="loading" class="text-center">
+    <div class="spinner-border spinner-border-sm text-info text-faded" role="status">
+      <span class="visually-hidden">Loading network details...</span>
+    </div>
+  </li>
+
+  <ng-container *ngIf="finishedLoading">
+    <li class="list-group-item text-uppercase px-0 justify-content-between align-items-center d-flex nics" *ngFor="let nic of nics">
+      <div class="text-truncate me-1">
+        <span [tooltip]="!nic.networkDetails || nic.networkDetails.public ? 'Public network' : 'Private network'"
+              container="body" placement="top" [adaptivePosition]="false">
+          <fa-icon icon="eye" [fixedWidth]="true" size="sm" *ngIf="!nic.networkDetails || nic.networkDetails.public"></fa-icon>
+          <fa-icon icon="mask" [fixedWidth]="true" size="sm" *ngIf="nic.networkDetails && !nic.networkDetails.public"></fa-icon>
+        </span>
+        <b class="mx-1">
+          <span *ngIf="nic.primary"
+                tooltip="Primary network interface" container="body" placement="top" [adaptivePosition]="false">
+            <fa-icon icon="star" [fixedWidth]="true" size="sm"></fa-icon>
+          </span>
+          {{ nic.networkName }}
+        </b>
+        <span class="highlight" tooltip="IP address" container="body" placement="top" [adaptivePosition]="false">
+          {{ nic.ip }}
+        </span> /
+        <span class="highlight" tooltip="Gateway" container="body" placement="top" [adaptivePosition]="false">
+          {{ nic.gateway }}
+        </span>
+      </div>
+
+      <div class="btn-group btn-group-sm" dropdown placement="bottom right" container="body"
+           *ngIf="!nic.state || nic.state === 'running' || nic.state === 'stopped'">
+        <button class="btn btn-link text-info" dropdownToggle [isDisabled]="machine.working"
+                tooltip="More options" container="body" placement="top" [adaptivePosition]="false">
+          <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
+        </button>
+        <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+          <!--<li role="menuitem">
+            <button class="dropdown-item" (click)="markNicAsReserved(nic)">
+              <fa-icon icon="lock" [fixedWidth]="true"></fa-icon>
+              Mark this network as reserved
+            </button>
+          </li>
+          <li class="dropdown-divider"></li>-->
+          <li role="menuitem">
+            <button class="dropdown-item" (click)="deleteNic(nic)">
+              <fa-icon icon="times" [fixedWidth]="true"></fa-icon>
+              Disconnect from this network
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <span class="badge bg-light text-dark me-1 float-end" *ngIf="nic.state && nic.state !== 'running' && nic.state !== 'stopped'">{{ nic.state }}</span>
+    </li>
+  </ng-container>
+</ul>

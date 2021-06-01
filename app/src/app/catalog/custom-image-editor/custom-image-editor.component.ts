@@ -13,7 +13,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class CustomImageEditorComponent implements OnInit
 {
   @Input()
-  instance: any;
+  machine: any;
 
   save = new Subject<any>();
   editorForm: FormGroup;

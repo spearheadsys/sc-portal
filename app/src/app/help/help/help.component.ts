@@ -15,11 +15,11 @@ export class HelpComponent implements OnInit
       contentUrl: './assets/help/account-info.html'
     },
     {
-      title: 'Provisioning compute instance',
+      title: 'Provisioning compute machine',
       contentUrl: ''
     },
     {
-      title: 'Managing instances with Triton CLI',
+      title: 'Managing machines with Triton CLI',
       contentUrl: ''
     }
   ];

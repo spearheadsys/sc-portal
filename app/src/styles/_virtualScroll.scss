@@ -2,7 +2,7 @@ virtual-scroller
 {
   flex-grow: 1;
 
-  &.instances .scrollable-content
+  &.machines .scrollable-content
   {
     max-width: 100%;
     width: auto;
@@ -29,7 +29,7 @@ virtual-scroller
 
 @media (min-width: 576px)
 {
-  virtual-scroller.instances .scrollable-content
+  virtual-scroller.machines .scrollable-content
   {
     --bs-gutter-x: 1.5rem;
   }
@@ -37,7 +37,7 @@ virtual-scroller
 
 @media (max-width: 576px)
 {
-  virtual-scroller.instances .scrollable-content
+  virtual-scroller.machines .scrollable-content
   {
     --bs-gutter-y: 1.5rem;
   }

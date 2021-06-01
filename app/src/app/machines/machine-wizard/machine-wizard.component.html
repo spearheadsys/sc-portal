@@ -1,0 +1,346 @@
+<form novalidate>
+  <fieldset [formGroup]="editorForm" [disabled]="working">
+    <button type="button" class="close" [attr.aria-label]="'general.closeWithoutSaving' | translate" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div class="row flex-nowrap g-0 h-100" *ngIf="!loadingIndicator">
+      <div class="col-3 h-100 steps d-none d-sm-block">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            Create a new machine
+            <hr />
+          </li>
+
+          <li class="list-group-item" [class.active]="step.id === currentStep" *ngFor="let step of steps">
+            {{ step.title }}
+            <span class="step-summary" *ngIf="step.selection">{{ step.selection.name }}</span>
+            <div class="step-description">{{ step.description }}</div>
+          </li>
+
+          <li class="flex-grow-1"></li>
+        </ul>
+      </div>
+      <div class="col h-100">
+        <div class="content d-flex flex-column">
+          <div class="flex-grow-1 auto-height">
+            <div *ngIf="currentStep === 1" class="d-flex flex-column h-100">
+              <div class="d-flex justify-content-center text-primary mt-1" *ngIf="!images">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+
+              <div class="row mb-4" *ngIf="images">
+                <div class="col-sm-12 px-4">
+                  <h5 class="mt-1">Pick the <b>type</b> of machine you wish to create and the <b>image</b> used to provision it</h5>
+                  <select class="form-select image-type-selector" aria-label="Choose image type" formControlName="imageType">
+                    <option [value]="1">Infrastructure container</option>
+                    <option [value]="2">Virtual machine</option>
+                    <!--<option [value]="3">Docker container</option>-->
+                    <option [value]="4">Custom images</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="btn-group" btnRadioGroup formControlName="imageOs">
+                <label [btnRadio]="os" class="btn" *ngFor="let os of operatingSystems">
+                  {{ os }}
+                </label>
+              </div>
+
+              <div class="list-group list-group-flush flex-grow-1" *ngIf="images">
+                <div class="list-group-item list-group-item-action p-0 pe-2" *ngFor="let image of imageList">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" id="image-{{ image.id }}" [value]="image" formControlName="image">
+                    <label class="form-check-label" for="image-{{ image.id }}">
+                      <small class="float-end d-flex align-items-center">
+                        <span class="text-faded me-1">
+                          <span class="d-block text-end">{{ image.published_at | timeago }}</span>
+                        </span>
+                        <span class="badge rounded-pill" [class.bg-success]="image.state === 'active'">&nbsp;</span>
+                      </small>
+                      <span class="d-block">
+                        <span class="h3">
+                          {{ image.name }} 
+                          <span class="price" *ngIf="image.price">{{ image.price | currency: 'USD': 'symbol': '1.0-2' }}/month</span>
+                        </span>
+                        <small class="text-faded pb-1 d-block">v<b>{{ image.version }}</b></small>
+                      </span>
+                      <span class="small">
+                        <span class="text-faded align-middle">{{ image.description }}</span>
+                        <a *ngIf="image.homepage" [href]="image.homepage" class="small" target="_blank">
+                          more
+                          <fa-icon icon="external-link-alt" size="sm"></fa-icon>
+                        </a>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="currentStep === 2" class="d-flex flex-column h-100">
+              <h5 class="px-3 mb-3 mt-1">Choose the <b>package</b> that matches the technical specifications this machine will have</h5>
+
+              <app-packages [image]="editorForm.get('image').value" [imageType]="editorForm.get('imageType').value" [package]="preselectedPackage"
+                            (select)="setPackage($event)">
+              </app-packages>
+            </div>
+
+            <div *ngIf="currentStep === 3" class="px-4 h-100 d-flex flex-column">
+              <h5>Give this machine a <b>name</b> for easier lookup</h5>
+
+              <div class="form-row">
+                <div class="col-sm-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="name" formControlName="name" placeholder="Name"
+                           [appAutofocus]="currentStep === 3">
+                    <label for="name">Name</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row my-3">
+                <div class="col-sm-6">
+                  <h5>Which <b>networks</b> will this machine use?</h5>
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="select-list" formArrayName="networks" tabindex="0">
+                        <div class="form-check" *ngFor="let network of editorForm.get('networks')['controls']; let index = index" [formGroupName]="index">
+                          <input class="form-check-input" type="checkbox" [value]="network.get('id')" id="network-{{ network.get('id').value }}" formControlName="selected">
+                          <label class="form-check-label text-truncate" for="network-{{ network.get('id').value }}">
+                            <small class="badge badge-discreet float-end" *ngIf="network.get('public').value">public</small>
+                            {{ network.get('name').value }}
+                            <small class="text-faded">{{ network.get('description').value }}</small>
+                          </label>
+                        </div>
+
+                        <div class="form-check" *ngIf="!editorForm.get('networks')['controls'].length">
+                          <input class="form-check-input" type="checkbox" value="null" id="network" disabled="disabled">
+                          <label class="form-check-label" for="network">There are no networks configured</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <h5>Enable the <b>firewall</b> for you machine</h5>
+                  <div class="form-row">
+                    <div class="col-sm">
+                      <div class="select-list" tabindex="0">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="cloud-fw" formControlName="cloudFirewall">
+                          <label class="form-check-label" for="cloud-fw">Cloud firewall</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Volumes and disks -->
+              <div class="mt-3 d-flex flex-column">
+                <button class="btn text-start mb-2" [class.btn-outline-info]="!showVolumes" [class.btn-info]="showVolumes" 
+                (click)="showVolumes = !showVolumes">
+                  Volumes
+                  <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="showVolumes ? 90 : 0" class="float-end"></fa-icon>
+                </button>
+
+                <div [collapse]="!showVolumes">
+                  <h5>Choose the <b>volumes</b> you wish to mount</h5>
+                  <div class="select-list flex-grow-1" formArrayName="volumes" tabindex="0" *ngIf="!kvmRequired">
+                    <table class="table mb-0">
+                      <thead>
+                      <tr>
+                        <th>Volume name</th>
+                        <th>Mount point</th>
+                        <th class="text-end">Read only</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let volume of editorForm.get('volumes')['controls']; let index = index" [formGroupName]="index">
+                        <td>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="vol-mount-{{ volume.get('name').value }}" formControlName="mount">
+                            <label class="form-check-label" for="vol-mount-{{ volume.get('name').value }}">
+                              {{ volume.get('name').value }}
+                            </label>
+                          </div>
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" formControlName="mountpoint" placeholder="/[...]" minlength="2"
+                                 [appAutofocus]="volume.get('mount').value && !volume.get('mountpoint').value" [appAutofocusDelay]="250"
+                                 tooltip="Must begin with a '/' and be at least 2 characters long" container="body" pacement="top" [adaptivePosition]="false"/>
+                        </td>
+                        <td class="text-end ps-1">
+                          <div class="form-check form-switch float-end">
+                            <input class="form-check-input" type="checkbox" formControlName="ro">
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <p class="alert alert-info mt-3" *ngIf="kvmRequired">
+                    <fa-icon icon="info-circle" class="align-middle"></fa-icon>
+                    Volumes are disabled for KVM packages
+                  </p>
+                </div>
+              </div>
+
+              <!-- Affinity settings -->
+              <div class="mt-3 d-flex flex-column" *ngIf="machines && machines.length">
+                <button class="btn text-start w-100 mb-2" [class.btn-outline-info]="!showAffinity" [class.btn-info]="showAffinity"
+                  (click)="showAffinity = !showAffinity">
+                  Affinity rules
+                  <fa-icon icon="angle-right" [fixedWidth]="true" [rotate]="showAffinity ? 90 : 0" class="float-end"></fa-icon>
+                </button>
+
+                <div [collapse]="!showAffinity">
+                  <div class="select-list list-group select-list p-0 mb-2 py-2" tabindex="0">
+                    <div class="list-group-item list-group-item-action" *ngFor="let affinityRule of editorForm.get('affinityRules')['controls']; let index = index">
+                      <div class="d-flex">
+                        <span class="flex-grow-1 text-truncate">
+                          <span class="me-1">
+                            {{ (affinityRule.value.description.strict ? 'affinityRuleEditor.strict' : 'affinityRuleEditor.optional') | translate }}
+                          </span>
+                          <span class="me-1 text-lowercase" [ngClass]="affinityRule.value.description.closeTo ? 'text-success' : 'text-danger'">
+                            {{ (affinityRule.value.description.closeTo ? 'affinityRuleEditor.closeTo' : 'affinityRuleEditor.farFrom') | translate }}
+                          </span>
+                          <span class="me-1 text-lowercase">
+                            {{ (affinityRule.value.description.targetMachine ? 'affinityRuleEditor.namedLike' : 'affinityRuleEditor.taggedWith') | translate }}
+                          </span>
+                          <span class="me-1 text-warning" *ngIf="affinityRule.value.description.tagName">
+                            {{ affinityRule.value.description.tagName }}={{ affinityRule.value.description.value }}
+                          </span>
+                          <span class="me-1 text-warning" *ngIf="!affinityRule.value.description.tagName">
+                            {{ affinityRule.value.description.value }}
+                          </span>
+                        </span>
+
+                        <button class="btn btn-sm text-danger p-0" (click)="removeAffinityRule(index)"
+                                tooltip="Remove this affinity rule" container="body" placement="top" [adaptivePosition]="false">
+                          <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <app-affinity-rule-editor (saved)="addAffinityRule($event)"></app-affinity-rule-editor>
+                </div>
+              </div>
+            </div>
+
+            <div class="px-4 d-flex flex-column h-100" *ngIf="currentStep === 4">
+              <!--<h5>Tell us which <b>data center</b> we should place this machine in</h5>
+              <select class="form-select image-type-selector" aria-label="Choose data center" formControlName="dataCenter">
+                <option [value]="dataCenter" *ngFor="let dataCenter of dataCenters">{{ dataCenter | uppercase }}</option>
+              </select>-->
+
+              <div class="row mb-3 gx-3">
+                <div class="col-sm-6">
+                  <h5 class="text-truncate"><b>Tags</b> make it easier to lookup an machine</h5>
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="select-list list-group select-list p-0 mb-2 py-2" tabindex="0">
+                        <div class="list-group-item list-group-item-action" *ngFor="let tag of editorForm.get('tags')['controls']; let index = index">
+                          <div class="d-flex">
+                            <b>{{ tag.value.key }}</b>:
+                            <span class="text-truncate flex-grow-1 ps-2 tag-value"
+                                  [tooltip]="tag.value.value" container="body" placement="top left" [adaptivePosition]="false">
+                              {{ tag.value.value }}
+                            </span>
+
+                            <button class="btn btn-sm text-danger p-0" (click)="removeTag(index)"
+                                    tooltip="Remove this tag" container="body" placement="top left" [adaptivePosition]="false">
+                              <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <app-inline-editor buttonTitle="Add a new tag" [singleLine]="true" (saved)="addTag($event)" keyPattern="^[A-Za-z0-9_-]+$">
+                      </app-inline-editor>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <h5 class="text-truncate"><b>Metadata</b> makes it easier to find a machine</h5>
+                  <div class="form-row">
+                    <div class="col-sm">
+                      <div class="select-list list-group select-list p-0 mb-2" tabindex="0">
+                        <div class="list-group-item list-group-item-action" *ngFor="let meta of editorForm.get('metadata')['controls']; let index = index">
+                          <div class="d-flex">
+                            <b>{{ meta.value.key }}</b>:
+                            <span class="text-truncate flex-grow-1 ps-2 tag-value"
+                                  [tooltip]="meta.value.value" container="body" containerClass="tooltip-wrap"
+                                  placement="top left" [adaptivePosition]="false">
+                              {{ meta.value.value }}
+                            </span>
+
+                            <button class="btn btn-sm text-danger p-0" (click)="removeMetadata(index)"
+                                    tooltip="Remove this metadata" container="body" placement="top left" [adaptivePosition]="false">
+                              <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <app-inline-editor buttonTitle="Add metadata" (saved)="addMetadata($event)" keyPattern="^[A-Za-z0-9_-]+$"></app-inline-editor>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="my-3">
+                <h5>Get an <b>estimated montly cost</b> based on the machine's running time</h5>
+                
+                <div class="input-group input-group-cost">
+                  <input type="number" min="1" max="1000000" class="form-control text-center" formControlName="estimatedMinutesRan" 
+                  placeholder="Number of hours"
+                    tooltip="Number of hours this machine is running" />
+                  <span class="input-group-text" tooltip="Package hourly rate">
+                    hours
+                    <b class="px-1">× {{ editorForm.get('package').value.price | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline text-lowercase">(package hourly rate)</span>
+                  </span>
+                  <span class="input-group-text" *ngIf="editorForm.get('image').value.price" tooltip="Image monthly price">
+                    <b class="px-1">+ {{ editorForm.get('image').value.price | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline ps-1 text-lowercase">(Image monthly price)</span>
+                  </span>
+                  <span class="input-group-text" tooltip="Estimated cost per month">
+                    <b>= {{ estimatedCost | currency: 'USD': 'symbol': '1.2-4' }}</b>
+                    <span class="d-none d-sm-inline ps-1">(per month)</span>
+                  </span>
+                </div>
+              </div>
+
+              <span class="flex-grow-1"></span>
+
+              <p class="my-3 lead text-success" [innerHtml]="readyText"></p>
+            </div>
+
+          </div>
+
+          <div class="d-flex justify-content-between mt-4 px-4 mb-2">
+            <button class="btn btn-link text-info" [class.hidden]="currentStep === 1" (click)="previousStep()">
+              <fa-icon icon="angle-left"></fa-icon>
+              Previous step
+            </button>
+
+            <button class="btn btn-lg btn-info" *ngIf="currentStep < steps.length" [disabled]="!steps[currentStep - 1].complete" (click)="nextStep()">
+              {{ steps[currentStep].title }}
+              <fa-icon icon="angle-right"></fa-icon>
+            </button>
+
+            <button class="btn btn-lg btn-info" *ngIf="currentStep === steps.length" (click)="saveChanges()">
+              <fa-icon icon="spinner" [pulse]="true" size="sm" class="me-1" *ngIf="working"></fa-icon>
+              Create machine
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</form>
