@@ -5,6 +5,8 @@ import { Cacheable } from 'ts-cacheable';
 import { delay, filter, map, mergeMap, repeatWhen, take, tap } from 'rxjs/operators';
 import { CatalogPackage } from '../models/package';
 import { CatalogImage } from '../models/image';
+import { PackageGroupsEnum } from '../models/package-groups';
+import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
 
 const cacheBuster$ = new Subject<void>();
 const imagesCacheBuster$ = new Subject<void>();
@@ -15,7 +17,8 @@ const imagesCacheBuster$ = new Subject<void>();
 export class CatalogService
 {
   // ----------------------------------------------------------------------------------------------------------------
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpClient,
+    private readonly fileSizePipe: FileSizePipe) { }
 
   // ----------------------------------------------------------------------------------------------------------------
   @Cacheable({
@@ -43,9 +46,23 @@ export class CatalogService
         {
           return this.httpClient.get(`./assets/data/packages.json`).pipe(map(prices => 
             {
-              packages.forEach(x => x.price = prices[x.id])
+              let filteredPackages: CatalogPackage[] = [];
 
-              return packages;
+              for (let pkg of packages)
+                if (pkg.group === PackageGroupsEnum.Vm || pkg.group === PackageGroupsEnum.Infra)
+                {
+                  pkg.price = prices[pkg.id];
+
+                  let size = this.fileSizePipe.transform(pkg.memory * 1024 * 1024);
+                  [pkg.memorySize, pkg.memorySizeLabel] = size.split(' ');
+        
+                  size = this.fileSizePipe.transform(pkg.disk * 1024 * 1024);
+                  [pkg.diskSize, pkg.diskSizeLabel] = size.split(' ');
+      
+                  filteredPackages.push(pkg);
+                }
+
+              return filteredPackages;
             }))
         }));
   }

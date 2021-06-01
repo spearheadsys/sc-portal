@@ -49,11 +49,11 @@
                 </label>
               </div>
 
-              <div class="list-group list-group-flush flex-grow-1" *ngIf="images">
-                <div class="list-group-item list-group-item-action p-0 pe-2" *ngFor="let image of imageList">
+              <div class="list-group list-group-flush flex-grow-1">
+                <div class="list-group-item list-group-item-action p-0 pe-2" *ngFor="let image of imageList" id="image-{{ image.id }}">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" id="image-{{ image.id }}" [value]="image" formControlName="image">
-                    <label class="form-check-label" for="image-{{ image.id }}">
+                    <input class="form-check-input" type="radio" id="img-{{ image.id }}" [value]="image" formControlName="image">
+                    <label class="form-check-label" for="img-{{ image.id }}">
                       <small class="float-end d-flex align-items-center">
                         <span class="text-faded me-1">
                           <span class="d-block text-end">{{ image.published_at | timeago }}</span>

@@ -388,6 +388,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   startMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     if (machine.state !== 'stopped')
       return;
 
@@ -425,6 +427,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   restartMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     if (machine.state !== 'running')
       return;
 
@@ -462,6 +466,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   stopMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     if (machine.state !== 'running')
       return;
 
@@ -498,6 +504,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   resizeMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,
@@ -541,6 +549,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   renameMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     const machineName = machine.name;
 
     const modalConfig = {
@@ -590,6 +600,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   showTagEditor(machine: Machine, showMetadata = false)
   {
+    machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,
@@ -609,6 +621,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   createImageFromMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,
@@ -673,6 +687,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   deleteMachine(machine: Machine)
   {
+    machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,
@@ -716,6 +732,8 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   showMachineHistory(machine: Machine)
   {
+    machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,

@@ -51,4 +51,5 @@ export class Machine extends MachineRequest
   volumesEnabled: boolean;
   metadataKeys: string[];
   tagKeys: string[];
+  contextMenu: boolean;
 }

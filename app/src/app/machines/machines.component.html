@@ -174,9 +174,9 @@
                                  placement="top" [adaptivePosition]="false"></fa-icon>
                       </button>
 
-                      <button class="btn btn-link text-info" [popover]="machineContextMenu" container="body"
+                      <button class="btn btn-link text-info" [popover]="machineContextMenu" container="body" (click)="machine.contextMenu = true"
                               [popoverContext]="{ machine: machine }" placement="bottom left" containerClass="menu-dropdown"
-                              [outsideClick]="true">
+                              [outsideClick]="true" triggers="" [isOpen]="machine.contextMenu" (onHidden)="machine.contextMenu = false">
                         <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
                       </button>
                     </div>

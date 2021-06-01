@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ElementRef } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { combineLatest, forkJoin, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray, ValidatorFn, ValidationErrors } from '@angular/forms';
@@ -43,7 +43,6 @@ export class MachineWizardComponent implements OnInit, OnDestroy
   dataCenters: any[];
 
   loadingIndicator: boolean;
-  loadingPackages: boolean;
   save = new Subject<Machine>();
   working: boolean;
   editorForm: FormGroup;
@@ -68,7 +67,8 @@ export class MachineWizardComponent implements OnInit, OnDestroy
     private readonly networkingService: NetworkingService,
     private readonly volumesService: VolumesService,
     private readonly toastr: ToastrService,
-    private readonly translateService: TranslateService)
+    private readonly translateService: TranslateService,
+    private readonly elementRef: ElementRef)
   {
     // When the user navigates away from this route, hide the modal
     router.events
@@ -257,8 +257,6 @@ export class MachineWizardComponent implements OnInit, OnDestroy
 
         this.kvmRequired = x?.requirements['brand'] === 'kvm' || x?.type === 'zvol' || false;
 
-        this.loadingPackages = true;
-
         this.computeEstimatedCost();
       });
 
@@ -375,6 +373,13 @@ export class MachineWizardComponent implements OnInit, OnDestroy
   previousStep()
   {
     this.currentStep = this.currentStep > 1 ? this.currentStep - 1 : 1;
+
+    if (this.currentStep === 1)
+      setTimeout(() => 
+      {
+        this.elementRef.nativeElement.querySelector(`#image-${this.editorForm.get('image').value.id}`)
+        .scrollIntoView({behavior:'auto', block: 'center'});
+      }, 0);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -400,6 +405,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   setPackage(selection: any)
   {
+    this.preselectedPackage = selection.name;
     this.steps[1].selection = selection;
     this.steps[1].complete = true;
 

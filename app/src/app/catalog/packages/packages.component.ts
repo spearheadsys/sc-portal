@@ -1,11 +1,12 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ElementRef } from '@angular/core';
 import { OnDestroy } from '@angular/core/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FileSizePipe } from '../../pipes/file-size.pipe';
 import { CatalogService } from '../helpers/catalog.service';
 import { CatalogImage } from '../../catalog/models/image';
 import { CatalogImageType } from '../models/image';
+import { CatalogPackage } from '../models/package';
+import { PackageGroupsEnum } from '../models/package-groups';
 
 @Component({
   selector: 'app-packages',
@@ -15,7 +16,7 @@ import { CatalogImageType } from '../models/image';
 export class PackagesComponent implements OnInit, OnDestroy, OnChanges
 {
   @Input()
-  imageType: number;
+  imageType: CatalogImageType;
 
   @Input()
   image: CatalogImage;
@@ -26,57 +27,29 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
   @Output()
   select = new EventEmitter();
 
-  packageGroups: any[];
   loadingIndicator: boolean;
-  selectedPackageGroup: string;
-
-  private packages: {};
-  private _selectedPackage: {};
+  packages: CatalogPackage[];
+  
+  private _packages: CatalogPackage[];
+  private _selectedPackage: CatalogPackage;
   private destroy$ = new Subject();
   private onChanges$ = new ReplaySubject();
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly catalogService: CatalogService,
-    private readonly fileSizePipe: FileSizePipe)
+    private readonly elementRef: ElementRef)
   {
     this.getPackages();
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  setPackageGroup(event, packageGroup: string)
-  {
-    this.selectedPackageGroup = packageGroup;
-
-    if (!packageGroup) return;
-
-    switch (packageGroup)
-    {
-      case 'cpu':
-        this.packages[packageGroup].sort((a, b) => (a.vcpus || 1) - (b.vcpus || 1));
-        break;
-
-      case 'disk':
-        this.packages[packageGroup].sort((a, b) => a.disk - b.disk);
-        break;
-
-      case 'memory optimized':
-        this.packages[packageGroup].sort((a, b) => a.memory - b.memory);
-        break;
-
-      default:
-        this.packages[packageGroup].sort((a, b) => ((a.vcpus || 1) - (b.vcpus || 1)) || (a.memory - b.memory) || (a.disk - b.disk));
-        break;
-    }
-  }
-
-  // ----------------------------------------------------------------------------------------------------------------
-  set selectedPackage(value)
+  set selectedPackage(value: CatalogPackage)
   {
     this._selectedPackage = value;
 
     this.select.next(value);
   }
-  get selectedPackage()
+  get selectedPackage(): CatalogPackage
   {
     return this._selectedPackage;
   }
@@ -87,102 +60,50 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
     this.loadingIndicator = true;
 
     this.catalogService.getPackages()
-      .subscribe(response =>
-      {
-        if (this.packages)
-          return;
-
-        this.packages = response.reduce((groups, pkg) =>
+      .subscribe(response => 
         {
-          let size = this.fileSizePipe.transform(pkg.memory * 1024 * 1024);
-          [pkg.memorySize, pkg.memorySizeLabel] = size.split(' ');
+          this._packages = response;
 
-          size = this.fileSizePipe.transform(pkg.disk * 1024 * 1024);
-          [pkg.diskSize, pkg.diskSizeLabel] = size.split(' ');
+          this.setPackagesByImageType();
 
-          const groupName = pkg.group.toLowerCase() || 'standard';
-
-          const group = (groups[groupName] || []);
-          group.push(pkg);
-          groups[groupName] = group;
-
-          return groups;
-        }, {});
-
-        this.setPackageGroups();
-      });
+          this.loadingIndicator = false;
+        });
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  private setPackageGroups()
+  private setPackagesByImageType()
   {
-    if (!this.packages || !this.image || !this.imageType)
-      return;
-
-    // Setup the operating systems array-like object, sorted alphabetically
-    this.packageGroups = Object.keys(this.packages)
-      .filter(packageGroup =>
+    this._selectedPackage = null;
+    
+    this.packages = this._packages.filter(x => 
+    {
+      if (this.imageType === CatalogImageType.InfrastructureContainer && x.group === PackageGroupsEnum.Infra || 
+        this.imageType === CatalogImageType.VirtualMachine && x.group === PackageGroupsEnum.Vm)
       {
-        this.packages[packageGroup].forEach(p =>
-        {
-          if (p.name === this.package)
-            this._selectedPackage = p;
+        if (x.name === this.package)
+          this._selectedPackage = x;
 
-          if (!p.brand || !this.image)
-          {
-            p.visible = true;
-            return;
-          }
-          else
-          {
-            p.visible = true;
-          }
+        return true;
+      }
 
-          if (this.image.requirements.brand)
-            p.visible = p.visible && this.image.requirements.brand === p.brand;
+      return false;
+    }).sort((a, b) => 
+    {
+      if (a.vcpus === b.vcpus && a.memory === b.memory)
+        return a.memory > b.memory ? a.memory : b.memory;
 
-          if (this.image.type === 'zone-dataset')
-            p.visible = p.visible && ['Spearhead', 'Spearhead-minimal'].includes(p.brand);
+      if (a.memory === b.memory)
+        return a.disk > b.disk ? a.disk : b.disk;
 
-          if (this.image.type === 'lx-dataset')
-            p.visible = p.visible && p.brand === 'lx';
+      return a.vcpus > b.vcpus ? a.vcpus : b.vcpus;
+    });
 
-          if (this.image.type === 'zvol')
-            p.visible = p.visible && ['bhyve', 'kvm'].includes(p.brand);
-
-          if (this.imageType === CatalogImageType.InfrastructureContainer)
-            p.visible = p.visible && packageGroup === 'infrastructure container';
-          else if (this.imageType === CatalogImageType.VirtualMachine)
-            p.visible = p.visible && packageGroup === 'virtual machine';
-        });
-
-        switch (this.imageType | 0)
-        {
-          case CatalogImageType.InfrastructureContainer:
-            return this.packages[packageGroup].filter(x => x.visible).length &&
-            (!packageGroup || ['cpu', 'disk', 'memory optimized', 'standard', 'triton'].includes(packageGroup));
-
-          case CatalogImageType.VirtualMachine:
-            return this.packages[packageGroup].filter(x => x.visible).length &&
-              (!packageGroup || ['standard', 'triton', 'bhyve'].includes(packageGroup));
-
-          case CatalogImageType.Custom:
-            return this.packages[packageGroup].filter(x => x.visible).length &&
-              packageGroup !== 'infrastructure container' && packageGroup !== 'virtual machine';
-
-          default:
-            return false;
-        }
-      })
-      .sort((a, b) => a.localeCompare(b));
-
-    // Set the pre-selected package group
-    this.selectedPackageGroup = this.packageGroups[0];
-
-    if (this.selectedPackage)
-      this.select.emit(this.selectedPackage);
-
-    this.loadingIndicator = false;
+    if (this._selectedPackage)
+      setTimeout(() => 
+      {
+        this.elementRef.nativeElement.querySelector(`#package-${this._selectedPackage.id}`)
+          .scrollIntoView({behavior:'auto', block: 'center'});
+      }, 0);
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -192,7 +113,7 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
       .subscribe((changes: SimpleChanges) =>
       {
         if (changes.image?.currentValue && changes.imageType?.currentValue)
-          this.setPackageGroups();
+        this.setPackagesByImageType();
       });
   }
 
