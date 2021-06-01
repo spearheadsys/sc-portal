@@ -186,14 +186,14 @@ export class ImagesComponent implements OnInit, OnDestroy
 
     modalRef.content.confirm.pipe(first()).subscribe(() =>
     {
-      this.toastr.info(`Removing machine "${image.name}"...`);
+      this.toastr.info(`Removing image "${image.name}"...`);
 
       this.catalogService.deleteImage(image.id)
         .subscribe(() =>
         {
-          const index = this.images.findIndex(i => i.id === image.id);
+          const index = this.myImages.findIndex(i => i.id === image.id);
           if (index >= 0)
-            this.images.splice(index, 1);
+            this.myImages.splice(index, 1);
 
           this.applyFiltersAndSort();
 

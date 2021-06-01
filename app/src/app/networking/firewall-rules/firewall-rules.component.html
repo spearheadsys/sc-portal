@@ -11,7 +11,7 @@
 
       <ng-container *ngIf="firewallRules && firewallRules.length">
         <div class="input-group input-group-pill flex-grow-1 flex-grow-sm-0 me-sm-3 w-sm-auto w-100">
-          <input type="text" class="form-control" placeholder="Search by name..." formControlName="searchTerm" appAlphaOnly="^[A-Za-z0-9_-]+$">
+          <input type="text" class="form-control" placeholder="Search by description..." formControlName="searchTerm" appAlphaOnly="^[A-Za-z0-9_-]+$">
           <button class="btn btn-outline-info" type="button" (click)="clearSearch()" [disabled]="!editorForm.get('searchTerm').value"
                   tooltip="Clear search" container="body" placement="top" [adaptivePosition]="false">
             <fa-icon icon="times" size="sm" [fixedWidth]="true"></fa-icon>
