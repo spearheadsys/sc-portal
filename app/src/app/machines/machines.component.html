@@ -9,7 +9,7 @@
 
       <span class="d-none d-lg-block flex-grow-1"></span>
 
-      <ng-container *ngIf="machines && machines.length">
+      <ng-container *ngIf="machines && machines.length > 1">
         <div class="input-group input-group-pill me-lg-3 mb-3 mb-lg-0 w-lg-auto w-100">
           <input type="text" class="form-control" placeholder="Search..." formControlName="searchTerm"
                  appAlphaOnly="^[A-Za-z0-9_-]+$" tooltip="Search by name, tag, metadata, operating system or brand"

@@ -383,6 +383,8 @@ export class MachinesComponent implements OnInit, OnDestroy
         this.diskFilterOptions.stepsArray[0].value,
         this.diskFilterOptions.stepsArray[this.diskFilterOptions.stepsArray.length - 1].value
       ]);
+
+    this.applyFiltersAndSort();
   }
 
   // ----------------------------------------------------------------------------------------------------------------

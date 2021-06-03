@@ -88,7 +88,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
       {
         id: 3,
         title: 'Settings',
-        description: 'Name your machine, configure networks and setup volumes'
+        description: 'Name your machine and configure networks'
       },
       {
         id: 4,
@@ -606,7 +606,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
 
       this.currentStep = 2;
 
-      setTimeout(() => this.currentStep = 3, 300);
+      setTimeout(() => this.currentStep = 3, 0);
     }
 
     if (this.imageType <= 2)
