@@ -83,7 +83,7 @@
             <div *ngIf="currentStep === 2" class="d-flex flex-column h-100">
               <h5 class="px-3 mb-3 mt-1">Choose the <b>package</b> that matches the technical specifications this machine will have</h5>
 
-              <app-packages [image]="editorForm.get('image').value" [imageType]="editorForm.get('imageType').value" [package]="preselectedPackage"
+              <app-packages [image]="editorForm.get('image').value" [imageType]="imageType" [package]="preselectedPackage"
                             (select)="setPackage($event)">
               </app-packages>
             </div>

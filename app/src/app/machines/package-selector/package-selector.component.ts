@@ -5,6 +5,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { CatalogPackage } from '../../catalog/models/package';
+import { CatalogImageType } from 'src/app/catalog/models/image';
 
 @Component({
   selector: 'app-package-selector',
@@ -70,11 +71,11 @@ export class PackageSelectorComponent implements OnInit
     switch (this.machine.type)
     {
       case 'virtualmachine':
-        this.imageType = 1;
+        this.imageType = CatalogImageType.VirtualMachine;
         break;
 
       case 'smartmachine':
-        this.imageType = 2;
+        this.imageType = CatalogImageType.InfrastructureContainer;
         break;
     }
 

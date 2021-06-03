@@ -660,6 +660,9 @@ export class MachinesComponent implements OnInit, OnDestroy
   // ----------------------------------------------------------------------------------------------------------------
   createMachine(machine?: Machine)
   {
+    if (machine)
+      machine.contextMenu = false;
+
     const modalConfig = {
       ignoreBackdropClick: true,
       keyboard: false,

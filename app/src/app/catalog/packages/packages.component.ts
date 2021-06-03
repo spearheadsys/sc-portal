@@ -47,7 +47,7 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
   {
     this._selectedPackage = value;
 
-    this.select.next(value);
+    this.select.emit(value);
   }
   get selectedPackage(): CatalogPackage
   {
@@ -72,10 +72,12 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
   }
 
   // ----------------------------------------------------------------------------------------------------------------
-  private setPackagesByImageType()
+  private setPackagesByImageType(raiseEvent = false)
   {
+    if (!this.imageType) return;
+
     this._selectedPackage = null;
-    
+   
     this.packages = this._packages.filter(x => 
     {
       if (this.imageType === CatalogImageType.InfrastructureContainer && x.group === PackageGroupsEnum.Infra || 
@@ -100,11 +102,16 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
     });
 
     if (this._selectedPackage)
+    {
+      if (raiseEvent)
+        this.select.emit(this._selectedPackage);
+
       setTimeout(() => 
       {
         this.elementRef.nativeElement.querySelector(`#package-${this._selectedPackage.id}`)
           .scrollIntoView({behavior:'auto', block: 'center'});
       }, 0);
+    }
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -114,7 +121,7 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges
       .subscribe((changes: SimpleChanges) =>
       {
         if (changes.image?.currentValue && changes.imageType?.currentValue)
-        this.setPackagesByImageType();
+          this.setPackagesByImageType(true);
       });
   }
 

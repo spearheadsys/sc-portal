@@ -35,10 +35,6 @@ export class MachineWizardComponent implements OnInit, OnDestroy
   imageList: any[];
   operatingSystems: any[];
 
-  private packages: {};
-  packageList: any[];
-  packageGroups: any[];
-
   machines: Machine[];
   dataCenters: any[];
 
@@ -163,11 +159,11 @@ export class MachineWizardComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe(value =>
       {
-        const imageType = value | 0;
+        this.imageType = value | 0;
         const imageList = [];
         const operatingSystems = {};
 
-        if (imageType === CatalogImageType.InfrastructureContainer)
+        if (this.imageType === CatalogImageType.InfrastructureContainer)
         {
           for (const image of this.images)
             if (['lx-dataset', 'zone-dataset'].includes(image.type) && image.owner !== this.userId)
@@ -176,7 +172,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === CatalogImageType.VirtualMachine)
+        else if (this.imageType === CatalogImageType.VirtualMachine)
         {
           for (const image of this.images)
             if (['zvol'].includes(image.type) && image.owner !== this.userId)
@@ -185,7 +181,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === CatalogImageType.Custom)
+        else if (this.imageType === CatalogImageType.Custom)
         {
           for (const image of this.images)
             if (image.owner === this.userId)
@@ -213,11 +209,10 @@ export class MachineWizardComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$), distinctUntilChanged())
       .subscribe(imageOs =>
       {
-        const imageType = this.editorForm.get('imageType').value | 0;
         const imageList = [];
         const operatingSystems = {};
 
-        if (imageType === CatalogImageType.InfrastructureContainer)
+        if (this.imageType === CatalogImageType.InfrastructureContainer)
         {
           for (const image of this.images)
             if (['lx-dataset', 'zone-dataset'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
@@ -226,7 +221,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === CatalogImageType.VirtualMachine)
+        else if (this.imageType === CatalogImageType.VirtualMachine)
         {
           for (const image of this.images)
             if (['zvol'].includes(image.type) && (!imageOs || imageOs === image.os) && image.owner !== this.userId)
@@ -235,7 +230,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
               imageList.push(image);
             }
         }
-        else if (imageType === CatalogImageType.Custom)
+        else if (this.imageType === CatalogImageType.Custom)
         {
           for (const image of this.images)
             if (image.owner === this.userId)
@@ -390,7 +385,7 @@ export class MachineWizardComponent implements OnInit, OnDestroy
     if (this.currentStep < this.steps.length) return;
 
     this.readyText = this.translateService.instant('machines.wizard.ready', {
-      imageType: this.editorForm.get('imageType').value == 1 
+      imageType: this.imageType == 1 
                   ? this.translateService.instant('machines.wizard.readyImageTypeContainer') 
                   : this.translateService.instant('machines.wizard.readyImageTypeVm'),
       packageDescription: this.editorForm.get('package').value.description || 
@@ -410,9 +405,6 @@ export class MachineWizardComponent implements OnInit, OnDestroy
     this.steps[1].complete = true;
 
     this.editorForm.get('package').setValue(selection);
-
-    if (this.machine)
-      this.nextStep();
   }
 
   // ----------------------------------------------------------------------------------------------------------------
@@ -606,13 +598,15 @@ export class MachineWizardComponent implements OnInit, OnDestroy
     if (this.machine)
     {
       if (this.machine.type === 'smartmachine')
-        this.imageType = 1;
+        this.imageType = CatalogImageType.InfrastructureContainer;
       else if (this.machine.type === 'virtualmachine')
-        this.imageType = 2;
+        this.imageType = CatalogImageType.VirtualMachine;
 
       this.preselectedPackage = this.machine.package;
 
-      this.nextStep();
+      this.currentStep = 2;
+
+      setTimeout(() => this.currentStep = 3, 300);
     }
 
     if (this.imageType <= 2)
