@@ -63,7 +63,7 @@ For production (shakes tree, minifies and gzips to get smaller size):
 
     pushd app
     ng build --prod
-    for f in $(find dist -type f -not -name '*.html' -not -name '*.png'); do
+    for f in $(find dist -type f -not -name '*.html' -not -name '*.png' -not -name '*.jpg'); do
       gzip --best "$f";
     done
     popd
