@@ -70,15 +70,15 @@ export class AffinityRuleEditorComponent implements OnInit, OnDestroy
 
     let rule: string;
 
-    if (this.editorForm.get('target').value === 'machine')
-      rule = `machine${this.editorForm.get('operator').value}${this.editorForm.get('strict').value}${this.editorForm.get('value').value}`;
+    if (this.editorForm.get('target').value === 'instance')
+      rule = `instance${this.editorForm.get('operator').value}${this.editorForm.get('strict').value}${this.editorForm.get('value').value}`;
     else
       rule = `${this.editorForm.get('tagName').value}${this.editorForm.get('operator').value}${this.editorForm.get('strict').value}${this.editorForm.get('value').value}`;
 
     this.saved.emit({
       strict: this.editorForm.get('strict').value === '=',
       closeTo: this.editorForm.get('operator').value === '=',
-      targetMachine: this.editorForm.get('target').value === 'machine',
+      targetMachine: this.editorForm.get('target').value === 'instance',
       tagName: this.editorForm.get('tagName').value,
       value: this.editorForm.get('value').value,
       rule

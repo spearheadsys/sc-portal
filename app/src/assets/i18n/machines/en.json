@@ -209,7 +209,7 @@
       "volumeReadOnly": "Read only",
       "volumesDisabled": "Volumes are disabled for KVM packages",
       "noVolumes": "You don't have any volumes defined",
-      "tagsHint": "<b>Tags</b> make it easier to lookup an machine",
+      "tagsHint": "<b>Tags</b> make it easier to lookup a machine",
       "addTag": "Add a new tag",
       "removeTag": "Remove this tag",
       "metadataHint": "<b>Metadata</b> makes it easier to find a machine",
