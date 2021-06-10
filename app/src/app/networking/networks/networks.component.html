@@ -22,7 +22,7 @@
           <button class="btn btn-outline-info dropdown-toggle" dropdownToggle>
             Sort by {{ editorForm.get('sortProperty').value === 'vlan_id' ? 'id' : editorForm.get('sortProperty').value }}
           </button>
-          <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+          <ul id="dropdown-split" *dropdownMenu class="dropdown-menu dropdown-menu-right w-100 w-sm-auto" role="menu">
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'vlan_id'" (click)="setSortProperty('vlan_id')">
                 Id

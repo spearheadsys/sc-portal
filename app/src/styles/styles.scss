@@ -280,6 +280,14 @@ accordion
   overflow: auto;
 }
 
+@media (max-width: 576px)
+{
+  .dropdown-menu, .menu-popover, .menu-dropdown
+  {
+    width: calc(100% - 3.5rem);
+  }
+}
+
 .dropdown-header
 {
   color: #11182b;

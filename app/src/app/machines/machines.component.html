@@ -42,7 +42,7 @@
           <button class="btn btn-outline-info dropdown-toggle" dropdownToggle>
             Sort by <b>{{ editorForm.get('sortProperty').value }}</b>
           </button>
-          <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+          <ul *dropdownMenu class="dropdown-menu dropdown-menu-right w-100 w-sm-auto" role="menu">
             <li role="menuitem">
               <button class="dropdown-item" [class.active]="editorForm.get('sortProperty').value === 'name'"
                       (click)="setSortProperty('name')">
@@ -174,8 +174,8 @@
                                  placement="top" [adaptivePosition]="false"></fa-icon>
                       </button>
 
-                      <button class="btn btn-link text-info" [popover]="machineContextMenu" container="body" (click)="machine.contextMenu = true"
-                              [popoverContext]="{ machine: machine }" placement="bottom left" containerClass="menu-dropdown"
+                      <button class="btn btn-link text-info" [popover]="machineContextMenu" (click)="machine.contextMenu = true"
+                              [popoverContext]="{ machine: machine }" placement="bottom right" containerClass="menu-dropdown"
                               [outsideClick]="true" triggers="" [isOpen]="machine.contextMenu" (onHidden)="machine.contextMenu = false">
                         <fa-icon icon="ellipsis-v" [fixedWidth]="true" size="sm"></fa-icon>
                       </button>

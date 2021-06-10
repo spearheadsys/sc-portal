@@ -108,7 +108,8 @@
 
 .filters
 {
-  width: 240px;
+  width: 100%;
+  min-width: 240px;
 
   .btn-group + *
   {

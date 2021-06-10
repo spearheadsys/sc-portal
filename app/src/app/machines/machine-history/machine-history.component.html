@@ -19,8 +19,7 @@
             <tr>
               <th>Action</th>
               <th>Time</th>
-              <th>Finished</th>
-              <th>User</th>
+              <th class="text-end">Finished</th>
             </tr>
           </thead>
           <tbody>
@@ -29,13 +28,10 @@
                 <b>{{ info.action }}</b>
               </td>
               <td>{{ info.time | timeago }}</td>
-              <td>
+              <td class="text-end">
                 <span class="badge border text-uppercase" [ngClass]="info.success === 'yes' ? 'text-success border-success' : 'text-danger border-danger'">
                   {{ info.success }}
                 </span>
-              </td>
-              <td>
-                <div class="text-truncate">{{ info.caller.keyId }}</div>
               </td>
             </tr>
           </tbody>
