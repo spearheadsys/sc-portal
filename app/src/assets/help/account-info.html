@@ -1,1 +1,51 @@
-<h1>Title goes here...</h1>
+<h1>SSH Keys</h1>
+<p>Spearhead Cloud service use SSH key pairs for user authentication. You must
+first upload an existing SSH key pair to your acount before you canb provision
+machines.</p>
+
+<p>If you do not have an SSH key pair see the following for manually creating 
+them.</p>
+
+<a href="#linux-keys">Manually generate SSH keys in MacOS<a>
+<a href="#windows-keys">Manually generate SSH keys in Windows<a>
+
+<p>Once you have your SSH key ready, grab the public key (usually id_rsa.pub) and
+add it to your account by accessing the top right meny button and selecting
+Account Details.</p>
+
+<p>Next click on ADD KEY next to "MY KEYS". Give it a familiar name, especially if
+you have or intend to use multiple keys, and paste your public key.</p>
+
+<p>Click on ADD KEY and you are done. You can now provision machines using your 
+account.</p>
+
+<hr>    
+
+<h1>SSH Keys</h1>
+<p>Spearhead Cloud service use SSH key pairs for user authentication. You must
+first upload an existing SSH key pair to your acount before you canb provision
+machines.</p>
+
+<p>If you do not have an SSH key pair see the following for manually creating 
+them.</p>
+
+<a href="#linux-keys">Manually generate SSH keys in MacOS<a>
+<a href="#windows-keys">Manually generate SSH keys in Windows<a>
+
+<hr>
+
+<a id="linux-keys"></>
+<h2>Manually generating SSH Keys in MacOS</h2> 
+<p>
+    <ol>
+        <li>Open the Terminal.app (In Finder, choose Utilities from the Applications folder).</li>
+        <li>Run the command "ssh-keygen -t rsa" which will start the generation process.</li>
+        <li>Press ENTER to accept the defaults (location, etc.).You may type in a passphrase or click enter, in which case your key will not be protected with a passphrase.</li>
+    </ol>
+</p>
+<p>After you confirm the system will generate the key pair. Your private key will be saved to a file named id_rsa in a .ssh folder in your home directory. Make sure you never share this file with others.</p>   
+<p>Your public key is saved to a file named id_rsa.pub in a .ssh folder in your home directory. You can copy this file using the following command "pbcopy < ~/.ssh/id_rsa.pub" and then paste this into the Customer portal.</p>
+
+<a id="windows-keys"></>
+<h2>Manually generating SSH Keys in Windows</h2>    
+<p>Please use the <a href="https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows">following</a> documentation while we prepare our own</p>
