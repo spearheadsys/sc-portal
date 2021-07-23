@@ -4,7 +4,7 @@ import { TokenService } from './token.service';
 import { AccountService } from '../account/helpers/account.service';
 import { BehaviorSubject } from 'rxjs';
 import { UserInfo } from '../account/models/user-info';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,7 @@ export class AuthService
 
   // ----------------------------------------------------------------------------------------------------------------
   constructor(private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly httpClient: HttpClient,
     private readonly tokenService: TokenService,
     private readonly accountService: AccountService)
@@ -22,7 +23,17 @@ export class AuthService
     const authToken = this.qs['token'];
 
     if (authToken)
+    {
       tokenService.token = authToken;
+
+      // Remove the query params from the URL to avoid having the users 
+      // pass around by mistake the auth token.
+      router.navigate([], {
+        relativeTo: activatedRoute,
+        queryParams: {a: 111},
+        queryParamsHandling: 'merge'
+      });
+    }
     else
       this.login();
 
