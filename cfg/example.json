@@ -7,8 +7,8 @@
     },
     "urls": {
         "local": "https://localhost",
-        "sso": "https://sso.spearhead.cloud",
-        "cloudapi": "https://eu-ro-1.api.spearhead.cloud"
+        "sso": "https://sso.your.cloud",
+        "cloudapi": "https://eu-ro-1.api.your.cloud"
     },
     "key": {
         "user": "developer_name",

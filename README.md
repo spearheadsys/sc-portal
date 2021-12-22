@@ -1,6 +1,6 @@
 # Installing in Production
 
-Be familiar with the steps in [Installation][] below, since it is needed to
+Be familiar with the steps in [Installation](#installation) below, since it is needed to
 build the Angular app first.
 
 Once the Angular app is built, provision a small base-64-lts 20.4.0 VM,
