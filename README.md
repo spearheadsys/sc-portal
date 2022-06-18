@@ -70,7 +70,7 @@ For production (shakes tree, minifies and gzips to get smaller size):
 
 ## Generate server certificates
 
-    pushd config
+    pushd cfg
     openssl genrsa -out key.pem
     openssl req -new -key key.pem -out csr.pem
     openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
